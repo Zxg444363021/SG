@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--登陆界面按钮 点击改变字体颜色 用法android:textColor="@drawable/selector_login_btn_textcolor""-->
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true" android:color="@color/colorAccent"/>
+
+    <item android:state_focused="true" android:color="@color/colorAccent"/>
+
+    <item android:color="#ffffff" />
+
+</selector>

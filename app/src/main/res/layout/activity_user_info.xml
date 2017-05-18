@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+
+    tools:context="com.globalformulae.shiguang.maininterface.UserInfoActivity">
+
+    <Toolbar
+        android:id="@+id/user_info_tb"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorPrimary"
+        android:title="个人信息"
+        app:titleTextColor="#404040"></Toolbar>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@drawable/shape_underline_divider2"
+        android:orientation="vertical"
+        android:showDividers="beginning|middle">
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:paddingTop="50dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:text="头像"
+                android:textColor="#404040"
+                android:textSize="16sp" />
+
+            <ImageView
+                android:id="@+id/my_icon_iv"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="end"
+                android:src="@drawable/micon" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/user_n_fl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:text="昵称"
+                android:textColor="#404040"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/my_name_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="郑晓光" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/user_p_fl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:text="手机号"
+                android:textColor="#404040"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/my_phone_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="13476043454" />
+        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/user_t_fl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:text="番茄数"
+                android:textColor="#404040"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/my_tomato_n_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="50" />
+        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/user_po_fl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:text="总能量"
+                android:textColor="#404040"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/my_power_n_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="15000g" />
+        </FrameLayout>
+        <FrameLayout
+            android:id="@+id/user_exit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:background="@color/red">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="退出登录"
+                android:textColor="#ffffff"
+                android:textSize="18sp"
+                />
+        </FrameLayout>
+    </LinearLayout>
+</LinearLayout>

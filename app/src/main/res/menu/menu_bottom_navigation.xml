@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/action_task"
+        android:title="任务"
+        android:icon="@drawable/ic_assignment_black_24dp"/>
+    <item
+        android:id="@+id/action_tomato"
+        android:title="番茄"
+        android:icon="@drawable/ic_favorite_black_24dp"/>
+    <item
+        android:id="@+id/action_custom"
+        android:title="习惯"
+        android:icon="@drawable/ic_extension_black_24dp"/>
+
+</menu>

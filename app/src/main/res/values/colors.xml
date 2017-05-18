@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#e8fbf4</color>
+    <color name="colorPrimaryDark">#000000</color>
+    <color name="colorAccent">#bd874d</color>
+    <color name="red">#e24747</color>
+    <color name="gray">#dadada</color>
+    <color name="state_item_pressed">#FF4081</color>
+    <color name="state_item_normal">#ff4000</color>
+    <color name="whiteTrans">#DDFFFAFA</color>
+    <color name="C10">#A1A9B4</color>
+    <color name="green1">#BCEAC5</color>
+    <color name="green2">#e8fbf4</color>
+</resources>

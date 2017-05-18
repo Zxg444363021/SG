@@ -1,0 +1,106 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.2"
+    defaultConfig {
+        applicationId "com.globalformulae.shiguang"
+        minSdkVersion 21
+        targetSdkVersion 21
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        javaCompileOptions {
+            annotationProcessorOptions {
+                arguments = [eventBusIndex: 'com.globalformulae.shiguang.MyEventBusIndex']
+            }
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    //设置jnilib
+    sourceSets {
+        main {
+            jniLibs.srcDirs = ["libs"]
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    //侧滑菜单
+    compile('com.github.ozodrukh:CircularReveal:2.0.1@aar') {
+        transitive = true;
+    }
+    //Okhttp3
+    //第三方toast库
+    //recyclerview
+    //cardView
+    //xwalk核心库
+    //autolayout
+    //greendao
+    compile files('libs/gson-2.2.4.jar')
+    //logger
+    //
+    compile files('libs/SocialSDK_QQ_Simplify.jar')
+    compile 'com.zhy:autolayout:1.4.5'
+    compile 'com.android.support:design:25.1.1'
+    compile 'com.android.support:appcompat-v7:25.1.1'
+    compile 'com.github.yalantis:Side-Menu.Android:1.0.1'
+    compile 'com.squareup.okhttp3:okhttp:3.6.0'
+    compile 'com.muddzdev:styleabletoast:1.0.6'
+    compile 'com.android.support:cardview-v7:25.1.1'
+    compile 'org.xwalk:xwalk_core_library:18.48.477.13'
+    compile 'com.zhy:autolayout:1.4.5'
+    compile 'org.greenrobot:greendao:3.2.0'
+    compile 'com.jakewharton:butterknife:8.5.1'
+    compile 'org.greenrobot:eventbus:3.0.0'
+    compile 'com.android.support.constraint:constraint-layout:1.0.0-beta5'
+    compile 'com.google.android.gms:play-services-plus:10.2.0'
+    compile 'com.github.bumptech.glide:glide:3.7.0'
+    compile 'com.android.support:support-v4:26.0.0-alpha1'
+    compile 'com.android.support:recyclerview-v7:26.0.0-alpha1'
+    testCompile 'junit:junit:4.12'
+    annotationProcessor 'org.greenrobot:eventbus-annotation-processor:3.0.1'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:8.5.1'
+}
+
+repositories {
+    maven {
+        url "https://jitpack.io"
+    }
+}
+
+//crosswalk webview
+repositories {
+    maven {
+        url 'https://download.01.org/crosswalk/releases/crosswalk/android/maven2'
+    }
+}
+
+//greendao插件依赖
+apply plugin: 'org.greenrobot.greendao'
+//greendao数据库配置
+greendao {
+    schemaVersion 1
+    daoPackage "com.globalformulae.shiguang.greendao"
+    targetGenDir "src/main/java"
+}
+
+configurations.all {
+    resolutionStrategy.eachDependency { DependencyResolveDetails details ->
+        def requested = details.requested
+        if (requested.group == 'com.android.support') {
+            if (!requested.name.startsWith("multidex")) {
+                details.useVersion '25.3.0'
+            }
+        }
+    }
+}

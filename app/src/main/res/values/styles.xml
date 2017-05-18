@@ -1,0 +1,33 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!--<item name="android:listDivider">@drawable/divider_02</item>-->
+        <!--<item name="android:windowTranslucentStatus">true</item>-->
+        <!--<item name="android:windowTranslucentNavigation">true</item>-->
+        <!--<item name="android:statusBarColor">#4fc3f7</item>-->
+
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+
+        <!--button的涟漪的默认颜色-->
+        <item name="android:colorControlHighlight">#ffe91e63</item>
+        <!--checkbox选中的颜色-->
+        <!--<item name="android:colorControlActivated">#00ff00</item>-->
+
+    </style>
+    <style name="StyledToast">
+            <item name="android:textColor">@color/red</item>
+            <item name="android:colorBackground">@color/gray</item>
+            <!--<item name="android:fontFamily"></item>-->
+            <item name="android:textStyle">bold</item>
+            <!--<item name="android:strokeWidth">2</item>-->
+            <!--<item name="android:strokeColor">@color/colorPrimary</item>-->
+            <!--<item name="android:radius">@dimen/toastRadius</item>-->
+            <item name="android:alpha">255</item>
+            <item name="android:icon">@drawable/ic_autorenew_black_24dp</item>
+    </style>
+
+
+</resources>

@@ -1,0 +1,28 @@
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context="com.globalformulae.shiguang.maininterface.MainFragments.ScheduleFragment">
+
+    <!-- TODO: Update blank fragment layout -->
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv_schedlue"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/background1"/>
+    <android.support.design.widget.FloatingActionButton
+        android:id="@+id/fab_add_event"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/ic_add_black_24dp"
+
+        app:fabSize="normal"
+        android:elevation="50dp"
+        app:rippleColor="#3e2723"
+        app:layout_anchorGravity="bottom|end"
+        app:layout_anchor="@+id/rv_schedlue"
+        android:layout_margin="8dp"
+        android:translationZ="120dp" />
+
+</android.support.design.widget.CoordinatorLayout>
