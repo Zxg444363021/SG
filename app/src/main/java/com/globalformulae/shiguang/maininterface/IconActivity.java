@@ -278,7 +278,6 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
         File file=new File(outputPath);
         Log.e("123456789", "sadasdad"+outputPath);
         if(!file.exists()){
-            Log.e("123", "zxcv");
             return;
         }
         SharedPreferences sp= SPUtil.getSP(this,"user");
