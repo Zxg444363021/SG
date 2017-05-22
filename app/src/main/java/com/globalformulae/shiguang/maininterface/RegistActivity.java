@@ -5,8 +5,10 @@ import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -237,5 +239,17 @@ public class RegistActivity extends AppCompatActivity{
 
 
 
-
+    private void setActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.regist_tb);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                setResult(888);
+                finish();
+            }
+        });
+    }
 }

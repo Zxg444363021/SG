@@ -57,10 +57,10 @@ public class OkHttpUtil {
     private static final String NBAEVENTS_URL="http://op.juhe.cn/onebox/basketball/nba?key=15cf3c6dd41abb470c21f9161b93de54";
     private static final String SCHOOL_GENIMG="http://210.42.121.132/servlet/GenImg";
     private static final String SCHOOL_LOGINURL = "http://210.42.121.132/servlet/Login";
-    public static final String BASEURL="http://192.168.1.124:8080/shiguangServer/";
-    private static final String REGISTURL="http://192.168.191.3:8080/shiguangServer/regist";
+    public static final String BASEURL="http://192.168.191.4:8080/shiguangServer/";
+    private static final String REGISTURL="regist";
     private static final String LOGINURL="login";
-    private static final String IDENTIFYCODEURL="http://192.168.191.3:8080/shiguangServer/sendIdentifyCode";
+    private static final String IDENTIFYCODEURL="sendIdentifyCode";
     private static OkHttpUtil okHttpUtil=new OkHttpUtil();
     private static OkHttpClient okHttpClient;
     private OkHttpUtil(){}
@@ -299,7 +299,7 @@ public class OkHttpUtil {
                 .build();
         Request.Builder builder1=new Request.Builder();
         Request request=builder1
-                .url(IDENTIFYCODEURL)
+                .url(BASEURL+IDENTIFYCODEURL)
                 .post(formBody)
                 .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
                 .build();
@@ -346,7 +346,7 @@ public class OkHttpUtil {
         Request.Builder builder=new Request.Builder();
         Request request=builder
                 .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-                .url(REGISTURL)
+                .url(BASEURL+REGISTURL)
                 .post(formBody)
                 .build();
 

@@ -15,10 +15,13 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -51,8 +54,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     /**
      * 已知的用户名，可以用来自动填充
-     * A dummy authentication store containing known user names and passwords.
-     * TODO: remove after connecting to a real authentication system.
      */
     private static final String[] DUMMY_CREDENTIALS = new String[]{
             "foo@example.com:hello", "bar@example.com:world"
@@ -77,6 +78,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     ImageView wbLoginIV;
     @BindView(R.id.qqLogin)
     ImageView qqLoginIV;
+    @BindView(R.id.logo_iv)
+    ImageView logoIV;
+
+
+    private Animation animation;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +91,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         ButterKnife.bind(this);
         // Set up the login form.
         populateAutoComplete();
+        animation = AnimationUtils.loadAnimation(this, R.anim.logo_anim);
+
+
         //在密码域输入完成之后如果点击键盘上的enter键的操作
         passwordET.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
@@ -96,7 +106,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
         EventBus.getDefault().register(this);
-
+        setActionBar();
     }
 
     @Override
@@ -107,61 +117,76 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     //登录按钮点击事件
     @OnClick(R.id.login_btn)
-    void login(){
+    void login() {
         attemptLogin();
     }
+
     @OnClick(R.id.wxLogin)
-    void wxLogin(){
+    void wxLogin() {
 
     }
+
     @OnClick(R.id.regist_btn)
-    void regist(){
-        Intent intent=new Intent(LoginActivity.this,RegistActivity.class);
+    void regist() {
+        Intent intent = new Intent(LoginActivity.this, RegistActivity.class);
         startActivity(intent);
     }
+
     @OnClick(R.id.forget_btn)
-    void forget(){
+    void forget() {
 
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLogin(ResponseBean responseBean){
+    public void onLogin(final ResponseBean responseBean) {
 
-        switch (responseBean.getCode()){
+        switch (responseBean.getCode()) {
             case ResponseBean.LOGIN_SUCC:   //登录成功
-                Log.e("LogingA","what");
-                User user=responseBean.getUser();
-                SharedPreferences.Editor editor= SPUtil.getSPD(LoginActivity.this,"user");
-                editor.putBoolean("logged",true);
-                editor.putLong("userid",user.getUserid());
-                editor.putString("name",user.getName());
-                editor.putString("phone",user.getPhone());
-                editor.putString("icon",user.getIcon());
-                editor.putInt("tomato_n",user.getTomato_n());
-                editor.putInt("power_n",user.getPower_n());
+                Log.e("LogingA", "what");
+                User user = responseBean.getUser();
+                SharedPreferences.Editor editor = SPUtil.getSPD(LoginActivity.this, "user");
+                editor.putBoolean("logged", true);
+                editor.putLong("userid", user.getUserid());
+                editor.putString("name", user.getName());
+                editor.putString("phone", user.getPhone());
+                editor.putString("icon", user.getIcon());
+                editor.putInt("tomato_n", user.getTomato_n());
+                editor.putInt("power_n", user.getPower_n());
                 editor.apply();
-                Intent intent=new Intent(LoginActivity.this,UserInfoActivity.class);
-                startActivity(intent);
-                finish();
+                logoIV.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
+                        startActivity(intent);
+                        finish();
+                        showProgress(false);
+                    }
+                }, 3000);
                 break;
             case ResponseBean.LOGIN_FAIL:
-                if(responseBean.getMessage().equals("201")){//密码错误
-                    passwordET.setError("密码错误");
-                    passwordET.requestFocus();
-                }else if(responseBean.getMessage().equals("202")){//帐号不存在
-                    userIdTV.setError("帐号不存在");
-                    userIdTV.requestFocus();
-                }else {//服务器错误
-                    StyleableToast st3 = new StyleableToast
-                            .Builder(LoginActivity.this, "服务器错误，请重试")
-                            .withMaxAlpha()
-                            .withBackgroundColor(getResources().getColor(R.color.colorAccent))
-                            .withTextColor(Color.WHITE)
-                            .withBoldText()
-                            .build();
-                    st3.show();
-                }
 
+                logoIV.postDelayed(new Runnable() {
+                    @Override
+                    public void run() {
+                        showProgress(false);
+                        if (responseBean.getMessage().equals("201")) {//密码错误
+                            passwordET.setError("密码错误");
+                            passwordET.requestFocus();
+                        } else if (responseBean.getMessage().equals("202")) {//帐号不存在
+                            userIdTV.setError("帐号不存在");
+                            userIdTV.requestFocus();
+                        } else {//服务器错误
+                            StyleableToast st3 = new StyleableToast
+                                    .Builder(LoginActivity.this, "服务器错误，请重试")
+                                    .withMaxAlpha()
+                                    .withBackgroundColor(getResources().getColor(R.color.colorAccent))
+                                    .withTextColor(Color.WHITE)
+                                    .withBoldText()
+                                    .build();
+                            st3.show();
+                        }
+                    }
+                }, 3000);
                 break;
         }
     }
@@ -212,19 +237,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // 如果没啥问题就显示进度，然后登陆
             //showProgress(true);
-            OkHttpUtil httpUtil=OkHttpUtil.getInstance();
+            OkHttpUtil httpUtil = OkHttpUtil.getInstance();
             httpUtil.loginShiguang(mPhone, MD5Util.getMD5String(mPassword));
+            showProgress(true);
             StyleableToast st2 = new StyleableToast
                     .Builder(LoginActivity.this, "登录中")
                     .withMaxAlpha()
                     .withBackgroundColor(getResources().getColor(R.color.colorAccent))
                     .withTextColor(Color.WHITE)
                     .withBoldText()
-                    .withIcon(R.drawable.ic_autorenew_black_24dp,true)
+                    .withIcon(R.drawable.ic_autorenew_black_24dp, true)
                     .build();
             st2.show();
         }
     }
+
     /**
      * 验证手机格式
      */
@@ -240,8 +267,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         else
             return mobileNums.matches(telRegex);
     }
+
     /**
      * 检查密码格式
+     *
      * @param password
      * @return
      */
@@ -251,7 +280,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     /**
-     * Shows the progress UI and hides the login form.
+     * 显示进度，然后隐藏输入框
      */
     @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR2)
     private void showProgress(final boolean show) {
@@ -284,6 +313,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
         }
+        //logoIV.setAnimation(animation);
+        if (show) {
+            logoIV.startAnimation(animation);
+        } else {
+            logoIV.clearAnimation();
+        }
+
     }
 
     @Override
@@ -340,7 +376,21 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-
+    /**
+     * 设置toolbar
+     */
+    private void setActionBar() {
+        Toolbar toolbar = (Toolbar) findViewById(R.id.login_tb);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+    }
 
 
 }

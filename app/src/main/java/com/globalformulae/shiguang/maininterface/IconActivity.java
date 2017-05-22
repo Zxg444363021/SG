@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -22,11 +23,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.utils.FileStorage;
 import com.globalformulae.shiguang.utils.OkHttpUtil;
 import com.globalformulae.shiguang.utils.PermissionsChecker;
 import com.globalformulae.shiguang.utils.SPUtil;
+import com.muddzdev.styleabletoastlibrary.StyleableToast;
 
 import java.io.File;
 import java.io.IOException;
@@ -76,7 +79,12 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
         post_btn= (Button) findViewById(R.id.post_btn);
         iv = (ImageView) findViewById(R.id.iv);
         SharedPreferences sp=SPUtil.getSP(this,"user");
-        Glide.with(this).load(sp.getString("icon","")).placeholder(R.mipmap.unlogged_icon).into(iv);
+            Glide
+                .with(this)
+                .load(sp.getString("icon",null))
+                .placeholder(R.mipmap.unlogged_icon)
+                .signature(new StringSignature(String.valueOf(System.currentTimeMillis())))
+                .into(iv);
         setActionBar();
     }
 
@@ -253,7 +261,8 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
                     }
                     Log.e("url",imageUri+"\n"+imagePath);
                     Bitmap icon= BitmapFactory.decodeStream(getContentResolver().openInputStream(outputUri));
-                    iv.setImageBitmap(icon );
+                    Glide.clear(iv);
+                    iv.setImageBitmap(icon);
                     post_btn.setVisibility(View.VISIBLE);
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -276,8 +285,16 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
 
     public void doPostFile(){
         File file=new File(outputPath);
-        Log.e("123456789", "sadasdad"+outputPath);
         if(!file.exists()){
+            StyleableToast st3 = new StyleableToast
+                    .Builder(IconActivity.this, "获取失败，请重新拍照或选择")
+                    .withMaxAlpha()
+                    .withBackgroundColor(getResources().getColor(R.color.colorAccent))
+                    .withTextColor(Color.WHITE)
+                    .withBoldText()
+                    .build();
+            st3.show();
+            post_btn.setVisibility(View.GONE);
             return;
         }
         SharedPreferences sp= SPUtil.getSP(this,"user");
@@ -289,7 +306,7 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
                 .addFormDataPart("mPhoto",sp.getString("phone","zxg")+".jpg", RequestBody.create(MediaType.parse("application/octet-stream"), file))
                 .build();
         Request.Builder builder=new Request.Builder();
-        Request request = builder.url(BasuUrl + "uploadInfo").post(multipartBody).build();
+        Request request = builder.url(BasuUrl + "doPostIcon").post(multipartBody).build();
         OkHttpClient okHttpClient=new OkHttpClient();
         Call call=okHttpClient.newCall(request);
         call.enqueue(new Callback() {
@@ -302,6 +319,10 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
             public void onResponse(Call call, Response response) throws IOException {
                 int result=response.code();
                 Log.e("123456789", String.valueOf(result));
+                if(result==200){
+                    finish();
+                    setResult(888);
+                }
             }
         });
     }

@@ -8,13 +8,13 @@
 
     tools:context="com.globalformulae.shiguang.maininterface.UserInfoActivity">
 
-    <Toolbar
+    <android.support.v7.widget.Toolbar
         android:id="@+id/user_info_tb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/colorPrimary"
         android:title="个人信息"
-        app:titleTextColor="#404040"></Toolbar>
+        app:titleTextColor="#404040"></android.support.v7.widget.Toolbar>
 
     <LinearLayout
         android:layout_width="match_parent"

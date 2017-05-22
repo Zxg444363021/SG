@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.signature.StringSignature;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.utils.NetServiceUser;
 import com.globalformulae.shiguang.utils.SPUtil;
@@ -50,12 +51,13 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
         ButterKnife.bind(this);
         sp=SPUtil.getSP(this,"user");
         initView();
+        setActionBar();
     }
     private void getMyInfo(){
 
     }
     private void initView(){
-        Glide.with(this).load(sp.getString("icon",null)).placeholder(R.mipmap.unlogged_icon).into(myIconIV);
+        Glide.with(this).load(sp.getString("icon",null)).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) .placeholder(R.mipmap.unlogged_icon).into(myIconIV);
         myNameTV.setText(sp.getString("name",""));
         myPhoneTV.setText(sp.getString("phone",""));
         myTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
@@ -100,6 +102,7 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
         SharedPreferences.Editor editor=sp.edit();
         editor.clear();
         editor.apply();
+        finish();
     }
     @Override
     public void connectedcallBack(int code, int type, String result, String message) {
@@ -119,6 +122,7 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
             Log.e("onActivityResult", "onActivityResult: ");
             initView();
         }
+
     }
     private void setActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.user_info_tb);
