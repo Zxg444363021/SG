@@ -14,6 +14,7 @@ import com.bumptech.glide.Glide;
 import com.bumptech.glide.signature.StringSignature;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.utils.NetServiceUser;
+import com.globalformulae.shiguang.utils.OkHttpUtil;
 import com.globalformulae.shiguang.utils.SPUtil;
 
 import butterknife.BindView;
@@ -57,7 +58,9 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
 
     }
     private void initView(){
-        Glide.with(this).load(sp.getString("icon",null)).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) .placeholder(R.mipmap.unlogged_icon).into(myIconIV);
+
+
+        Glide.with(this).load(sp.getString("icon", "")).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) .placeholder(R.mipmap.unlogged_icon).into(myIconIV);
         myNameTV.setText(sp.getString("name",""));
         myPhoneTV.setText(sp.getString("phone",""));
         myTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
@@ -120,6 +123,8 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
         super.onActivityResult(requestCode, resultCode, data);
         if(requestCode==666&&resultCode==888){
             Log.e("onActivityResult", "onActivityResult: ");
+            String defaultIconUrl=OkHttpUtil.BASEURL+"files/"+sp.getString("phone","")+".jpg";
+            sp.edit().putString("icon",defaultIconUrl).apply();
             initView();
         }
 

@@ -57,7 +57,8 @@ public class OkHttpUtil {
     private static final String NBAEVENTS_URL="http://op.juhe.cn/onebox/basketball/nba?key=15cf3c6dd41abb470c21f9161b93de54";
     private static final String SCHOOL_GENIMG="http://210.42.121.132/servlet/GenImg";
     private static final String SCHOOL_LOGINURL = "http://210.42.121.132/servlet/Login";
-    public static final String BASEURL="http://192.168.191.4:8080/shiguangServer/";
+//    public static final String BASEURL="http://192.168.191.4:8080/shiguangServer/";
+    public static final String BASEURL="http://192.168.191.5:8080/shiguangServer/";
     private static final String REGISTURL="regist";
     private static final String LOGINURL="login";
     private static final String IDENTIFYCODEURL="sendIdentifyCode";
@@ -316,7 +317,8 @@ public class OkHttpUtil {
             public void onResponse(Call call, Response response) throws IOException {
                 ResponseBean responseBean=new ResponseBean();
                 //数据库中已经有了帐号,或者是服务器那边发送失败了
-                String result=response.body().toString().trim();
+                String result=response.body().string().trim();
+                Log.e("ccc", result);
                 if(result.equals("-1")||result.equals("0")){
                     responseBean.setCode(ResponseBean.GET_IDENTIFY_CODE_FAIL);
                     EventBus.getDefault().post(responseBean);

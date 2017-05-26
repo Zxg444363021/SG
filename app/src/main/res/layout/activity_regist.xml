@@ -68,7 +68,7 @@
                     android:layout_height="wrap_content"
                     android:drawableLeft="@drawable/ic_person_black_24dp"
                     android:hint="请输入您的昵称"
-                    android:inputType="textEmailAddress"
+                    android:inputType="text"
                     android:maxLines="1" />
 
             </android.support.design.widget.TextInputLayout>
@@ -102,7 +102,7 @@
                             android:layout_height="wrap_content"
                             android:drawableLeft="@drawable/ic_verified_user_black_24dp"
                             android:hint="请输入验证码"
-                            android:inputType="textEmailAddress"
+                            android:inputType="number"
                             android:maxLines="1"
                         />
                 </android.support.design.widget.TextInputLayout>
