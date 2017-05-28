@@ -1,10 +1,9 @@
-<ScrollView
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <com.zhy.autolayout.AutoLinearLayout
+
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
@@ -27,8 +26,8 @@
                 android:id="@+id/iv_soil"
                 android:layout_width="200dp"
                 android:layout_height="200dp"
+                android:layout_alignTop="@+id/watering"
                 android:layout_centerHorizontal="true"
-                android:layout_centerVertical="true"
                 android:layout_gravity="center"
                 android:background="@drawable/soil_anim"
                 android:src="@drawable/grow1" />
@@ -37,50 +36,70 @@
                 android:id="@+id/iv_cloud"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:src="@drawable/cloud"
-                android:layout_alignTop="@+id/iv_sun"
                 android:layout_alignStart="@+id/iv_soil"
-                android:layout_marginTop="39dp" />
+                android:layout_alignTop="@+id/iv_sun"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="39dp"
+                android:src="@drawable/cloud" />
 
             <LinearLayout
                 android:id="@+id/linearLayout2"
                 android:layout_width="wrap_content"
                 android:layout_height="55dp"
-                android:layout_gravity="right"
-                android:orientation="horizontal"
-                android:padding="5dp"
-                android:background="@drawable/timer_liner"
+                android:layout_alignParentEnd="true"
                 android:layout_alignTop="@+id/iv_sun"
-                android:layout_alignParentEnd="true">
+                android:layout_gravity="right"
+                android:background="@drawable/timer_liner"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
                 <com.globalformulae.shiguang.view.CircleImageView
                     android:id="@+id/timer_icon_iv"
                     android:layout_width="45dp"
                     android:layout_height="45dp"
-                    android:src="@drawable/micon"
-                    />
-                <TextView
+                    android:src="@drawable/micon" />
+
+                <LinearLayout
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
+                    android:layout_height="match_parent"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginRight="5dp"
-                    android:textSize="20sp"
-                    android:text="5" />
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_vertical"
-                    android:layout_marginRight="5dp"
-                    android:textSize="12sp"
-                    android:text="X" />
-                <ImageView
-                    android:layout_width="35dp"
-                    android:layout_height="35dp"
-                    android:layout_gravity="center_vertical"
-                    android:src="@drawable/tomato" />
+                    android:orientation="vertical"
+                    android:paddingRight="5dp">
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content">
 
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="5dp"
+                            android:text="5"
+                            android:textSize="18sp" />
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_gravity="center_vertical"
+                            android:layout_marginRight="5dp"
+                            android:text="X"
+                            android:textSize="12sp" />
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_gravity="center_vertical"
+                            android:src="@drawable/tomato" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="20170528g"
+                        android:textColor="#2baf2b"
+                        android:textStyle="bold" />
+                </LinearLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -99,17 +118,17 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="5dp"
-                    android:textSize="20sp"
                     android:text="5"
-                     />
+                    android:textSize="20sp" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
                     android:layout_marginRight="5dp"
-                    android:textSize="12sp"
                     android:text="X"
-                     />
+                    android:textSize="12sp" />
+
                 <Button
                     android:id="@+id/water_btn"
                     android:layout_width="45dp"
@@ -124,18 +143,70 @@
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="24dp" />
+
             <TextView
                 android:id="@+id/watering_plus_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="+10g"
-                android:textColor="#404040"/>
+                android:textColor="#404040" />
         </RelativeLayout>
 
-        <android.support.v7.widget.RecyclerView
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="500dp"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentStart="true" />
-    </com.zhy.autolayout.AutoLinearLayout>
+            android:layout_height="wrap_content"
+            android:divider="3dp"
+            android:orientation="vertical"
+            android:padding="10dp"
+            android:showDividers="middle">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:text="最新动态"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/timer_record_rv"
+                android:layout_width="match_parent"
+                android:layout_height="100dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:text="查看更多动态" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="10dp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingBottom="10dp"
+                android:text="排行榜"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <android.support.v7.widget.RecyclerView
+                android:id="@+id/timer_rank_rv"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:layout_alignParentBottom="true"
+                android:layout_alignParentStart="true" />
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="#ffffff"
+                android:text="查看更多好友" />
+        </LinearLayout>
+    </LinearLayout>
 </ScrollView>
