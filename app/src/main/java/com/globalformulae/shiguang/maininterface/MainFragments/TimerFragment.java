@@ -5,6 +5,8 @@ import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,6 +16,15 @@ import android.widget.Button;
 import android.widget.ImageView;
 
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.maininterface.adapter.SimpleRecordAdapter;
+import com.globalformulae.shiguang.maininterface.adapter.TimerRankAdapter;
+import com.globalformulae.shiguang.model.AlternateRecord;
+import com.globalformulae.shiguang.model.User;
+import com.globalformulae.shiguang.view.RecycleViewDivider;
+
+import java.sql.Date;
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -30,8 +41,16 @@ public class TimerFragment extends Fragment {
     ImageView wateringIV;
     @BindView(R.id.water_btn)
     Button waterBTN;
-    private OnFragmentInteractionListener mListener;
+    @BindView(R.id.timer_record_rv)
+    RecyclerView timerRecordRV;
+    @BindView(R.id.timer_rank_rv)
+    RecyclerView timerRankRV;
 
+    private List<AlternateRecord> datalist1=new ArrayList<>();
+    private List<User> datalist2=new ArrayList<>();
+    private OnFragmentInteractionListener mListener;
+    private SimpleRecordAdapter simpleRecordAdapter;//上面的5条记录
+    private TimerRankAdapter timerRankAdapter;//下面的10条记录
     public TimerFragment() {
         // Required empty public constructor
     }
@@ -54,7 +73,7 @@ public class TimerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        getTimerRR();
     }
 
     @Override
@@ -62,13 +81,37 @@ public class TimerFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_timer, container, false);
         ButterKnife.bind(this,view);
+        simpleRecordAdapter=new SimpleRecordAdapter(getContext(),datalist1);
+        timerRecordRV.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        timerRecordRV.setAdapter(simpleRecordAdapter);
+        timerRankAdapter=new TimerRankAdapter(getContext(),datalist2);
+        timerRankRV.setLayoutManager(new LinearLayoutManager(this.getContext()));
+        timerRankRV.addItemDecoration(new RecycleViewDivider(
+                getContext(), LinearLayoutManager.VERTICAL, R.drawable.divider_01));
+        timerRankRV.setAdapter(timerRankAdapter);
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.sun_anim);
-
         sunIV.setAnimation(animation);
-
         AnimationDrawable animationDrawable=(AnimationDrawable)soilIV.getBackground();
         animationDrawable.start();
         return view;
+    }
+
+    /**
+     *
+     */
+    private void getTimerRR(){
+        datalist1.add(new AlternateRecord(1,15,"牛馨曼",new Date(2017,06,04)));
+        datalist1.add(new AlternateRecord(1,9,"孙佳",new Date(2017,06,03)));
+        datalist1.add(new AlternateRecord(1,28,"宁雪",new Date(2017,06,02)));
+        datalist1.add(new AlternateRecord(1,15,"刘妤涵",new Date(2017,06,01)));
+        datalist1.add(new AlternateRecord(1,2,"牛馨曼",new Date(2017,05,26)));
+
+        datalist2.add(new User("牛馨曼",null,5,18410));
+        datalist2.add(new User("孙佳",null,3,18910));
+        datalist2.add(new User("宁雪",null,6,15244));
+        datalist2.add(new User("刘妤涵",null,1,22595));
+        datalist2.add(new User("郑晓光",null,19,33875));
+        datalist2.add(new User("张家瑞",null,0,653));
     }
 
     @OnClick(R.id.water_btn)

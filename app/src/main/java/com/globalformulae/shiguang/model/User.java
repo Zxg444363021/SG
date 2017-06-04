@@ -12,6 +12,13 @@ public class User {
     private int tomato_n;
     private int power_n;
 
+    public User(String name, String icon, int tomato_n, int power_n) {
+        this.name = name;
+        this.icon = icon;
+        this.tomato_n = tomato_n;
+        this.power_n = power_n;
+    }
+
     public String getPhone() {
         return phone;
     }

@@ -19,15 +19,15 @@ import java.util.List;
  * Created by ZXG on 2017/5/28.
  */
 
-public class SimpleAdapter extends RecyclerView.Adapter<SimpleRecordViewHolder> {
+public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordViewHolder> {
     private Context mContext;
     private List<AlternateRecord> mDatas;
     private LayoutInflater mInflater;
 
-    public SimpleAdapter(Context context, List<AlternateRecord> datas) {
+    public SimpleRecordAdapter(Context context, List<AlternateRecord> datas) {
         mContext=context;
         mDatas=datas;
-        mInflater=LayoutInflater.from(context);
+        mInflater=LayoutInflater.from(mContext);
     }
 
     @Override
@@ -46,7 +46,6 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleRecordViewHolder> 
             holder.simpleRecordActionTV.setText("来浇过水，+20g能量");
         }
         holder.simpleRecordTimeTV.setText(date2string(mDatas.get(position).getDate()));
-
     }
 
     /**
@@ -55,7 +54,7 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleRecordViewHolder> 
      */
     @Override
     public int getItemCount() {
-        if (mDatas.size()>=5){
+        if (mDatas.size()>5){
             return 5;
         }else{
             return mDatas.size();
@@ -106,10 +105,12 @@ public class SimpleAdapter extends RecyclerView.Adapter<SimpleRecordViewHolder> 
             return "5天前";
         }else{
             java.util.Date  date2=theDay.getTime();
-            return String.valueOf(date2.getMonth()+"-"+date2.getDate());
+            String month=date2.getMonth()<10?"0"+date2.getMonth():String.valueOf(date2.getMonth());
+            String day=date2.getDay()<10?"0"+date2.getDay():String.valueOf(date2.getDay());
+            return month+"-"+day;
         }
-
     }
+
 }
 class SimpleRecordViewHolder extends RecyclerView.ViewHolder{
     TextView simpleRecordUserTV;

@@ -176,7 +176,6 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
                     final int top = child.getBottom() + params.bottomMargin +
                             Math.round(ViewCompat.getTranslationY(child));
                     final int bottom = top + 40;
-
                     c.drawRect(l1,top,l1+d,bottom,paint);
                     c.drawRect(l2,top,l2+d,bottom,paint);
                 }
