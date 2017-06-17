@@ -22,6 +22,7 @@ public class MenuManager implements ScreenShotable {
     public static final String PARTY = "Party";
     public static final String MOVIE = "Movie";
     public static final String SCHOOL="School";
+    public static final String DRUM="drum";
 
     public static MenuManager menuManager=new MenuManager();
     private MenuManager(){}

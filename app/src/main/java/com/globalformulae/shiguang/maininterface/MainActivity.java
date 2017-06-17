@@ -107,10 +107,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         viewAnimator = new ViewAnimator<>(this, list, menuManager, drawerLayout, this);
         ButterKnife.bind(this);
 
-
-
-
-
         mCalendar=Calendar.getInstance();
         mYear=mCalendar.get(Calendar.YEAR);
         mMonth=mCalendar.get(Calendar.MONTH);
@@ -333,6 +329,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         list.add(menuItem5);
         SlideMenuItem menuItem6 = new SlideMenuItem(MenuManager.SCHOOL, R.drawable.ic_school_black_48dp);
         list.add(menuItem6);
+        SlideMenuItem menuItem7 = new SlideMenuItem(MenuManager.DRUM, R.mipmap.icn_drum);
+        list.add(menuItem7);
     }
 
 
