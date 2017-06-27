@@ -28,10 +28,11 @@ import android.view.View;
 import android.view.Window;
 import android.view.animation.BounceInterpolator;
 import android.widget.Button;
-import android.widget.Chronometer;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.TextClock;
+import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.maininterface.MainFragments.ScheduleFragment;
@@ -68,7 +69,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @BindView(R.id.tv_date)
     Button dateTV;
     @BindView(R.id.chronometer)
-    Chronometer chronometer;
+    TextView chronometer;
+    @BindView(R.id.text_clock)
+    TextClock textClock;
 
     private ScheduleFragment scheduleFragment;
     private TimerFragment timerFragment;
@@ -131,7 +134,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 hideAllFragment(fTransaction);
                 switch (item.getItemId()){
                     case R.id.action_task:
-                        chronometer.setVisibility(View.GONE);
+                        textClock.setVisibility(View.GONE);
                         dateTV.setVisibility(View.VISIBLE);
                         fTransaction.show(scheduleFragment);
                         break;
@@ -218,11 +221,21 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 , mDay).show();
 
     }
+
+    /**
+     * 计时器点击事件监听器
+     */
     @OnClick(R.id.chronometer)
-    void choiceTime(){
+    void stopTimer(){
 
     }
 
+    /**
+     * 时间显示按钮监听器
+     */
+    @OnClick(R.id.text_clock)
+    void choiceTime(){
+    }
 
     @Override
     public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position) {
@@ -325,7 +338,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         list.add(menuItem3);
         SlideMenuItem menuItem4 = new SlideMenuItem(MenuManager.WEATHER, R.drawable.icn_4);
         list.add(menuItem4);
-        SlideMenuItem menuItem5 = new SlideMenuItem(MenuManager.NBA, R.drawable.ic_format_bold_black_48dp);
+        SlideMenuItem menuItem5 = new SlideMenuItem(MenuManager.NBA, R.mipmap.icn_nba);
         list.add(menuItem5);
         SlideMenuItem menuItem6 = new SlideMenuItem(MenuManager.SCHOOL, R.drawable.ic_school_black_48dp);
         list.add(menuItem6);

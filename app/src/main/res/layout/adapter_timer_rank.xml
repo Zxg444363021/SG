@@ -58,7 +58,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:textColor="#404040"
-                    android:text="已经收获40个番茄"/>
+                    android:text="已经收获40个番茄"
+                    android:textSize="10sp"/>
             </LinearLayout>
             <TextView
                 android:id="@+id/timer_rank_power_tv"

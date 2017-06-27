@@ -1,5 +1,4 @@
-<android.support.v4.widget.DrawerLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
@@ -10,82 +9,95 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical">
+
         <android.support.design.widget.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_height="wrap_content"
-            android:layout_width="match_parent"
-            android:minHeight="?attr/actionBarSize"
-            android:background="?attr/colorPrimary"
-            android:weightSum="1">
-            <FrameLayout
-                android:layout_width="wrap_content"
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_horizontal"
-                android:background="@drawable/date_bg"
-                app:rippleColor="@color/state_item_pressed"
-                >
-                <Chronometer
-                    android:id="@+id/chronometer"
+                android:background="?attr/colorPrimary"
+                android:minHeight="?attr/actionBarSize"
+                android:weightSum="1">
+
+                <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_gravity="center"
-                    android:textSize="20sp"
-                    android:textStyle="bold"
-                    android:textColor="#404040"
-                    android:padding="10dp"
-                    android:elevation="8dp"
-                    android:visibility="gone"
-                    android:text="25:00"
+                    android:layout_gravity="center_horizontal"
+                    android:background="@drawable/date_bg"
+                    app:rippleColor="@color/state_item_pressed">
 
-                    />
-            <Button
-                android:id="@+id/tv_date"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="0.31"
-                android:layout_gravity="center_horizontal"
-                android:text="4月13日"
-                android:textSize="20sp"
-                android:textStyle="bold"
-                android:textColor="#404040"
-                android:paddingLeft="5dp"
-                android:paddingRight="5dp"
-                android:background="#00000000"
-                android:elevation="8dp"/>
-            </FrameLayout>
-        </android.support.v7.widget.Toolbar>
+                    <TextClock
+                        android:id="@+id/text_clock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:elevation="8dp"
+                        android:padding="10dp"
+                        android:text="25:00"
+                        android:textColor="#404040"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:visibility="gone" />
+                    <TextView
+                        android:id="@+id/chronometer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:elevation="8dp"
+                        android:padding="10dp"
+                        android:text="25:00"
+                        android:textColor="#404040"
+                        android:textSize="20sp"
+                        android:textStyle="bold"
+                        android:visibility="gone"/>
+                    <Button
+                        android:id="@+id/tv_date"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_weight="0.31"
+                        android:background="#00000000"
+                        android:elevation="8dp"
+                        android:paddingLeft="5dp"
+                        android:paddingRight="5dp"
+                        android:text="4月13日"
+                        android:textColor="#404040"
+                        android:textSize="20sp"
+                        android:textStyle="bold" />
+                </FrameLayout>
+            </android.support.v7.widget.Toolbar>
         </android.support.design.widget.AppBarLayout>
+
         <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
+            android:layout_height="match_parent">
+
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                >
+                android:layout_height="match_parent">
+
                 <android.support.design.widget.BottomNavigationView
                     android:id="@+id/bottomNavigation"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:background="#BCEAC5"
                     android:layout_alignParentBottom="true"
+                    android:background="#BCEAC5"
                     app:menu="@menu/menu_bottom_navigation">
 
                 </android.support.design.widget.BottomNavigationView>
+
                 <FrameLayout
                     android:id="@+id/frameLayout"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_alignParentTop="true"
+                    android:layout_above="@+id/bottomNavigation"
                     android:layout_alignParentStart="true"
-                    android:layout_above="@+id/bottomNavigation">
-                </FrameLayout>
+                    android:layout_alignParentTop="true"></FrameLayout>
 
             </RelativeLayout>
-
 
 
         </android.support.design.widget.CoordinatorLayout>
@@ -94,18 +106,17 @@
 
     <ScrollView
         android:id="@+id/scrollView"
-        android:scrollbarThumbVertical="@android:color/transparent"
         android:layout_width="@dimen/sliding_menu_width"
         android:layout_height="match_parent"
-        android:layout_gravity="start|bottom">
+        android:layout_gravity="start|bottom"
+        android:scrollbarThumbVertical="@android:color/transparent">
 
         <LinearLayout
             android:id="@+id/left_drawer"
-            android:orientation="vertical"
             android:layout_width="@dimen/sliding_menu_width"
             android:layout_height="wrap_content"
+            android:background="@android:color/transparent"
             android:divider="@android:color/transparent"
-            android:background="@android:color/transparent">
-        </LinearLayout>
+            android:orientation="vertical"></LinearLayout>
     </ScrollView>
 </android.support.v4.widget.DrawerLayout>
