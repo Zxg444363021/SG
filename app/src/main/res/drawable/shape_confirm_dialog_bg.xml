@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:state_pressed="true">
+        <shape>
+            <!-- 填充的颜色 -->
+            <solid android:color="@color/main_color_normal" />
+            <!-- 设置按钮的四个角为弧形 -->
+            <!-- android:radius 弧形的半径 -->
+            <corners
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp"
+                android:bottomLeftRadius="12dp"
+                android:bottomRightRadius="0dp"/><!-- 设置圆角半径 -->
+        </shape>
+    </item>
+    <item android:state_focused="true">
+        <shape>
+            <!-- 填充的颜色 -->
+            <solid android:color="@color/main_color_normal" />
+            <!-- 设置按钮的四个角为弧形 -->
+            <!-- android:radius 弧形的半径 -->
+            <corners
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp"
+                android:bottomLeftRadius="12dp"
+                android:bottomRightRadius="0dp"/><!-- 设置圆角半径 -->
+        </shape>
+    </item>
+    <item android:state_selected="true">
+        <shape>
+            <!-- 填充的颜色 -->
+            <solid android:color="@color/main_color_normal" />
+            <!-- 设置按钮的四个角为弧形 -->
+            <!-- android:radius 弧形的半径 -->
+            <corners
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp"
+                android:bottomLeftRadius="12dp"
+                android:bottomRightRadius="0dp"/><!-- 设置圆角半径 -->
+        </shape>
+    </item>
+    <item >
+        <shape>
+            <!-- 填充的颜色 -->
+            <solid android:color="#F3F3F7" />
+            <!-- 设置按钮的四个角为弧形 -->
+            <!-- android:radius 弧形的半径 -->
+            <corners
+                android:topLeftRadius="0dp"
+                android:topRightRadius="0dp"
+                android:bottomLeftRadius="12dp"
+                android:bottomRightRadius="0dp"/><!-- 设置圆角半径 -->
+        </shape>
+    </item>
+</selector>

@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="200dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_gravity="center_horizontal"
+    android:background="@drawable/shape_dialog_background"
+    android:gravity="center"
+    android:minHeight="160dp"
+    android:minWidth="300dp"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/tipTitle"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginBottom="10dp"
+        android:layout_marginTop="15dp"
+        android:layout_weight="1"
+        android:gravity="center"
+        android:text="确认交卷"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+    <View
+        android:id="@+id/fengexian"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_gravity="center_vertical"
+        android:background="@color/C3" />
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+        <com.hzn.easypickerview.EasyPickerView
+            android:id="@+id/epv_h"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            app:epvMaxShowNum="3"
+            app:epvRecycleMode="true"
+            app:epvTextColor="#4aa4a4"
+            app:epvTextMaxScale="2.0"
+            app:epvTextMinAlpha="0.35"
+            app:epvTextPadding="10dp"
+            app:epvTextSize="30sp"
+            />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="70dp"
+            android:text="h"
+            android:textColor="#4aa4a4"
+            android:textSize="20sp"
+            />
+
+        <com.hzn.easypickerview.EasyPickerView
+            android:id="@+id/epv_m"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            app:epvMaxShowNum="3"
+            app:epvRecycleMode="false"
+            app:epvTextColor="#e98d3c"
+            app:epvTextMaxScale="2.0"
+            app:epvTextMinAlpha="0.35"
+            app:epvTextPadding="10dp"
+            app:epvTextSize="30sp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:layout_marginTop="70dp"
+            android:text="m"
+            android:textColor="#e98d3c"
+            android:textSize="20sp"
+            />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/line"
+        android:layout_width="fill_parent"
+        android:layout_height="46dp"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <Button
+            android:id="@+id/leftBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape_confirm_dialog_bg"
+            android:text="1111"
+            android:textColor="@color/C7"
+            android:textSize="16sp" />
+
+
+        <Button
+            android:id="@+id/rightBtn"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:background="@drawable/shape_cancel_dialog_bg"
+            android:padding="0dp"
+            android:text="2222"
+            android:textColor="@color/white"
+            android:textSize="16sp" />
+
+    </LinearLayout>
+
+
+</LinearLayout>

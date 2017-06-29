@@ -37,6 +37,7 @@ import android.widget.TextView;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.maininterface.MainFragments.ScheduleFragment;
 import com.globalformulae.shiguang.maininterface.MainFragments.TimerFragment;
+import com.globalformulae.shiguang.maininterface.MainFragments.WeatherActivity;
 import com.globalformulae.shiguang.model.MyDate;
 import com.globalformulae.shiguang.utils.MenuManager;
 import com.globalformulae.shiguang.utils.SPUtil;
@@ -135,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 switch (item.getItemId()){
                     case R.id.action_task:
                         textClock.setVisibility(View.GONE);
+                        chronometer.setVisibility(View.GONE);
                         dateTV.setVisibility(View.VISIBLE);
                         fTransaction.show(scheduleFragment);
                         break;
@@ -144,6 +146,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                         fTransaction.show(timerFragment);
                         break;
                     case R.id.action_custom:
+                        chronometer.setVisibility(View.GONE);
                         // Toast.makeText(MainActivity.this,"7",Toast.LENGTH_SHORT).show();
 
                         break;
@@ -257,6 +260,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             case MenuManager.FUTURETASK:
                 break;
             case MenuManager.WEATHER:
+                intent=new Intent(MainActivity.this, WeatherActivity.class);
+                startActivity(intent);
                 break;
             case MenuManager.NBA:
                 intent = new Intent(MainActivity.this, NBAActivity.class);
@@ -336,7 +341,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         list.add(menuItem2);
         SlideMenuItem menuItem3 = new SlideMenuItem(MenuManager.FUTURETASK, R.drawable.icn_3);
         list.add(menuItem3);
-        SlideMenuItem menuItem4 = new SlideMenuItem(MenuManager.WEATHER, R.drawable.icn_4);
+        SlideMenuItem menuItem4 = new SlideMenuItem(MenuManager.WEATHER, R.mipmap.icn_weather);
         list.add(menuItem4);
         SlideMenuItem menuItem5 = new SlideMenuItem(MenuManager.NBA, R.mipmap.icn_nba);
         list.add(menuItem5);
