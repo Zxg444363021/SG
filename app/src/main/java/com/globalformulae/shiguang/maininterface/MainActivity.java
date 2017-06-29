@@ -8,6 +8,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -22,6 +24,7 @@ import android.transition.ChangeTransform;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -57,7 +60,10 @@ import yalantis.com.sidemenu.interfaces.ScreenShotable;
 import yalantis.com.sidemenu.model.SlideMenuItem;
 import yalantis.com.sidemenu.util.ViewAnimator;
 
-public class MainActivity extends AppCompatActivity implements ViewAnimator.ViewAnimatorListener,ScheduleFragment.OnFragmentInteractionListener,TimerFragment.OnFragmentInteractionListener{
+public class MainActivity extends AppCompatActivity implements ViewAnimator.ViewAnimatorListener,
+        ScheduleFragment.OnFragmentInteractionListener,
+        TimerFragment.OnFragmentInteractionListener,
+        TimePickerDialogF.onTimeChosenListener {
     private DrawerLayout drawerLayout;
     private ActionBarDrawerToggle drawerToggle;
     private List<SlideMenuItem> list = new ArrayList<>();
@@ -235,7 +241,13 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
      */
     @OnClick(R.id.chronometer)
     void stopTimer(){
-        TimePickerDialogF.newInstance(null,false);
+        if(((MyApplication)MainActivity.this.getApplication()).isTiming()){
+
+        }else {
+
+        }
+        TimePickerDialogF.newInstance(null,false).show(getFragmentManager(), "EditNameDialog");
+
     }
 
     /**
@@ -416,5 +428,55 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @Override
     public void onFragmentInteraction(String str) {
         str.equals("timerFragment");
+    }
+
+
+    private Handler handler=new Handler(){
+        @Override
+        public void handleMessage(Message msg) {
+            super.handleMessage(msg);
+            if(((MyApplication)getApplication()).isTiming()){
+                int time=((MyApplication)getApplication()).remainTime;
+                String hour = time / 3600 < 10 ? "0" + time / 3600 : "" + time / 3600;
+                int m=time%3600;
+                String min = m/ 60 < 10 ? "0" + m / 60 : "" + m / 60;
+                String sec = m % 60 < 10 ? "0" + m % 60 : "" + m % 60;
+                chronometer.setText(hour + ":" + min + ":" + sec);
+            }
+            ((MyApplication)getApplication()).remainTime--;
+
+        }
+    };
+
+    private Thread thread=new Thread(new Runnable() {
+        @Override
+        public void run() {
+            while(((MyApplication)MainActivity.this.getApplication()).isTiming()){
+                try {
+                    Thread.sleep(1000);
+                    handler.sendEmptyMessage(0);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+
+        }
+    });
+
+    /**
+     * 时间选择好了开始计时
+     * @param hour
+     * @param minute
+     */
+    @Override
+    public void onTimeChosen(int hour, int minute) {
+        int length=hour*60+minute;
+        Log.e("zzz", String.valueOf(minute));
+        chronometer.setText(length+":00");
+        if(!((MyApplication)MainActivity.this.getApplication()).isTiming()){
+            ((MyApplication)MainActivity.this.getApplication()).setIsTiming(true);
+        }
+        thread.start();
+
     }
 }

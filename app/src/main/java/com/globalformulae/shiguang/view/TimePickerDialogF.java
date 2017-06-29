@@ -20,6 +20,10 @@ import java.util.ArrayList;
  */
 
 public class TimePickerDialogF extends DialogFragment {
+    public interface onTimeChosenListener{
+        void onTimeChosen(int hour,int minute);
+    }
+
     public interface OnDialogCancelListener{
         void onCancel();
     }
@@ -51,8 +55,8 @@ public class TimePickerDialogF extends DialogFragment {
     private ArrayList<String> hourList;
     private ArrayList<String> minuteList;
 
-    private Integer chosenHour; //最终选择的小时
-    private Integer chosenMinute;   //最终选择的分钟
+    private Integer chosenHour=0; //最终选择的小时
+    private Integer chosenMinute=0;   //最终选择的分钟
 
     @Nullable
     @Override
@@ -86,6 +90,20 @@ public class TimePickerDialogF extends DialogFragment {
             @Override
             public void onScrollFinished(int curIndex) {
                 chosenMinute=Integer.parseInt(minuteList.get(curIndex));
+
+            }
+        });
+        leftBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dismiss();
+            }
+        });
+        rightBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((onTimeChosenListener)getActivity()).onTimeChosen(chosenHour,chosenMinute);
+                dismiss();
             }
         });
         return view;
@@ -104,4 +122,5 @@ public class TimePickerDialogF extends DialogFragment {
             minuteList.add(String.valueOf(i));
         }
     }
+
 }

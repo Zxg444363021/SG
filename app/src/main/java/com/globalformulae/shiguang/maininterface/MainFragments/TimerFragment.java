@@ -22,6 +22,10 @@ import com.globalformulae.shiguang.model.AlternateRecord;
 import com.globalformulae.shiguang.model.User;
 import com.globalformulae.shiguang.view.RecycleViewDivider;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
@@ -73,6 +77,7 @@ public class TimerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         getTimerRR();
     }
 
@@ -91,8 +96,8 @@ public class TimerFragment extends Fragment {
         timerRankRV.setAdapter(timerRankAdapter);
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.sun_anim);
         sunIV.setAnimation(animation);
-        AnimationDrawable animationDrawable=(AnimationDrawable)soilIV.getBackground();
-        animationDrawable.start();
+//        AnimationDrawable animationDrawable=(AnimationDrawable)soilIV.getBackground();
+//        animationDrawable.start();
         return view;
     }
 
@@ -158,6 +163,7 @@ public class TimerFragment extends Fragment {
     @Override
     public void onDetach() {
         super.onDetach();
+
         mListener = null;
     }
 
@@ -199,5 +205,28 @@ public class TimerFragment extends Fragment {
          * 结束时调用的方法，一定要实现
          */
         abstract void onAnimationEnd();
+    }
+
+    @Override
+    public void onDestroy() {
+        EventBus.getDefault().register(this);
+        super.onDestroy();
+    }
+
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void changeSoil(SoilTime soilTime){
+        int time=soilTime.getTime()%1500;
+    }
+
+}
+class SoilTime{
+    private int time;
+
+    public int getTime() {
+        return time;
+    }
+
+    public void setTime(int time) {
+        this.time = time;
     }
 }

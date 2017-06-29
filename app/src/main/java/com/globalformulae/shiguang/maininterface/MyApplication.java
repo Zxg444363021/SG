@@ -11,6 +11,8 @@ import com.globalformulae.shiguang.greendao.DaoMaster;
 
 public class MyApplication extends Application {
     private static DaoMaster daoMaster;
+    private static boolean isTiming;
+    public static int remainTime;
     public MyApplication() {
     }
     static MyApplication myInstance=new MyApplication();
@@ -34,5 +36,14 @@ public class MyApplication extends Application {
     public static DaoMaster getDaoMaster(){
         return daoMaster;
     }
+
+    public static boolean isTiming() {
+        return isTiming;
+    }
+
+    public static void setIsTiming(boolean isTiming) {
+        MyApplication.isTiming = isTiming;
+    }
+
 
 }
