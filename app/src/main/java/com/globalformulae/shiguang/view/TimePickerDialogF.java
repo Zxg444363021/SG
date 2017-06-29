@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
 
+import java.util.ArrayList;
+
 /**
  * Created by ZXG on 2017/6/28.
  */
@@ -46,6 +48,11 @@ public class TimePickerDialogF extends DialogFragment {
     private Button leftBtn;
     private Button rightBtn;
 
+    private ArrayList<String> hourList;
+    private ArrayList<String> minuteList;
+
+    private Integer chosenHour; //最终选择的小时
+    private Integer chosenMinute;   //最终选择的分钟
 
     @Nullable
     @Override
@@ -56,7 +63,45 @@ public class TimePickerDialogF extends DialogFragment {
         minutePicker= (EasyPickerView) view.findViewById(R.id.epv_m);
         leftBtn= (Button) view.findViewById(R.id.leftBtn);
         rightBtn= (Button) view.findViewById(R.id.rightBtn);
+        initParmter();
+        hourPicker.setDataList(hourList);
+        minutePicker.setDataList(minuteList);
+        hourPicker.setOnScrollChangedListener(new EasyPickerView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(int curIndex) {
 
+            }
+
+            @Override
+            public void onScrollFinished(int curIndex) {
+                chosenHour=Integer.parseInt(hourList.get(curIndex));
+            }
+        });
+        minutePicker.setOnScrollChangedListener(new EasyPickerView.OnScrollChangedListener() {
+            @Override
+            public void onScrollChanged(int curIndex) {
+
+            }
+
+            @Override
+            public void onScrollFinished(int curIndex) {
+                chosenMinute=Integer.parseInt(minuteList.get(curIndex));
+            }
+        });
         return view;
+    }
+
+    /**
+     * 为滚轮添加参数
+     */
+    public void initParmter(){
+        hourList=new ArrayList<>();
+        minuteList=new ArrayList<>();
+        for(int i=0;i<=5;i++){
+            hourList.add(String.valueOf(i));
+        }
+        for(int i=0;i<=60;i++){
+            minuteList.add(String.valueOf(i));
+        }
     }
 }

@@ -1,6 +1,7 @@
 package com.globalformulae.shiguang.maininterface.MainFragments;
 
 import android.os.Bundle;
+import android.os.Message;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Button;
@@ -82,4 +83,6 @@ public class WeatherActivity extends AppCompatActivity {
                 break;
         }
     }
+
+    Message m=Message.obtain();
 }

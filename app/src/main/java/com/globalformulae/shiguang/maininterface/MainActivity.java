@@ -41,6 +41,7 @@ import com.globalformulae.shiguang.maininterface.MainFragments.WeatherActivity;
 import com.globalformulae.shiguang.model.MyDate;
 import com.globalformulae.shiguang.utils.MenuManager;
 import com.globalformulae.shiguang.utils.SPUtil;
+import com.globalformulae.shiguang.view.TimePickerDialogF;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -157,6 +158,10 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         });
 
     }
+
+
+
+
     private void hideAllFragment(FragmentTransaction fragmentTransaction){
         if(scheduleFragment != null)fragmentTransaction.hide(scheduleFragment);
         if(timerFragment != null)fragmentTransaction.hide(timerFragment);
@@ -230,7 +235,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
      */
     @OnClick(R.id.chronometer)
     void stopTimer(){
-
+        TimePickerDialogF.newInstance(null,false);
     }
 
     /**
