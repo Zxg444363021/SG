@@ -48,7 +48,7 @@
                         android:layout_gravity="center"
                         android:elevation="8dp"
                         android:padding="10dp"
-                        android:text="25:00"
+                        android:text="00:00:00"
                         android:textColor="#404040"
                         android:textSize="20sp"
                         android:textStyle="bold"

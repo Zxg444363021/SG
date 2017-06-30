@@ -42,8 +42,10 @@ import com.globalformulae.shiguang.maininterface.MainFragments.ScheduleFragment;
 import com.globalformulae.shiguang.maininterface.MainFragments.TimerFragment;
 import com.globalformulae.shiguang.maininterface.MainFragments.WeatherActivity;
 import com.globalformulae.shiguang.model.MyDate;
+import com.globalformulae.shiguang.model.SoilTimeBean;
 import com.globalformulae.shiguang.utils.MenuManager;
 import com.globalformulae.shiguang.utils.SPUtil;
+import com.globalformulae.shiguang.view.CustomDialog;
 import com.globalformulae.shiguang.view.TimePickerDialogF;
 
 import org.greenrobot.eventbus.EventBus;
@@ -90,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private int mDay;
     private String xinqi;
     private int mDayOfWeek;
-
+    private int timingTength;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //transition动画的参数设置，必须在最开始运行
@@ -242,11 +244,21 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @OnClick(R.id.chronometer)
     void stopTimer(){
         if(((MyApplication)MainActivity.this.getApplication()).isTiming()){
-
+            final CustomDialog customDialog=new CustomDialog(this);
+            customDialog.setCustomInformStyle("温馨提示", "想要停止计时吗？现在停止计时将前功尽弃哦！", new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    ((MyApplication)MainActivity.this.getApplication()).setIsTiming(false);
+                    ((MyApplication)getApplication()).remainTime=0;
+                    customDialog.dismiss();
+                    chronometer.setText(String.valueOf(00) + ":" + String.valueOf(00) + ":" + String.valueOf(00));
+                }
+            });
+            customDialog.show();
         }else {
-
+            TimePickerDialogF.newInstance(null,false).show(getFragmentManager(), "EditNameDialog");
         }
-        TimePickerDialogF.newInstance(null,false).show(getFragmentManager(), "EditNameDialog");
+
 
     }
 
@@ -435,15 +447,32 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         @Override
         public void handleMessage(Message msg) {
             super.handleMessage(msg);
-            if(((MyApplication)getApplication()).isTiming()){
-                int time=((MyApplication)getApplication()).remainTime;
+            int time=((MyApplication)getApplication()).remainTime;
+            if(((MyApplication)getApplication()).isTiming()&&time>=0){
                 String hour = time / 3600 < 10 ? "0" + time / 3600 : "" + time / 3600;
                 int m=time%3600;
                 String min = m/ 60 < 10 ? "0" + m / 60 : "" + m / 60;
                 String sec = m % 60 < 10 ? "0" + m % 60 : "" + m % 60;
                 chronometer.setText(hour + ":" + min + ":" + sec);
+                if((timingTength-time)%1500==0){
+                    Log.e("time", String.valueOf(timingTength-time));
+                    EventBus.getDefault().post(new SoilTimeBean(0));
+                }else if((timingTength-time)%1500==300){
+                    EventBus.getDefault().post(new SoilTimeBean(300));
+                }else if((timingTength-time)%1500==600){
+                    EventBus.getDefault().post(new SoilTimeBean(600));
+                }else if((timingTength-time)%1500==900){
+                    EventBus.getDefault().post(new SoilTimeBean(900));
+                }else if((timingTength-time)%1500==1200){
+                    EventBus.getDefault().post(new SoilTimeBean(1200));
+                }else if((timingTength-time)%1500==1400){
+                    EventBus.getDefault().post(new SoilTimeBean(1400));
+                }else{}
+                ((MyApplication)getApplication()).remainTime--;
+            }else{
+                thread.interrupt();
             }
-            ((MyApplication)getApplication()).remainTime--;
+
 
         }
     };
@@ -453,8 +482,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         public void run() {
             while(((MyApplication)MainActivity.this.getApplication()).isTiming()){
                 try {
-                    Thread.sleep(1000);
                     handler.sendEmptyMessage(0);
+                    Thread.currentThread().sleep(1000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
@@ -470,9 +499,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
      */
     @Override
     public void onTimeChosen(int hour, int minute) {
-        int length=hour*60+minute;
-        Log.e("zzz", String.valueOf(minute));
-        chronometer.setText(length+":00");
+        timingTength=(hour*60+minute)*60;
+        ((MyApplication)getApplication()).remainTime=timingTength;
         if(!((MyApplication)MainActivity.this.getApplication()).isTiming()){
             ((MyApplication)MainActivity.this.getApplication()).setIsTiming(true);
         }

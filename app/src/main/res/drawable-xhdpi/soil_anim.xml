@@ -4,9 +4,5 @@
     <item android:drawable="@drawable/grow2" android:duration="500"/>
     <item android:drawable="@drawable/grow3" android:duration="500"/>
     <item android:drawable="@drawable/grow4" android:duration="500"/>
-    <item android:drawable="@drawable/grow5" android:duration="30000"/>
-    <item android:drawable="@drawable/grow6" android:duration="30000"/>
-    <item android:drawable="@drawable/grow7" android:duration="30000"/>
-    <item android:drawable="@drawable/grow8" android:duration="30000"/>
-    <item android:drawable="@drawable/grow9" android:duration="30000"/>
+    <item android:drawable="@drawable/grow1" android:duration="500"/>
 </animation-list>

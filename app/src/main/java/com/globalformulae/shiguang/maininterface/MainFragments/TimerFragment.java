@@ -1,6 +1,7 @@
 package com.globalformulae.shiguang.maininterface.MainFragments;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
@@ -19,6 +20,7 @@ import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.maininterface.adapter.SimpleRecordAdapter;
 import com.globalformulae.shiguang.maininterface.adapter.TimerRankAdapter;
 import com.globalformulae.shiguang.model.AlternateRecord;
+import com.globalformulae.shiguang.model.SoilTimeBean;
 import com.globalformulae.shiguang.model.User;
 import com.globalformulae.shiguang.view.RecycleViewDivider;
 
@@ -96,8 +98,7 @@ public class TimerFragment extends Fragment {
         timerRankRV.setAdapter(timerRankAdapter);
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.sun_anim);
         sunIV.setAnimation(animation);
-//        AnimationDrawable animationDrawable=(AnimationDrawable)soilIV.getBackground();
-//        animationDrawable.start();
+
         return view;
     }
 
@@ -121,6 +122,7 @@ public class TimerFragment extends Fragment {
 
     @OnClick(R.id.water_btn)
     void waterClick(){
+        waterBTN.setClickable(false);
         Animation animation1 = AnimationUtils.loadAnimation(getActivity(), R.anim.watering);
         animation1.setFillAfter(false);
         wateringIV.startAnimation(animation1);
@@ -134,7 +136,7 @@ public class TimerFragment extends Fragment {
             public void run() {
                 animationDrawable.stop();
                 wateringIV.setVisibility(View.GONE);
-
+                waterBTN.setClickable(true);
             }
         },4500);
 
@@ -214,19 +216,32 @@ public class TimerFragment extends Fragment {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void changeSoil(SoilTime soilTime){
+    public void changeSoil(SoilTimeBean soilTime){
         int time=soilTime.getTime()%1500;
+        switch (time){
+            case 0:
+                AnimationDrawable animationDrawable=(AnimationDrawable)soilIV.getBackground();
+                animationDrawable.setOneShot(true); //设置只播放一遍
+                animationDrawable.start();
+                break;
+            case 300:
+                soilIV.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.grow5));
+                break;
+            case 600:
+                soilIV.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.grow6));
+                break;
+            case 900:
+                soilIV.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.grow7));
+                break;
+            case 1200:
+                soilIV.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.grow8));
+                break;
+            case 1400:
+                soilIV.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.grow9));
+
+                break;
+
+        }
     }
 
-}
-class SoilTime{
-    private int time;
-
-    public int getTime() {
-        return time;
-    }
-
-    public void setTime(int time) {
-        this.time = time;
-    }
 }
