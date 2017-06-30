@@ -44,7 +44,6 @@ public class WeatherActivity extends AppCompatActivity {
     }
 
 
-
     public void getWeather(String areaid){
         String host = "http://saweather.market.alicloudapi.com";
         String path = "/hour24";
