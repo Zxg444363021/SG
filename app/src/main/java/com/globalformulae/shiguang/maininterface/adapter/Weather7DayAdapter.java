@@ -1,6 +1,7 @@
 package com.globalformulae.shiguang.maininterface.adapter;
 
 import android.content.Context;
+import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -35,7 +36,15 @@ public class Weather7DayAdapter extends RecyclerView.Adapter<Weather7DayViewHold
 
     @Override
     public void onBindViewHolder(Weather7DayViewHolder holder, int position) {
-
+        if(position==0){
+            holder.dayOfWeekTV.setText("今天");
+        }else{
+            holder.dayOfWeekTV.setText(getDayOfWeek(mDataList.get(position).getWeekday()));
+        }
+        setIcon(holder,mDataList.get(position).getDay_weather_code());
+        holder.dayTemperatureTV.setText(mDataList.get(position).getDay_air_temperature()+"℃");
+        holder.nightTemperatureTV.setText(mDataList.get(position).getNight_air_temperature()+"℃");
+        holder.weatherTV.setText(getWeather(mDataList.get(position).getDay_weather(),mDataList.get(position).getNight_weather()));
     }
 
     @Override
@@ -93,34 +102,34 @@ public class Weather7DayAdapter extends RecyclerView.Adapter<Weather7DayViewHold
     public void setIcon(Weather7DayViewHolder holder,int dayT){
         switch (dayT){
             case 0:
-                //holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.));
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w0));
                 break;
             case 1:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w1));
                 break;
             case 2:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w2));
                 break;
             case 3:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w4));
                 break;
             case 4:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w4));
                 break;
             case 5:
 
                 break;
             case 6:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w6));
                 break;
             case 7:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w7));
                 break;
             case 8:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w301));
                 break;
             case 9:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w9));
                 break;
             case 10:
 
@@ -135,19 +144,19 @@ public class Weather7DayAdapter extends RecyclerView.Adapter<Weather7DayViewHold
 
                 break;
             case 14:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w14));
                 break;
             case 15:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w15));
                 break;
             case 16:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w16));
                 break;
             case 17:
 
                 break;
             case 18:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w18));
                 break;
             case 19:
 
@@ -189,13 +198,13 @@ public class Weather7DayAdapter extends RecyclerView.Adapter<Weather7DayViewHold
 
                 break;
             case 53:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w53));
                 break;
             case 99:
 
                 break;
             case 301:
-
+                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w301));
                 break;
             case 302:
 

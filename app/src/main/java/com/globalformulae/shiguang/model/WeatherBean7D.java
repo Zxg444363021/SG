@@ -83,7 +83,7 @@ public class WeatherBean7D {
         public class DayWeather {
             private String day_weather;
             private String night_weather;
-            private String weekday;
+            private int weekday;
             private String night_air_temperature;
             private String day_air_temperature;
             private String day;
@@ -107,11 +107,11 @@ public class WeatherBean7D {
                 this.night_weather = night_weather;
             }
 
-            public String getWeekday() {
+            public int getWeekday() {
                 return weekday;
             }
 
-            public void setWeekday(String weekday) {
+            public void setWeekday(int weekday) {
                 this.weekday = weekday;
             }
 

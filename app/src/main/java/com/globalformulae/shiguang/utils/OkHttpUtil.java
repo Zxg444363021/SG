@@ -8,6 +8,7 @@ import com.globalformulae.shiguang.model.NBAEvents;
 import com.globalformulae.shiguang.model.ResponseBean;
 import com.globalformulae.shiguang.model.User;
 import com.globalformulae.shiguang.model.WeatherBean24h;
+import com.globalformulae.shiguang.model.WeatherBean7D;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -464,6 +465,26 @@ public class OkHttpUtil {
         });
     }
 
+    public void getWeather7d(Request request){
+        Call call=okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("hhh", "zheli?");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result=response.body().string();
+                Gson gson=new Gson();
+                WeatherBean7D weatherBean7d=gson.fromJson(result, WeatherBean7D.class);
+                if(weatherBean7d!=null)
+                    EventBus.getDefault().post(weatherBean7d);
+                else
+                    Log.e("hhh", "onResponse: ");
+            }
+        });
+    }
 
 }
 
