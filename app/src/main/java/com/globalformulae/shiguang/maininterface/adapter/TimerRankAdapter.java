@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
@@ -27,6 +28,16 @@ public class TimerRankAdapter extends RecyclerView.Adapter<TimerRankAdapterViewH
     private List<User> mDatas;
     private LayoutInflater layoutInflater;
     private Typeface mtypeface;//字体
+    private onItemClickListener onItemClickListener;
+
+    public interface onItemClickListener{
+        void onItemClick(User friend);
+    }
+
+    public void setOnItemClickListener(TimerRankAdapter.onItemClickListener onItemClickListener) {
+        this.onItemClickListener = onItemClickListener;
+    }
+
     public TimerRankAdapter(Context mContext, List<User> mDatas) {
         this.mContext = mContext;
         this.mDatas = mDatas;
@@ -42,7 +53,7 @@ public class TimerRankAdapter extends RecyclerView.Adapter<TimerRankAdapterViewH
 
     @Override
     public void onBindViewHolder(TimerRankAdapterViewHolder holder, int position) {
-        User u=mDatas.get(position);
+        final User u=mDatas.get(position);
         if(position==0){
             Bitmap bitmap= BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.rank1);
             holder.rankIV.setImageBitmap(bitmap);
@@ -62,19 +73,24 @@ public class TimerRankAdapter extends RecyclerView.Adapter<TimerRankAdapterViewH
         }
         Glide.with(mContext).load(u.getIcon()).placeholder(R.mipmap.unlogged_icon).into(holder.userIconIV);
         holder.userNameTV.setText(u.getName());
-        if(u.getTomato_n()>0)
-            holder.tomatoNTV.setText("已收获"+u.getTomato_n()+"个番茄");
+        if(u.getTomatoN()>0)
+            holder.tomatoNTV.setText("已收获"+u.getTomatoN()+"个番茄");
         else
             holder.tomatoNTV.setText("");
-        if(u.getPower_n()>1000){
-            String kg=new DecimalFormat("#.0").format(u.getPower_n()/1000.0);
+        if(u.getPower()>1000){
+            String kg=new DecimalFormat("#.0").format(u.getPower()/1000.0);
             holder.powerTV.setText(kg+"kg");
             kg=null;
         }else{
-            holder.powerTV.setText(u.getPower_n()+"g");
+            holder.powerTV.setText(u.getPower()+"g");
         }
+        holder.linearLayout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onItemClickListener.onItemClick(u);
+            }
+        });
 
-        u=null;
     }
 
     @Override
@@ -96,6 +112,7 @@ class TimerRankAdapterViewHolder extends RecyclerView.ViewHolder{
     TextView userNameTV;
     TextView tomatoNTV;
     TextView powerTV;
+    LinearLayout linearLayout;
 
     public TimerRankAdapterViewHolder(View itemView) {
         super(itemView);
@@ -105,6 +122,7 @@ class TimerRankAdapterViewHolder extends RecyclerView.ViewHolder{
         userNameTV= (TextView) itemView.findViewById(R.id.timer_rank_name_tv);
         tomatoNTV= (TextView) itemView.findViewById(R.id.timer_rank_tomato_n_tv);
         powerTV= (TextView) itemView.findViewById(R.id.timer_rank_power_tv);
+        linearLayout= (LinearLayout) itemView.findViewById(R.id.rank_item_ll);
 
     }
 }

@@ -1,6 +1,8 @@
 package com.globalformulae.shiguang.maininterface.MainFragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
@@ -15,20 +17,26 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.maininterface.FriendInfoActivity;
 import com.globalformulae.shiguang.maininterface.adapter.SimpleRecordAdapter;
 import com.globalformulae.shiguang.maininterface.adapter.TimerRankAdapter;
 import com.globalformulae.shiguang.model.AlternateRecord;
 import com.globalformulae.shiguang.model.SoilTimeBean;
 import com.globalformulae.shiguang.model.User;
+import com.globalformulae.shiguang.utils.OkHttpUtil;
+import com.globalformulae.shiguang.utils.SPUtil;
+import com.globalformulae.shiguang.view.CircleImageView;
 import com.globalformulae.shiguang.view.RecycleViewDivider;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.sql.Date;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +45,7 @@ import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 
-public class TimerFragment extends Fragment {
+public class TimerFragment extends Fragment implements TimerRankAdapter.onItemClickListener{
 
     @BindView(R.id.iv_sun)
     ImageView sunIV;
@@ -51,6 +59,17 @@ public class TimerFragment extends Fragment {
     RecyclerView timerRecordRV;
     @BindView(R.id.timer_rank_rv)
     RecyclerView timerRankRV;
+    @BindView(R.id.timer_icon_iv)
+    CircleImageView timerIconIV;
+    @BindView(R.id.timer_power_tv)
+    TextView timerPowerTV;
+    @BindView(R.id.timer_tomato_n_tv)
+    TextView timerTomatoNTV;
+    @BindView(R.id.normal_page)
+    LinearLayout normalPage;
+    @BindView(R.id.error_page)
+    LinearLayout errorPage;
+
 
     private List<AlternateRecord> datalist1=new ArrayList<>();
     private List<User> datalist2=new ArrayList<>();
@@ -79,8 +98,7 @@ public class TimerFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
-        getTimerRR();
+
     }
 
     @Override
@@ -91,33 +109,53 @@ public class TimerFragment extends Fragment {
         simpleRecordAdapter=new SimpleRecordAdapter(getContext(),datalist1);
         timerRecordRV.setLayoutManager(new LinearLayoutManager(this.getContext()));
         timerRecordRV.setAdapter(simpleRecordAdapter);
-        timerRankAdapter=new TimerRankAdapter(getContext(),datalist2);
+        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.sun_anim);
+        sunIV.setAnimation(animation);
         timerRankRV.setLayoutManager(new LinearLayoutManager(this.getContext()));
         timerRankRV.addItemDecoration(new RecycleViewDivider(
                 getContext(), LinearLayoutManager.VERTICAL, R.drawable.divider_01));
-        timerRankRV.setAdapter(timerRankAdapter);
-        Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.sun_anim);
-        sunIV.setAnimation(animation);
-
         return view;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        EventBus.getDefault().register(this);
+        getTimerRR();
+        initView();
+    }
+
+    public void initView(){
+        if(SPUtil.getSP(getActivity(),"user").getBoolean("isOnline",false)){
+            errorPage.setVisibility(View.VISIBLE);
+            normalPage.setVisibility(View.GONE);
+            return;
+        }
+        errorPage.setVisibility(View.GONE);
+        normalPage.setVisibility(View.VISIBLE);
+        SharedPreferences sp= SPUtil.getSP(getActivity(),"user");
+        timerPowerTV.setText(String.valueOf(sp.getInt("power_n",0))+"g");
+        timerTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
+        Glide.with(getActivity()).load(sp.getString("icon",null)).placeholder(R.mipmap.unlogged_icon).into(timerIconIV);
     }
 
     /**
      *
      */
     private void getTimerRR(){
-        datalist1.add(new AlternateRecord(1,15,"牛馨曼",new Date(2017,06,04)));
-        datalist1.add(new AlternateRecord(1,9,"孙佳",new Date(2017,06,03)));
-        datalist1.add(new AlternateRecord(1,28,"宁雪",new Date(2017,06,02)));
-        datalist1.add(new AlternateRecord(1,15,"刘妤涵",new Date(2017,06,01)));
-        datalist1.add(new AlternateRecord(1,2,"牛馨曼",new Date(2017,05,26)));
+//        datalist1.add(new AlternateRecord(1,15,"牛馨曼",new Timestamp(2017,06,04)));
+//        datalist1.add(new AlternateRecord(1,9,"孙佳",new Timestamp(2017,06,03)));
+//        datalist1.add(new AlternateRecord(1,28,"宁雪",new Timestamp(2017,06,02)));
+//        datalist1.add(new AlternateRecord(1,15,"刘妤涵",new Timestamp(2017,06,01)));
+//        datalist1.add(new AlternateRecord(1,2,"牛馨曼",new Timestamp(2017,05,26)));
 
-        datalist2.add(new User("牛馨曼",null,5,18410));
-        datalist2.add(new User("孙佳",null,3,18910));
-        datalist2.add(new User("宁雪",null,6,15244));
-        datalist2.add(new User("刘妤涵",null,1,22595));
-        datalist2.add(new User("郑晓光",null,19,33875));
-        datalist2.add(new User("张家瑞",null,0,653));
+        OkHttpUtil.getInstance().getRank();
+//        datalist2.add(new User("牛馨曼",null,5,18410));
+//        datalist2.add(new User("孙佳",null,3,18910));
+//        datalist2.add(new User("宁雪",null,6,15244));
+//        datalist2.add(new User("刘妤涵",null,1,22595));
+//        datalist2.add(new User("郑晓光",null,19,33875));
+//        datalist2.add(new User("张家瑞",null,0,653));
     }
 
     @OnClick(R.id.water_btn)
@@ -169,6 +207,21 @@ public class TimerFragment extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void onItemClick(User friend) {
+
+        if(friend.getUserid()==SPUtil.getSP(getActivity(),"user").getLong("userid",0))
+            return;
+
+        Intent intent=new Intent(getActivity(), FriendInfoActivity.class);
+        intent.putExtra("friendId",friend.getUserid());
+        intent.putExtra("icon",friend.getIcon());
+        intent.putExtra("name",friend.getName());
+        intent.putExtra("power",friend.getPower());
+        intent.putExtra("tomato_n",friend.getTomatoN());
+        startActivity(intent);
+    }
+
 
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
@@ -211,8 +264,14 @@ public class TimerFragment extends Fragment {
 
     @Override
     public void onDestroy() {
-        EventBus.getDefault().register(this);
+
         super.onDestroy();
+    }
+
+    @Override
+    public void onPause() {
+        EventBus.getDefault().unregister(this);
+        super.onPause();
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
@@ -244,4 +303,12 @@ public class TimerFragment extends Fragment {
         }
     }
 
+    @Subscribe(threadMode = ThreadMode.MAIN)
+    public void setRank(List<User> userList){
+        datalist2=userList;
+        timerRankAdapter=new TimerRankAdapter(getContext(),datalist2);
+        timerRankAdapter.setOnItemClickListener(this);
+        timerRankRV.setAdapter(timerRankAdapter);
+        timerRankRV.invalidate();
+    }
 }

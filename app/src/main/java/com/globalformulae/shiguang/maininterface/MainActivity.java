@@ -38,6 +38,7 @@ import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.maininterface.MainFragments.HabitFragment;
 import com.globalformulae.shiguang.maininterface.MainFragments.ScheduleFragment;
 import com.globalformulae.shiguang.maininterface.MainFragments.TimerFragment;
 import com.globalformulae.shiguang.maininterface.MainFragments.WeatherActivity;
@@ -85,6 +86,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
 
     private ScheduleFragment scheduleFragment;
     private TimerFragment timerFragment;
+    private HabitFragment habitFragment;
     private FragmentManager fragmentManager;
     private Calendar mCalendar;
     private int mYear;
@@ -130,10 +132,12 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
 
         scheduleFragment=new ScheduleFragment(date);
         timerFragment=new TimerFragment();
+        habitFragment=new HabitFragment();
         fragmentManager=getSupportFragmentManager();
         FragmentTransaction fTransaction = fragmentManager.beginTransaction();
         fTransaction.add(R.id.frameLayout,scheduleFragment);
         fTransaction.add(R.id.frameLayout,timerFragment);
+        fTransaction.add(R.id.frameLayout,habitFragment);
         hideAllFragment(fTransaction);
         fTransaction.show(scheduleFragment);
         fTransaction.commit();
@@ -156,6 +160,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                         break;
                     case R.id.action_custom:
                         chronometer.setVisibility(View.GONE);
+                        dateTV.setVisibility(View.GONE);
+                        textClock.setVisibility(View.GONE);
+                        fTransaction.show(habitFragment);
                         // Toast.makeText(MainActivity.this,"7",Toast.LENGTH_SHORT).show();
 
                         break;
@@ -173,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private void hideAllFragment(FragmentTransaction fragmentTransaction){
         if(scheduleFragment != null)fragmentTransaction.hide(scheduleFragment);
         if(timerFragment != null)fragmentTransaction.hide(timerFragment);
+        if(habitFragment != null)fragmentTransaction.hide(habitFragment);
         //if(fg3 != null)fragmentTransaction.hide(fg3);
     }
 
@@ -300,6 +308,10 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 intent=new Intent(MainActivity.this,SchoolLoginActivity.class);
                 startActivity(intent);
                 break;
+            case MenuManager.DRUM:
+                intent=new Intent(MainActivity.this,DurmActivity.class);
+                startActivity(intent);
+                break;
             default:
                 break;
         }
@@ -368,8 +380,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         list.add(menuItem);
         SlideMenuItem menuItem2 = new SlideMenuItem(MenuManager.STATISTIC, R.drawable.icn_2);
         list.add(menuItem2);
-        SlideMenuItem menuItem3 = new SlideMenuItem(MenuManager.FUTURETASK, R.drawable.icn_3);
-        list.add(menuItem3);
+//        SlideMenuItem menuItem3 = new SlideMenuItem(MenuManager.FUTURETASK, R.drawable.icn_3);
+//        list.add(menuItem3);
         SlideMenuItem menuItem4 = new SlideMenuItem(MenuManager.WEATHER, R.mipmap.icn_weather);
         list.add(menuItem4);
         SlideMenuItem menuItem5 = new SlideMenuItem(MenuManager.NBA, R.mipmap.icn_nba);
@@ -476,7 +488,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
 
         }
     };
-
+    /**
+     * 计时线程
+     */
     private Thread thread=new Thread(new Runnable() {
         @Override
         public void run() {

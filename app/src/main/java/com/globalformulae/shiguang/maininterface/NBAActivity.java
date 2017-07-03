@@ -69,7 +69,7 @@ public class NBAActivity extends AppCompatActivity implements NBAEventsFragment.
         mNbaFragmentAdapter=new FragmentAdapter(getSupportFragmentManager(),mFragments,mTitles);
         mViewPager.setAdapter(mNbaFragmentAdapter);
         tabs.setupWithViewPager(mViewPager);
-        setActionBar();
+        //setActionBar();
     }
 
 

@@ -13,6 +13,7 @@ public class MyApplication extends Application {
     private static DaoMaster daoMaster;
     private static boolean isTiming;
     public static int remainTime;
+    public static boolean isOnLine;
     public MyApplication() {
     }
     static MyApplication myInstance=new MyApplication();

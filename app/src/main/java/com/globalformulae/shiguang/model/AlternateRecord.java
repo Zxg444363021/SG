@@ -1,6 +1,6 @@
 package com.globalformulae.shiguang.model;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 
 /**
  * Created by ZXG on 2017/5/28.
@@ -14,21 +14,21 @@ public class AlternateRecord {
     private int power;
     private String user1name;
     private String user2name;
-    private Date date;
+    private Timestamp time;
 
-    public AlternateRecord(int type, int power, String user1name, Date date) {
+    public AlternateRecord(int type, int power, String user1name, Timestamp date) {
         this.type = type;
         this.power = power;
         this.user1name = user1name;
-        this.date = date;
+        this.time = date;
     }
 
-    public Date getDate() {
-        return date;
+    public Timestamp getTime() {
+        return time;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setTime(Timestamp time) {
+        this.time = time;
     }
 
     public String getUser1name() {

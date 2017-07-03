@@ -105,6 +105,7 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
         SharedPreferences.Editor editor=sp.edit();
         editor.clear();
         editor.apply();
+        ((MyApplication)getApplication()).isOnLine=false;
         finish();
     }
     @Override

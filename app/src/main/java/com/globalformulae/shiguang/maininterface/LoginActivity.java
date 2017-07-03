@@ -150,9 +150,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 editor.putString("name", user.getName());
                 editor.putString("phone", user.getPhone());
                 editor.putString("icon", user.getIcon());
-                editor.putInt("tomato_n", user.getTomato_n());
-                editor.putInt("power_n", user.getPower_n());
+                editor.putInt("tomato_n", user.getTomatoN());
+                editor.putInt("power_n", user.getPower());
+                editor.putBoolean("isOnline",true);
                 editor.apply();
+
                 logoIV.postDelayed(new Runnable() {
                     @Override
                     public void run() {

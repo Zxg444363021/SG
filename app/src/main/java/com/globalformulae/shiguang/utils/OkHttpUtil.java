@@ -4,7 +4,9 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
+import com.globalformulae.shiguang.model.AlternateRecord;
 import com.globalformulae.shiguang.model.NBAEvents;
+import com.globalformulae.shiguang.model.Power;
 import com.globalformulae.shiguang.model.ResponseBean;
 import com.globalformulae.shiguang.model.User;
 import com.globalformulae.shiguang.model.WeatherBean24h;
@@ -54,16 +56,17 @@ public class OkHttpUtil {
      * 200: 成功
      * 503：错误(数据库错误)
      */
-
-
     private static final String NBAEVENTS_URL="http://op.juhe.cn/onebox/basketball/nba?key=15cf3c6dd41abb470c21f9161b93de54";
     private static final String SCHOOL_GENIMG="http://210.42.121.132/servlet/GenImg";
     private static final String SCHOOL_LOGINURL = "http://210.42.121.132/servlet/Login";
-//    public static final String BASEURL="http://192.168.191.4:8080/shiguangServer/";
-    public static final String BASEURL="http://192.168.191.5:8080/shiguangServer/";
+    //public static final String BASEURL="http://121.42.140.71:8080/shiguangServer/";
+    public static final String BASEURL="http://192.168.155.6:8080/shiguangServer/";
     private static final String REGISTURL="regist";
     private static final String LOGINURL="login";
+    public static final String GETFRIENDINFO="doGetFriendInfo";
+    public static final String STEALPOWER="doStealPower";
     private static final String IDENTIFYCODEURL="sendIdentifyCode";
+    public static final String GETRECORD="doGetRecord";
     private static OkHttpUtil okHttpUtil=new OkHttpUtil();
     private static OkHttpClient okHttpClient;
     private OkHttpUtil(){}
@@ -486,5 +489,97 @@ public class OkHttpUtil {
         });
     }
 
+
+    public void getRank(){
+        Request request=new Request.Builder()
+                .url(BASEURL+"doGetRank")
+                .get()
+                .build();
+        Call call=okHttpClient.newCall(request);
+        call.enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                Log.e("sss", "failure");
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                if(response.code()==200){
+                    Log.e("sss", "z");
+                    String result=response.body().string();
+                    Gson gson=new Gson();
+                    List<User> rankList=gson.fromJson(result,new TypeToken<ArrayList<User>>() {}.getType());
+                    EventBus.getDefault().post(rankList);
+                }
+
+            }
+        });
+    }
+
+    public void getFriendInfo(FormBody formBody){
+        Request request=new Request.Builder().url(BASEURL+GETFRIENDINFO).post(formBody).build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result=response.body().string();
+                Log.e("shoudao", result);
+                Power p=new Gson().fromJson(result,Power.class);
+                EventBus.getDefault().post(p);
+            }
+        });
+    }
+
+    public void doStealPower(FormBody formbody){
+        Request request=new Request.Builder()
+                .url(BASEURL+STEALPOWER)
+                .post(formbody)
+                .build();
+        okHttpClient.newCall(request).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result=response.body().string();
+                int code=response.code();
+                if(code==200){
+                    AlternateRecord a=new Gson().fromJson(result,AlternateRecord.class);
+                    EventBus.getDefault().post(a);
+                }
+
+                Log.e("shoudao", result);
+                Log.e("shoudao", String.valueOf(code));
+            }
+        });
+    }
+
+    public void doGetRecord(FormBody formBody){
+        okHttpClient.newCall(new Request.Builder()
+        .url(BASEURL+GETRECORD)
+        .post(formBody)
+        .build()).enqueue(new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                String result=response.body().string();
+                int code=response.code();
+                List<AlternateRecord> list=new Gson().fromJson(result,new TypeToken<ArrayList<AlternateRecord>> () {}.getType());
+                if(list!=null)
+                    EventBus.getDefault().post(list);
+            }
+        });
+
+    }
 }
 

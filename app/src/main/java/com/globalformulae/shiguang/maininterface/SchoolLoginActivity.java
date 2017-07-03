@@ -512,10 +512,16 @@ public class SchoolLoginActivity extends AppCompatActivity implements LoaderCall
 
 
     private void setActionBar() {
-        toolbar.setTitle("教务系统登陆");
+        toolbar.setTitle("教务系统登录");
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     public void getGenImg(){
@@ -587,5 +593,7 @@ public class SchoolLoginActivity extends AppCompatActivity implements LoaderCall
         }
         return ahtml;
     }
+
+
 }
 

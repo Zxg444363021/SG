@@ -10,7 +10,7 @@ import android.widget.TextView;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.model.AlternateRecord;
 
-import java.sql.Date;
+import java.sql.Timestamp;
 import java.util.Calendar;
 import java.util.List;
 
@@ -45,7 +45,7 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordViewHo
         }else{
             holder.simpleRecordActionTV.setText("来浇过水，+20g能量");
         }
-        holder.simpleRecordTimeTV.setText(date2string(mDatas.get(position).getDate()));
+        holder.simpleRecordTimeTV.setText(date2string(mDatas.get(position).getTime()));
     }
 
     /**
@@ -67,7 +67,7 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordViewHo
      * @param date
      * @return
      */
-    private  String date2string(Date date){
+    private  String date2string(Timestamp date){
         Calendar today=Calendar.getInstance();
         System.out.println(today.getTime().toString());
         Calendar theDay=Calendar.getInstance();

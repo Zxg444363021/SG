@@ -2,7 +2,7 @@
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_focused="true">
         <shape>
-            <solid android:color="@color/green1" />
+            <solid android:color="@color/qingTrans2" />
             <corners
                 android:radius="75dp" />
         </shape>
@@ -10,7 +10,7 @@
 
     <item android:state_pressed="true">
         <shape>
-            <solid android:color="@color/green1" />
+            <solid android:color="@color/qingTrans2" />
             <corners
                 android:radius="75dp" />
         </shape>
@@ -18,7 +18,7 @@
 
     <item android:state_selected="true">
         <shape>
-            <solid android:color="@color/green1"/>
+            <solid android:color="@color/qingTrans2"/>
             <corners
                 android:radius="75dp" />
         </shape>
@@ -26,7 +26,7 @@
 
     <item>
         <shape>
-            <solid android:color="@color/green2"/>
+            <solid android:color="@color/qingTrans3"/>
             <corners
                 android:radius="75dp" />
         </shape>

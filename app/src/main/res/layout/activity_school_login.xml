@@ -12,7 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:minHeight="?attr/actionBarSize"
-        android:background="#4fc3f7"
+        android:background="@color/green1"
         app:titleTextColor="#ffffff"
         app:title="教务系统登陆"
 
@@ -105,15 +105,13 @@
 
             <Button
                 android:id="@+id/email_sign_in_button"
-                style="?android:textAppearanceSmall"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:text="登    录"
-                android:textStyle="bold"
-                android:background="#4fc3f7"
-                android:textSize="20sp"
-                android:textColor="#ffee58"/>
+                android:textColor="#404040"
+                android:background="@drawable/sendmes_button_bg"
+                android:textSize="20sp"/>
 
         </LinearLayout>
     </ScrollView>

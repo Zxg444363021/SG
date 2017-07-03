@@ -9,14 +9,14 @@ public class User {
     private String name;
     private String icon;
     private String phone;
-    private int tomato_n;
-    private int power_n;
+    private int tomatoN;
+    private int power;
 
     public User(String name, String icon, int tomato_n, int power_n) {
         this.name = name;
         this.icon = icon;
-        this.tomato_n = tomato_n;
-        this.power_n = power_n;
+        this.tomatoN = tomato_n;
+        this.power = power_n;
     }
 
     public String getPhone() {
@@ -51,19 +51,19 @@ public class User {
         this.icon = icon;
     }
 
-    public int getTomato_n() {
-        return tomato_n;
+    public int getTomatoN() {
+        return tomatoN;
     }
 
-    public void setTomato_n(int tomato_n) {
-        this.tomato_n = tomato_n;
+    public void setTomatoN(int tomatoN) {
+        this.tomatoN = tomatoN;
     }
 
-    public int getPower_n() {
-        return power_n;
+    public int getPower() {
+        return power;
     }
 
-    public void setPower_n(int power_n) {
-        this.power_n = power_n;
+    public void setPower(int power_n) {
+        this.power = power_n;
     }
 }
