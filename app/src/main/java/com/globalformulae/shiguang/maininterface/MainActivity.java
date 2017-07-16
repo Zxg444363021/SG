@@ -259,7 +259,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                     ((MyApplication)MainActivity.this.getApplication()).setIsTiming(false);
                     ((MyApplication)getApplication()).remainTime=0;
                     customDialog.dismiss();
-                    chronometer.setText(String.valueOf(00) + ":" + String.valueOf(00) + ":" + String.valueOf(00));
+                    chronometer.setText("00:00:00");
                 }
             });
             customDialog.show();
@@ -479,7 +479,11 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                     EventBus.getDefault().post(new SoilTimeBean(1200));
                 }else if((timingTength-time)%1500==1400){
                     EventBus.getDefault().post(new SoilTimeBean(1400));
-                }else{}
+                }else if(time==0){
+                    ((MyApplication)getApplication()).setIsTiming(false);
+                    thread.interrupt();
+                }
+                else{}
                 ((MyApplication)getApplication()).remainTime--;
             }else{
                 thread.interrupt();

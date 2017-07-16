@@ -10,6 +10,7 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -69,6 +70,8 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     LinearLayout normalPage;
     @BindView(R.id.error_page)
     LinearLayout errorPage;
+    @BindView(R.id.more_record_button)
+    Button moreRecordBTN;
 
 
     private List<AlternateRecord> datalist1=new ArrayList<>();
@@ -98,7 +101,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        EventBus.getDefault().register(this);
     }
 
     @Override
@@ -120,13 +123,13 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     @Override
     public void onResume() {
         super.onResume();
-        EventBus.getDefault().register(this);
+
         getTimerRR();
         initView();
     }
 
     public void initView(){
-        if(SPUtil.getSP(getActivity(),"user").getBoolean("isOnline",false)){
+        if(!SPUtil.getSP(getActivity(),"user").getBoolean("isOnline",false)){
             errorPage.setVisibility(View.VISIBLE);
             normalPage.setVisibility(View.GONE);
             return;
@@ -137,6 +140,9 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         timerPowerTV.setText(String.valueOf(sp.getInt("power_n",0))+"g");
         timerTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
         Glide.with(getActivity()).load(sp.getString("icon",null)).placeholder(R.mipmap.unlogged_icon).into(timerIconIV);
+        if(datalist1.size()==0){
+            moreRecordBTN.setText("暂无动态");
+        }
     }
 
     /**
@@ -264,13 +270,13 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
 
     @Override
     public void onDestroy() {
-
+        EventBus.getDefault().unregister(this);
         super.onDestroy();
     }
 
     @Override
     public void onPause() {
-        EventBus.getDefault().unregister(this);
+
         super.onPause();
     }
 
@@ -305,10 +311,15 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setRank(List<User> userList){
-        datalist2=userList;
-        timerRankAdapter=new TimerRankAdapter(getContext(),datalist2);
-        timerRankAdapter.setOnItemClickListener(this);
-        timerRankRV.setAdapter(timerRankAdapter);
-        timerRankRV.invalidate();
+
+        if(userList.size()!=0&&userList.get(0).getClass().getName().equals("com.globalformulae.shiguang.model.User")){
+            Log.e("name", userList.get(0).getClass().getName());
+            datalist2=userList;
+            timerRankAdapter=new TimerRankAdapter(getContext(),datalist2);
+            timerRankAdapter.setOnItemClickListener(this);
+            timerRankRV.setAdapter(timerRankAdapter);
+            timerRankRV.invalidate();
+        }
+
     }
 }

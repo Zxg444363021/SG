@@ -27,12 +27,16 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import okhttp3.FormBody;
+
+import static com.globalformulae.shiguang.utils.SPUtil.getSP;
 
 public class FriendInfoActivity extends AppCompatActivity {
     @BindView(R.id.friend_icon_iv)
@@ -79,6 +83,11 @@ public class FriendInfoActivity extends AppCompatActivity {
         friendTomatoNumTV.setText(String.valueOf(intent.getIntExtra("tomato_n",0)));
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.sun_anim);
         sunIV.setAnimation(animation);
+        int n=SPUtil.getSP(this,"user").getInt("pot_num",5);
+        friendPotNumTV.setText(String.valueOf(n));
+        if(n==0){
+            friendWaterBTN.setClickable(false);
+        }
         getFriendInfo();
         getFriendRecord();
     }
@@ -94,7 +103,7 @@ public class FriendInfoActivity extends AppCompatActivity {
      */
     public void getFriendInfo(){
         OkHttpUtil.getInstance().getFriendInfo(new FormBody.Builder()
-                        .add("user1id",String.valueOf(SPUtil.getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
+                        .add("user1id",String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
                         .add("user2id",String.valueOf(friendId))
                         .build());
     }
@@ -124,18 +133,38 @@ public class FriendInfoActivity extends AppCompatActivity {
     }
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void getAlternateRecord(AlternateRecord alternateRecord){
+//        if(simpleRecordAdapter==null){
+//            ArrayList<AlternateRecord> list=new ArrayList<AlternateRecord>();
+//            list.add(alternateRecord);
+//            simpleRecordAdapter=new SimpleRecordAdapter(this,list);
+//            friendRecordRV.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+//            friendRecordRV.setAdapter(simpleRecordAdapter);
+//        }else{
+//            simpleRecordAdapter.notifyItemInserted(0);
+//        }
+        getFriendRecord();
+
+
+
+
 
         if(alternateRecord.getType()==1){//偷番茄能量
             gainTomatoBTN.setVisibility(View.GONE);
             wateringPlusTV.setVisibility(View.VISIBLE);
+            wateringPlusTV.setText("+"+alternateRecord.getPower());
             Animation animation = AnimationUtils.loadAnimation(this, R.anim.gain_plus);
             wateringPlusTV.setAnimation(animation);
         }else if(alternateRecord.getType()==2){//偷习惯能量
             gainCustomBTN.setVisibility(View.GONE);
             wateringPlusTV.setVisibility(View.VISIBLE);
+            wateringPlusTV.setText("+"+alternateRecord.getPower());
             Animation animation = AnimationUtils.loadAnimation(this, R.anim.gain_plus);
             wateringPlusTV.setAnimation(animation);
         }else if(alternateRecord.getType()==3){//浇水
+            int n=SPUtil.getSP(this,"user").getInt("pot_num",5);
+            n--;
+            SPUtil.getSPD(this,"user").putInt("pot_num",n).commit();
+            friendPotNumTV.setText(String.valueOf(n));
             friendPower=friendPower+10;
             friendPowerTV.setText(String.valueOf(friendPower)+"g");
             SPUtil.getSPD(FriendInfoActivity.this, "user");
@@ -147,11 +176,16 @@ public class FriendInfoActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void gainRecord(List<AlternateRecord> list){
-        simpleRecordAdapter=new SimpleRecordAdapter(this,list);
-        friendRecordRV.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-        friendRecordRV.setAdapter(simpleRecordAdapter);
+    public void gainRecord(AlternateRecord[] list){
+        if(list.length!=0){
+            List<AlternateRecord> datalist=Arrays.asList(list);
+            Collections.reverse(datalist);
+            simpleRecordAdapter=new SimpleRecordAdapter(this,datalist);
+            friendRecordRV.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
+            friendRecordRV.setAdapter(simpleRecordAdapter);
+        }
     }
+
 
     public void getFriendRecord(){
         FormBody formBody=new FormBody.Builder()
@@ -164,7 +198,7 @@ public class FriendInfoActivity extends AppCompatActivity {
     @OnClick(R.id.gain_custom_btn)
     void stealCustomPower(){
         FormBody formBody=new FormBody.Builder()
-                .add("user1id",String.valueOf(SPUtil.getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
+                .add("user1id",String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
                 .add("user2id",String.valueOf(friendId))
                 .add("powertype",String.valueOf(2))
                 .build();
@@ -173,17 +207,20 @@ public class FriendInfoActivity extends AppCompatActivity {
     @OnClick(R.id.gain_tomato_btn)
     void stealTomatPower(){
         FormBody formBody=new FormBody.Builder()
-                .add("user1id",String.valueOf(SPUtil.getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
+                .add("user1id",String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
                 .add("user2id",String.valueOf(friendId))
                 .add("powertype",String.valueOf(1))
                 .build();
         OkHttpUtil.getInstance().doStealPower(formBody);
     }
 
+
+
+
     @OnClick(R.id.friend_water_btn)
     void waterPower(){
         FormBody formBody=new FormBody.Builder()
-                .add("user1id",String.valueOf(SPUtil.getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
+                .add("user1id",String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
                 .add("user2id",String.valueOf(friendId))
                 .add("powertype",String.valueOf(3))
                 .build();

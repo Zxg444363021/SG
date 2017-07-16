@@ -39,11 +39,11 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordViewHo
 
     @Override
     public void onBindViewHolder(SimpleRecordViewHolder holder, int position) {
-        holder.simpleRecordUserTV.setText(mDatas.get(position).getUser1name());
+        //holder.simpleRecordUserTV.setText(mDatas.get(position).getUser1name());
         if(mDatas.get(position).getType()==1||mDatas.get(position).getType()==2){
            holder.simpleRecordActionTV.setText("收取"+mDatas.get(position).getPower()+"g");
         }else{
-            holder.simpleRecordActionTV.setText("来浇过水，+20g能量");
+            holder.simpleRecordActionTV.setText("来浇过水，+10g能量");
         }
         holder.simpleRecordTimeTV.setText(date2string(mDatas.get(position).getTime()));
     }
@@ -69,13 +69,23 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordViewHo
      */
     private  String date2string(Timestamp date){
         Calendar today=Calendar.getInstance();
-        System.out.println(today.getTime().toString());
+        System.out.println("zzz1"+today.getTime().toString());
+        today.set(Calendar.HOUR_OF_DAY,0);
+        today.set(Calendar.MINUTE,0);
         Calendar theDay=Calendar.getInstance();
         theDay.setTime(date);
-        System.out.println(theDay.getTime().toString());
-        Calendar oneDay=Calendar.getInstance();;
+        System.out.println("zzz2"+theDay.getTime().toString());
+        Calendar oneDay=Calendar.getInstance();
+        oneDay.set(Calendar.HOUR_OF_DAY,0);
+        oneDay.set(Calendar.MINUTE,0);
         oneDay.add(Calendar.DAY_OF_MONTH, -2);
-        System.out.println(oneDay.getTime().toString());
+        System.out.println("zzz3"+oneDay.getTime().toString());
+        if(theDay.after(today)){
+            java.util.Date  date2=theDay.getTime();
+            String month=date2.getHours()<10?"0"+date2.getHours():String.valueOf(date2.getHours());
+            String day=date2.getMinutes()<10?"0"+date2.getMinutes():String.valueOf(date2.getMinutes());
+            return month+":"+day;
+        }
         if(theDay.before(today)&&theDay.after(oneDay)){
             return "昨天";
         }
@@ -105,7 +115,7 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordViewHo
             return "5天前";
         }else{
             java.util.Date  date2=theDay.getTime();
-            String month=date2.getMonth()<10?"0"+date2.getMonth():String.valueOf(date2.getMonth());
+            String month=date2.getMonth()<10?"0"+date2.getMonth()+1:String.valueOf(date2.getMonth());
             String day=date2.getDay()<10?"0"+date2.getDay():String.valueOf(date2.getDay());
             return month+"-"+day;
         }

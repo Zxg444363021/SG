@@ -81,7 +81,6 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
         DaoSession daoSession = MyApplication.getDaoMaster().newSession();
         scheduleDao=daoSession.getScheduleDao();
         mYear=myDate.getYear();
