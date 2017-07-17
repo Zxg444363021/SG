@@ -16,6 +16,10 @@ public class AlternateRecord {
     private String user2name;
     private Timestamp time;
 
+    public AlternateRecord(int type,Timestamp date){
+        this.type = type;
+        this.time = date;
+    }
     public AlternateRecord(int type, int power, String user1name, Timestamp date) {
         this.type = type;
         this.power = power;

@@ -16,19 +16,17 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.maininterface.adapter.ComplexRecordAdapter;
 import com.globalformulae.shiguang.maininterface.adapter.SimpleRecordAdapter;
 import com.globalformulae.shiguang.model.AlternateRecord;
 import com.globalformulae.shiguang.model.Power;
 import com.globalformulae.shiguang.retrofit.RetrofitHelper;
 import com.globalformulae.shiguang.retrofit.UserActionService;
-import com.globalformulae.shiguang.utils.OkHttpUtil;
 import com.globalformulae.shiguang.utils.SPUtil;
 import com.globalformulae.shiguang.view.CircleImageView;
 
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
-
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collections;
 import java.util.List;
 
@@ -39,8 +37,8 @@ import io.reactivex.Observer;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
-import okhttp3.FormBody;
 import retrofit2.Retrofit;
 
 import static com.globalformulae.shiguang.utils.SPUtil.getSP;
@@ -78,6 +76,7 @@ public class FriendInfoActivity extends AppCompatActivity {
     private Long friendId;
     private int friendPower;
     private SimpleRecordAdapter simpleRecordAdapter;
+    private ComplexRecordAdapter complexRecordAdapter;
     private Retrofit retrofit;
     private UserActionService userActionService;
     private List<AlternateRecord> dataList;
@@ -89,11 +88,12 @@ public class FriendInfoActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         retrofit = RetrofitHelper.getInstance();
         userActionService = retrofit.create(UserActionService.class);
-        setActionBar();
+
         Intent intent = getIntent();
         friendPower = intent.getIntExtra("power", 0);
         friendPowerTV.setText(String.valueOf(friendPower) + "g");
         friendId = intent.getLongExtra("friendId", 12);
+        setActionBar(intent.getStringExtra("name"));
         Glide.with(this).load(intent.getStringExtra("icon")).placeholder(R.mipmap.unlogged_icon).into(friendiIconIV);
         friendTomatoNumTV.setText(String.valueOf(intent.getIntExtra("tomato_n", 0)));
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.sun_anim);
@@ -111,34 +111,40 @@ public class FriendInfoActivity extends AppCompatActivity {
      * 获取可偷取能量信息
      */
     public void getFriendInfo() {
-        OkHttpUtil.getInstance().getFriendInfo(new FormBody.Builder()
-                .add("user1id", String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid", 0)))
-                .add("user2id", String.valueOf(friendId))
-                .build());
+        userActionService.doGetFriendInfo(String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid", 0)),String.valueOf(friendId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<Power>() {
+                    @Override
+                    public void accept(@NonNull Power power) throws Exception {
+                        if (power.getCanPower1Steal() == 1) {
+                            gainTomatoBTN.setVisibility(View.VISIBLE);
+                        }
+                        if (power.getCanPower2Steal() == 1) {
+                            gainCustomBTN.setVisibility(View.VISIBLE);
+                        }
+                    }
+                })
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+
+                    }
+                }).subscribe();
+
     }
 
-    public void setActionBar() {
+    public void setActionBar(String name) {
+        toolbar.setTitle(name);
         setSupportActionBar(toolbar);
-        toolbar.setTitle("");
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 finish();
             }
         });
-    }
-
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void initPower(Power power) {
-        if (power.getCanPower1Steal() == 1) {
-            gainTomatoBTN.setVisibility(View.VISIBLE);
-        }
-        if (power.getCanPower2Steal() == 1) {
-            gainCustomBTN.setVisibility(View.VISIBLE);
-        }
-
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -160,10 +166,10 @@ public class FriendInfoActivity extends AppCompatActivity {
                     public void onNext(@NonNull List<AlternateRecord> alternateRecords) {
                         if (alternateRecords.size() != 0) {
                             dataList = alternateRecords;
-                            Collections.reverse(dataList);
-                            simpleRecordAdapter = new SimpleRecordAdapter(FriendInfoActivity.this, dataList);
+                            processDataList();
+                            complexRecordAdapter = new ComplexRecordAdapter(FriendInfoActivity.this, dataList);
                             friendRecordRV.setLayoutManager(new LinearLayoutManager(FriendInfoActivity.this, LinearLayoutManager.VERTICAL, false));
-                            friendRecordRV.setAdapter(simpleRecordAdapter);
+                            friendRecordRV.setAdapter(complexRecordAdapter);
                         }else {
                             dataList=new ArrayList<AlternateRecord>();
                         }
@@ -180,8 +186,33 @@ public class FriendInfoActivity extends AppCompatActivity {
                     }
                 });
 
-
     }
+
+    /**
+     * 对返回回来的记录进行加工
+     */
+    private void processDataList(){
+        //先翻转
+        Collections.reverse(dataList);
+        Calendar theFirstDay=Calendar.getInstance();
+        theFirstDay.setTime(dataList.get(0).getTime());
+        String date=String.valueOf(theFirstDay.get(Calendar.MONTH)+1)+String.valueOf(theFirstDay.get(Calendar.DAY_OF_MONTH));
+        dataList.add(0,new AlternateRecord(4,dataList.get(0).getTime()));
+
+        //然后根据日期加上头部
+        for(int i=1;i<dataList.size();i++){
+            Calendar theDay=Calendar.getInstance();
+            theFirstDay.setTime(dataList.get(i).getTime());
+            String date1=String.valueOf(theFirstDay.get(Calendar.MONTH)+1)+String.valueOf(theFirstDay.get(Calendar.DAY_OF_MONTH));
+            if(!date1.equals(date)){
+                date=date1;
+                dataList.add(i,new AlternateRecord(4,dataList.get(i).getTime()));
+                i++;
+            }
+        }
+    }
+
+
 
     /**
      * 偷习惯能量

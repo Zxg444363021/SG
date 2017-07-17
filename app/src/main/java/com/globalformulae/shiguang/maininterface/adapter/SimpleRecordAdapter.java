@@ -54,12 +54,18 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordAdapte
      */
     @Override
     public int getItemCount() {
-//        if (mDatas.size()>5){
-//            return 5;
-//        }else{
+        if (mDatas.size()>5){
+            return 5;
+        }else{
             return mDatas.size();
-        //}
+        }
 
+    }
+
+    @Override
+    public int getItemViewType(int position) {
+
+        return super.getItemViewType(position);
     }
 
     /**
@@ -80,11 +86,10 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordAdapte
         oneDay.set(Calendar.MINUTE,0);
         oneDay.add(Calendar.DAY_OF_MONTH, -2);
         System.out.println("zzz3"+oneDay.getTime().toString());
-        if(theDay.after(today)){
-            java.util.Date  date2=theDay.getTime();
-            String month=date2.getHours()<10?"0"+date2.getHours():String.valueOf(date2.getHours());
-            String day=date2.getMinutes()<10?"0"+date2.getMinutes():String.valueOf(date2.getMinutes());
-            return month+":"+day;
+        if(theDay.after(today)){//是今天
+            String hour=theDay.get(Calendar.HOUR_OF_DAY)<10?"0"+theDay.get(Calendar.HOUR_OF_DAY):String.valueOf(theDay.get(Calendar.HOUR_OF_DAY));
+            String minute=theDay.get(Calendar.MINUTE)<10?"0"+theDay.get(Calendar.MINUTE):String.valueOf(theDay.get(Calendar.MINUTE));
+            return hour+":"+minute;
         }
         if(theDay.before(today)&&theDay.after(oneDay)){
             return "昨天";
@@ -114,9 +119,8 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordAdapte
         if(theDay.before(today)&&theDay.after(oneDay)){
             return "5天前";
         }else{
-            java.util.Date  date2=theDay.getTime();
-            String month=date2.getMonth()<10?"0"+date2.getMonth()+1:String.valueOf(date2.getMonth());
-            String day=date2.getDay()<10?"0"+date2.getDay():String.valueOf(date2.getDay());
+            String month=theDay.get(Calendar.MONTH)<9?"0"+(theDay.get(Calendar.MONTH)+1):String.valueOf(theDay.get(Calendar.MONTH)+1);
+            String day=theDay.get(Calendar.DAY_OF_MONTH)<9?"0"+theDay.get(Calendar.DAY_OF_MONTH):String.valueOf(theDay.get(Calendar.DAY_OF_MONTH));
             return month+"-"+day;
         }
     }

@@ -1,6 +1,7 @@
 package com.globalformulae.shiguang.retrofit;
 
 import com.globalformulae.shiguang.model.AlternateRecord;
+import com.globalformulae.shiguang.model.Power;
 
 import java.util.List;
 
@@ -35,4 +36,13 @@ public interface UserActionService {
     @POST("doStealPower")
     Observable<AlternateRecord> doStealPower(@Field("user1id") String user1id,@Field("user2id") String user2id,@Field("powertype") String powertype);
 
+    /**
+     * 获取我是否可以偷朋友能量
+     * @param user1id
+     * @param user2id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("doGetFriendInfo")
+    Observable<Power> doGetFriendInfo(@Field("user1id") String user1id,@Field("user2id") String user2id);
 }
