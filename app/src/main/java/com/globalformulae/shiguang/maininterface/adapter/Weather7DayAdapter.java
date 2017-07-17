@@ -18,7 +18,7 @@ import java.util.List;
  * Created by ZXG on 2017/6/30.
  */
 
-public class Weather7DayAdapter extends RecyclerView.Adapter<Weather7DayViewHolder>{
+public class Weather7DayAdapter extends RecyclerView.Adapter<Weather7DayAdapter.Weather7DayViewHolder>{
     private List<WeatherBean7D.ShowAPIResBody.DayWeather> mDataList;
     private Context mContext;
     private LayoutInflater mLayoutInflater;
@@ -214,20 +214,19 @@ public class Weather7DayAdapter extends RecyclerView.Adapter<Weather7DayViewHold
         }
     }
 
-}
-
-class Weather7DayViewHolder extends RecyclerView.ViewHolder{
-    TextView dayOfWeekTV;
-    ImageView iconOfWeatherIV;
-    TextView dayTemperatureTV;
-    TextView nightTemperatureTV;
-    TextView weatherTV;
-    public Weather7DayViewHolder(View itemView) {
-        super(itemView);
-        dayOfWeekTV= (TextView) itemView.findViewById(R.id.day_of_week_tv);
-        iconOfWeatherIV= (ImageView) itemView.findViewById(R.id.icon_of_weather_iv);
-        dayTemperatureTV= (TextView) itemView.findViewById(R.id.day_temperature_tv);
-        nightTemperatureTV= (TextView) itemView.findViewById(R.id.night_temperature_tv);
-        weatherTV= (TextView) itemView.findViewById(R.id.weather_tv);
+    class Weather7DayViewHolder extends RecyclerView.ViewHolder{
+        TextView dayOfWeekTV;
+        ImageView iconOfWeatherIV;
+        TextView dayTemperatureTV;
+        TextView nightTemperatureTV;
+        TextView weatherTV;
+        public Weather7DayViewHolder(View itemView) {
+            super(itemView);
+            dayOfWeekTV= (TextView) itemView.findViewById(R.id.day_of_week_tv);
+            iconOfWeatherIV= (ImageView) itemView.findViewById(R.id.icon_of_weather_iv);
+            dayTemperatureTV= (TextView) itemView.findViewById(R.id.day_temperature_tv);
+            nightTemperatureTV= (TextView) itemView.findViewById(R.id.night_temperature_tv);
+            weatherTV= (TextView) itemView.findViewById(R.id.weather_tv);
+        }
     }
 }

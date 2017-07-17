@@ -19,22 +19,29 @@ import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.maininterface.adapter.SimpleRecordAdapter;
 import com.globalformulae.shiguang.model.AlternateRecord;
 import com.globalformulae.shiguang.model.Power;
+import com.globalformulae.shiguang.retrofit.RetrofitHelper;
+import com.globalformulae.shiguang.retrofit.UserActionService;
 import com.globalformulae.shiguang.utils.OkHttpUtil;
 import com.globalformulae.shiguang.utils.SPUtil;
 import com.globalformulae.shiguang.view.CircleImageView;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 import okhttp3.FormBody;
+import retrofit2.Retrofit;
 
 import static com.globalformulae.shiguang.utils.SPUtil.getSP;
 
@@ -64,51 +71,53 @@ public class FriendInfoActivity extends AppCompatActivity {
     @BindView(R.id.watering_plus_tv)
     TextView wateringPlusTV;
 
+    public static final String DOSTEALTOMATO="1";
+    public static final String DOSTEALCUSTOME="2";
+    public static final String DOWATER="3";
 
     private Long friendId;
     private int friendPower;
     private SimpleRecordAdapter simpleRecordAdapter;
+    private Retrofit retrofit;
+    private UserActionService userActionService;
+    private List<AlternateRecord> dataList;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_info);
         ButterKnife.bind(this);
-        EventBus.getDefault().register(this);
+        retrofit = RetrofitHelper.getInstance();
+        userActionService = retrofit.create(UserActionService.class);
         setActionBar();
-        Intent intent=getIntent();
-        friendPower=intent.getIntExtra("power",0);
-        friendPowerTV.setText(String.valueOf(friendPower)+"g");
-        friendId=intent.getLongExtra("friendId",12);
+        Intent intent = getIntent();
+        friendPower = intent.getIntExtra("power", 0);
+        friendPowerTV.setText(String.valueOf(friendPower) + "g");
+        friendId = intent.getLongExtra("friendId", 12);
         Glide.with(this).load(intent.getStringExtra("icon")).placeholder(R.mipmap.unlogged_icon).into(friendiIconIV);
-        friendTomatoNumTV.setText(String.valueOf(intent.getIntExtra("tomato_n",0)));
+        friendTomatoNumTV.setText(String.valueOf(intent.getIntExtra("tomato_n", 0)));
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.sun_anim);
         sunIV.setAnimation(animation);
-        int n=SPUtil.getSP(this,"user").getInt("pot_num",5);
+        int n = SPUtil.getSP(this, "user").getInt("pot_num", 5);
         friendPotNumTV.setText(String.valueOf(n));
-        if(n==0){
+        if (n == 0) {
             friendWaterBTN.setClickable(false);
         }
         getFriendInfo();
         getFriendRecord();
     }
 
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
-
     /**
      * 获取可偷取能量信息
      */
-    public void getFriendInfo(){
+    public void getFriendInfo() {
         OkHttpUtil.getInstance().getFriendInfo(new FormBody.Builder()
-                        .add("user1id",String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
-                        .add("user2id",String.valueOf(friendId))
-                        .build());
+                .add("user1id", String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid", 0)))
+                .add("user2id", String.valueOf(friendId))
+                .build());
     }
 
-    public void setActionBar(){
+    public void setActionBar() {
         setSupportActionBar(toolbar);
         toolbar.setTitle("");
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -122,113 +131,143 @@ public class FriendInfoActivity extends AppCompatActivity {
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void initPower(Power power){
-        if(power.getCanPower1Steal()==1){
+    public void initPower(Power power) {
+        if (power.getCanPower1Steal() == 1) {
             gainTomatoBTN.setVisibility(View.VISIBLE);
         }
-        if(power.getCanPower2Steal()==1){
+        if (power.getCanPower2Steal() == 1) {
             gainCustomBTN.setVisibility(View.VISIBLE);
         }
 
     }
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void getAlternateRecord(AlternateRecord alternateRecord){
-//        if(simpleRecordAdapter==null){
-//            ArrayList<AlternateRecord> list=new ArrayList<AlternateRecord>();
-//            list.add(alternateRecord);
-//            simpleRecordAdapter=new SimpleRecordAdapter(this,list);
-//            friendRecordRV.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-//            friendRecordRV.setAdapter(simpleRecordAdapter);
-//        }else{
-//            simpleRecordAdapter.notifyItemInserted(0);
-//        }
-        getFriendRecord();
 
+    /**
+     * 获取朋友最近的被交互记录
+     * retrofit+rxjava请求方式
+     */
+    public void getFriendRecord() {
 
+        userActionService.doGetRecord(String.valueOf(friendId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Observer<List<AlternateRecord>>() {
+                    @Override
+                    public void onSubscribe(@NonNull Disposable d) {
 
+                    }
 
+                    @Override
+                    public void onNext(@NonNull List<AlternateRecord> alternateRecords) {
+                        if (alternateRecords.size() != 0) {
+                            dataList = alternateRecords;
+                            Collections.reverse(dataList);
+                            simpleRecordAdapter = new SimpleRecordAdapter(FriendInfoActivity.this, dataList);
+                            friendRecordRV.setLayoutManager(new LinearLayoutManager(FriendInfoActivity.this, LinearLayoutManager.VERTICAL, false));
+                            friendRecordRV.setAdapter(simpleRecordAdapter);
+                        }else {
+                            dataList=new ArrayList<AlternateRecord>();
+                        }
+                    }
 
-        if(alternateRecord.getType()==1){//偷番茄能量
-            gainTomatoBTN.setVisibility(View.GONE);
-            wateringPlusTV.setVisibility(View.VISIBLE);
-            wateringPlusTV.setText("+"+alternateRecord.getPower());
-            Animation animation = AnimationUtils.loadAnimation(this, R.anim.gain_plus);
-            wateringPlusTV.setAnimation(animation);
-        }else if(alternateRecord.getType()==2){//偷习惯能量
-            gainCustomBTN.setVisibility(View.GONE);
-            wateringPlusTV.setVisibility(View.VISIBLE);
-            wateringPlusTV.setText("+"+alternateRecord.getPower());
-            Animation animation = AnimationUtils.loadAnimation(this, R.anim.gain_plus);
-            wateringPlusTV.setAnimation(animation);
-        }else if(alternateRecord.getType()==3){//浇水
-            int n=SPUtil.getSP(this,"user").getInt("pot_num",5);
-            n--;
-            SPUtil.getSPD(this,"user").putInt("pot_num",n).commit();
-            friendPotNumTV.setText(String.valueOf(n));
-            friendPower=friendPower+10;
-            friendPowerTV.setText(String.valueOf(friendPower)+"g");
-            SPUtil.getSPD(FriendInfoActivity.this, "user");
-            wateringPlusTV.setVisibility(View.VISIBLE);
-            Animation animation = AnimationUtils.loadAnimation(this, R.anim.gain_plus);
-            wateringPlusTV.setAnimation(animation);
-        }
+                    @Override
+                    public void onError(@NonNull Throwable e) {
+                        e.printStackTrace();
+                    }
+
+                    @Override
+                    public void onComplete() {
+
+                    }
+                });
+
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void gainRecord(AlternateRecord[] list){
-        if(list.length!=0){
-            List<AlternateRecord> datalist=Arrays.asList(list);
-            Collections.reverse(datalist);
-            simpleRecordAdapter=new SimpleRecordAdapter(this,datalist);
-            friendRecordRV.setLayoutManager(new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
-            friendRecordRV.setAdapter(simpleRecordAdapter);
-        }
-    }
-
-
-    public void getFriendRecord(){
-        FormBody formBody=new FormBody.Builder()
-                .add("userid",String.valueOf(friendId))
-                .build();
-        OkHttpUtil.getInstance().doGetRecord(formBody);
-
-    }
-
+    /**
+     * 偷习惯能量
+     */
     @OnClick(R.id.gain_custom_btn)
-    void stealCustomPower(){
-        FormBody formBody=new FormBody.Builder()
-                .add("user1id",String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
-                .add("user2id",String.valueOf(friendId))
-                .add("powertype",String.valueOf(2))
-                .build();
-        OkHttpUtil.getInstance().doStealPower(formBody);
+    void stealCustomPower() {
+        doSometingToPower(DOSTEALCUSTOME);
     }
+
+    /**
+     * 偷番茄能量
+     */
     @OnClick(R.id.gain_tomato_btn)
-    void stealTomatPower(){
-        FormBody formBody=new FormBody.Builder()
-                .add("user1id",String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
-                .add("user2id",String.valueOf(friendId))
-                .add("powertype",String.valueOf(1))
-                .build();
-        OkHttpUtil.getInstance().doStealPower(formBody);
+    void stealTomatPower() {
+        doSometingToPower(DOSTEALTOMATO);
+    }
+
+    /**
+     * 浇水
+     */
+    @OnClick(R.id.friend_water_btn)
+    void waterPower() {
+        doSometingToPower(DOWATER);
+    }
+
+    /**
+     * 能量交互
+     * @param type
+     */
+    private void doSometingToPower(String type){
+        userActionService.doStealPower(String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid", 0))
+        ,String.valueOf(friendId),type)
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<AlternateRecord>() {
+            @Override
+            public void onSubscribe(@NonNull Disposable d) {
+
+            }
+
+            @Override
+            public void onNext(@NonNull AlternateRecord alternateRecord) {
+                dataList.add(0,alternateRecord);
+                simpleRecordAdapter.notifyItemInserted(0);
+                if (alternateRecord.getType() == 1) {//偷番茄能量
+                    gainTomatoBTN.setVisibility(View.GONE);
+                    wateringPlusTV.setVisibility(View.VISIBLE);
+                    wateringPlusTV.setText("+" + alternateRecord.getPower());
+                    Animation animation = AnimationUtils.loadAnimation(FriendInfoActivity.this, R.anim.gain_plus);
+                    wateringPlusTV.setAnimation(animation);
+                } else if (alternateRecord.getType() == 2) {//偷习惯能量
+                    gainCustomBTN.setVisibility(View.GONE);
+                    wateringPlusTV.setVisibility(View.VISIBLE);
+                    wateringPlusTV.setText("+" + alternateRecord.getPower());
+                    Animation animation = AnimationUtils.loadAnimation(FriendInfoActivity.this, R.anim.gain_plus);
+                    wateringPlusTV.setAnimation(animation);
+                } else if (alternateRecord.getType() == 3) {//浇水
+                    int n = SPUtil.getSP(FriendInfoActivity.this, "user").getInt("pot_num", 5);
+                    n--;
+                    SPUtil.getSPD(FriendInfoActivity.this, "user").putInt("pot_num", n).commit();
+                    friendPotNumTV.setText(String.valueOf(n));
+                    friendPower = friendPower + 10;
+                    friendPowerTV.setText(String.valueOf(friendPower) + "g");
+                    SPUtil.getSPD(FriendInfoActivity.this, "user");
+                    wateringPlusTV.setVisibility(View.VISIBLE);
+                    Animation animation = AnimationUtils.loadAnimation(FriendInfoActivity.this, R.anim.gain_plus);
+                    wateringPlusTV.setAnimation(animation);
+                }
+            }
+
+            @Override
+            public void onError(@NonNull Throwable e) {
+
+            }
+
+            @Override
+            public void onComplete() {
+
+            }
+        });
+
     }
 
 
-
-
     @OnClick(R.id.friend_water_btn)
-    void waterPower(){
-        FormBody formBody=new FormBody.Builder()
-                .add("user1id",String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid",0)))
-                .add("user2id",String.valueOf(friendId))
-                .add("powertype",String.valueOf(3))
-                .build();
-        OkHttpUtil.getInstance().doStealPower(formBody);
-    }
-
-    @OnClick(R.id.friend_water_btn)
-    void waterClick(){
+    void waterClick() {
         friendWaterBTN.setClickable(false);
         Animation animation1 = AnimationUtils.loadAnimation(this, R.anim.watering);
         animation1.setFillAfter(false);
@@ -236,7 +275,7 @@ public class FriendInfoActivity extends AppCompatActivity {
 
         wateringIV.setBackgroundResource(R.drawable.watering_anim);
         wateringIV.setVisibility(View.VISIBLE);
-        final AnimationDrawable animationDrawable= (AnimationDrawable) wateringIV.getBackground();
+        final AnimationDrawable animationDrawable = (AnimationDrawable) wateringIV.getBackground();
         animationDrawable.start();
         wateringIV.postDelayed(new Runnable() {
             @Override
@@ -245,6 +284,6 @@ public class FriendInfoActivity extends AppCompatActivity {
                 wateringIV.setVisibility(View.GONE);
                 friendWaterBTN.setClickable(true);
             }
-        },4500);
+        }, 4500);
     }
 }

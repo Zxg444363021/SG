@@ -83,14 +83,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment TimerFragment.
-     */
+
     // TODO: Rename and change types and number of parameters
     public static TimerFragment newInstance(String param1, String param2) {
         TimerFragment fragment = new TimerFragment();
@@ -123,7 +116,6 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     @Override
     public void onResume() {
         super.onResume();
-
         getTimerRR();
         initView();
     }
@@ -146,22 +138,10 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     }
 
     /**
-     *
+     * 排行榜记录获取
      */
     private void getTimerRR(){
-//        datalist1.add(new AlternateRecord(1,15,"牛馨曼",new Timestamp(2017,06,04)));
-//        datalist1.add(new AlternateRecord(1,9,"孙佳",new Timestamp(2017,06,03)));
-//        datalist1.add(new AlternateRecord(1,28,"宁雪",new Timestamp(2017,06,02)));
-//        datalist1.add(new AlternateRecord(1,15,"刘妤涵",new Timestamp(2017,06,01)));
-//        datalist1.add(new AlternateRecord(1,2,"牛馨曼",new Timestamp(2017,05,26)));
-
         OkHttpUtil.getInstance().getRank();
-//        datalist2.add(new User("牛馨曼",null,5,18410));
-//        datalist2.add(new User("孙佳",null,3,18910));
-//        datalist2.add(new User("宁雪",null,6,15244));
-//        datalist2.add(new User("刘妤涵",null,1,22595));
-//        datalist2.add(new User("郑晓光",null,19,33875));
-//        datalist2.add(new User("张家瑞",null,0,653));
     }
 
     @OnClick(R.id.water_btn)
@@ -311,7 +291,6 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void setRank(List<User> userList){
-
         if(userList.size()!=0&&userList.get(0).getClass().getName().equals("com.globalformulae.shiguang.model.User")){
             Log.e("name", userList.get(0).getClass().getName());
             datalist2=userList;

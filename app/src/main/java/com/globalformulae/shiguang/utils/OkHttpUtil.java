@@ -115,6 +115,12 @@ public class OkHttpUtil {
         return nbaEvents;
     }
 
+
+
+
+
+
+
     public StringBuilder getmResult() {
         return mResult;
     }
@@ -505,8 +511,8 @@ public class OkHttpUtil {
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 if(response.code()==200){
-                    Log.e("sss", "z");
                     String result=response.body().string();
+                    Log.e("sss", result);
                     Gson gson=new Gson();
                     List<User> rankList=gson.fromJson(result,new TypeToken<ArrayList<User>>() {}.getType());
                     EventBus.getDefault().post(rankList);
@@ -567,14 +573,11 @@ public class OkHttpUtil {
         .build()).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
             }
-
             @Override
             public void onResponse(Call call, Response response) throws IOException {
                 String result=response.body().string();
-                int code=response.code();
-                AlternateRecord[] list=new Gson().fromJson(result,AlternateRecord[].class);
+                List<AlternateRecord> list=new Gson().fromJson(result,new TypeToken<List<AlternateRecord>>(){}.getType());
                 if(list!=null)
                     EventBus.getDefault().post(list);
             }

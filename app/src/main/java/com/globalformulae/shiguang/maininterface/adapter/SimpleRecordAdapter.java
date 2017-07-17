@@ -19,7 +19,7 @@ import java.util.List;
  * Created by ZXG on 2017/5/28.
  */
 
-public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordViewHolder> {
+public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordAdapter.SimpleRecordViewHolder> {
     private Context mContext;
     private List<AlternateRecord> mDatas;
     private LayoutInflater mInflater;
@@ -54,11 +54,11 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordViewHo
      */
     @Override
     public int getItemCount() {
-        if (mDatas.size()>5){
-            return 5;
-        }else{
+//        if (mDatas.size()>5){
+//            return 5;
+//        }else{
             return mDatas.size();
-        }
+        //}
 
     }
 
@@ -120,18 +120,17 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordViewHo
             return month+"-"+day;
         }
     }
-
-}
-class SimpleRecordViewHolder extends RecyclerView.ViewHolder{
-    TextView simpleRecordUserTV;
-    TextView simpleRecordActionTV;
-    TextView simpleRecordTimeTV;
+    class SimpleRecordViewHolder extends RecyclerView.ViewHolder{
+        TextView simpleRecordUserTV;
+        TextView simpleRecordActionTV;
+        TextView simpleRecordTimeTV;
 
 
-    public SimpleRecordViewHolder(View itemView) {
-        super(itemView);
-        simpleRecordUserTV= (TextView) itemView.findViewById(R.id.simple_record_user_tv);
-        simpleRecordActionTV= (TextView) itemView.findViewById(R.id.simple_record_action_tv);
-        simpleRecordTimeTV= (TextView) itemView.findViewById(R.id.simple_record_time_tv);
+        public SimpleRecordViewHolder(View itemView) {
+            super(itemView);
+            simpleRecordUserTV= (TextView) itemView.findViewById(R.id.simple_record_user_tv);
+            simpleRecordActionTV= (TextView) itemView.findViewById(R.id.simple_record_action_tv);
+            simpleRecordTimeTV= (TextView) itemView.findViewById(R.id.simple_record_time_tv);
+        }
     }
 }

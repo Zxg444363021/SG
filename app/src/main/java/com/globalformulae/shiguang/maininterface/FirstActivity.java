@@ -11,6 +11,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.utils.IPConfig;
 
 import java.lang.ref.SoftReference;
 
@@ -29,6 +30,7 @@ public class FirstActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
         ButterKnife.bind(this);
+        IPConfig.getIPConfig(this);
         mtypeface=new SoftReference<Typeface>(Typeface.createFromAsset(getAssets(),"HYZhuZiTongNianTiW.ttf"));
     }
 

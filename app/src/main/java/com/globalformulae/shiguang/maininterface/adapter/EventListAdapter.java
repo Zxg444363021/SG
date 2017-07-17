@@ -22,7 +22,7 @@ import java.util.List;
  *
  */
 
-public class EventListAdapter extends  RecyclerView.Adapter<CompatitionViewHolder>{
+public class EventListAdapter extends  RecyclerView.Adapter<EventListAdapter.CompatitionViewHolder>{
 
     private LayoutInflater mInflater;
     private Context mContext;
@@ -119,31 +119,31 @@ public class EventListAdapter extends  RecyclerView.Adapter<CompatitionViewHolde
     public void setmDatas(List<NBAEvents.EventsResult.DayResult.Compatition> mDatas) {
         this.mDatas = mDatas;
     }
-}
-
-/**
- * ViewHolder，与直接使用listview不同，这里会初始化控件
- */
-class CompatitionViewHolder extends RecyclerView.ViewHolder {
-    TextView compatition_time;
-    ImageView player1logo;
-    ImageView player2logo;
-    TextView player1;
-    TextView player2;
-    TextView score;
-    TextView status;
-
     /**
-     * @param itemView 每一个item，其Layout已经定义
+     * ViewHolder，与直接使用listview不同，这里会初始化控件
      */
-    public CompatitionViewHolder(View itemView) {
-        super(itemView);
-        compatition_time = (TextView) itemView.findViewById(R.id.compatition_time);
-        player1logo = (ImageView) itemView.findViewById(R.id.player1logo);
-        player2logo = (ImageView) itemView.findViewById(R.id.player2logo);
-        player1 = (TextView) itemView.findViewById(R.id.player1);
-        player2 = (TextView) itemView.findViewById(R.id.player2);
-        score = (TextView) itemView.findViewById(R.id.score);
-        status = (TextView) itemView.findViewById(R.id.status);
+    class CompatitionViewHolder extends RecyclerView.ViewHolder {
+        TextView compatition_time;
+        ImageView player1logo;
+        ImageView player2logo;
+        TextView player1;
+        TextView player2;
+        TextView score;
+        TextView status;
+
+        /**
+         * @param itemView 每一个item，其Layout已经定义
+         */
+        public CompatitionViewHolder(View itemView) {
+            super(itemView);
+            compatition_time = (TextView) itemView.findViewById(R.id.compatition_time);
+            player1logo = (ImageView) itemView.findViewById(R.id.player1logo);
+            player2logo = (ImageView) itemView.findViewById(R.id.player2logo);
+            player1 = (TextView) itemView.findViewById(R.id.player1);
+            player2 = (TextView) itemView.findViewById(R.id.player2);
+            score = (TextView) itemView.findViewById(R.id.score);
+            status = (TextView) itemView.findViewById(R.id.status);
+        }
     }
 }
+

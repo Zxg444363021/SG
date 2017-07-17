@@ -16,7 +16,7 @@ import java.util.List;
  * Created by ZXG on 2017/3/12.
  */
 
-public class SubjectListAdapter extends RecyclerView.Adapter<SubjectViewHolder>{
+public class SubjectListAdapter extends RecyclerView.Adapter<SubjectListAdapter.SubjectViewHolder>{
     private LayoutInflater mInflater;
     private Context mContext;
     private List<Subject> subjects;
@@ -56,25 +56,25 @@ public class SubjectListAdapter extends RecyclerView.Adapter<SubjectViewHolder>{
     public void setData(List<Subject> subjects){
         this.subjects=subjects;
     }
-}
+    class SubjectViewHolder extends RecyclerView.ViewHolder {
+        TextView name;
+        TextView type;
+        TextView credit;
+        TextView place;
+        TextView cycle;
+        TextView time;
+        TextView teacher;
 
-class SubjectViewHolder extends RecyclerView.ViewHolder {
-    TextView name;
-    TextView type;
-    TextView credit;
-    TextView place;
-    TextView cycle;
-    TextView time;
-    TextView teacher;
-
-    public SubjectViewHolder(View itemView) {
-        super(itemView);
-        name= (TextView) itemView.findViewById(R.id.subject_name);
-        type= (TextView) itemView.findViewById(R.id.subject_type);
-        credit= (TextView) itemView.findViewById(R.id.subject_credit);
-        place= (TextView) itemView.findViewById(R.id.subject_place);
-        cycle= (TextView) itemView.findViewById(R.id.subject_cycle);
-        time= (TextView) itemView.findViewById(R.id.subject_time);
-        teacher= (TextView) itemView.findViewById(R.id.subject_teacher);
+        public SubjectViewHolder(View itemView) {
+            super(itemView);
+            name= (TextView) itemView.findViewById(R.id.subject_name);
+            type= (TextView) itemView.findViewById(R.id.subject_type);
+            credit= (TextView) itemView.findViewById(R.id.subject_credit);
+            place= (TextView) itemView.findViewById(R.id.subject_place);
+            cycle= (TextView) itemView.findViewById(R.id.subject_cycle);
+            time= (TextView) itemView.findViewById(R.id.subject_time);
+            teacher= (TextView) itemView.findViewById(R.id.subject_teacher);
+        }
     }
 }
+

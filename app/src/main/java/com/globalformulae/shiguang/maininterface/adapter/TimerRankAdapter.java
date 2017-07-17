@@ -23,7 +23,7 @@ import java.util.List;
  * Created by Administrator on 2017/6/4.
  */
 
-public class TimerRankAdapter extends RecyclerView.Adapter<TimerRankAdapterViewHolder>{
+public class TimerRankAdapter extends RecyclerView.Adapter<TimerRankAdapter.TimerRankAdapterViewHolder>{
     private Context mContext;
     private List<User> mDatas;
     private LayoutInflater layoutInflater;
@@ -101,28 +101,28 @@ public class TimerRankAdapter extends RecyclerView.Adapter<TimerRankAdapterViewH
             return mDatas.size();
         }
     }
+    class TimerRankAdapterViewHolder extends RecyclerView.ViewHolder{
+        ImageView rankIV;
+        TextView rankTV;
+        ImageView userIconIV;
+        TextView userNameTV;
+        TextView tomatoNTV;
+        TextView powerTV;
+        LinearLayout linearLayout;
 
-}
+        public TimerRankAdapterViewHolder(View itemView) {
+            super(itemView);
+            rankIV= (ImageView) itemView.findViewById(R.id.timer_rank_iv);
+            rankTV= (TextView) itemView.findViewById(R.id.timer_rank_tv);
+            userIconIV= (ImageView) itemView.findViewById(R.id.timer_rank_icon_iv);
+            userNameTV= (TextView) itemView.findViewById(R.id.timer_rank_name_tv);
+            tomatoNTV= (TextView) itemView.findViewById(R.id.timer_rank_tomato_n_tv);
+            powerTV= (TextView) itemView.findViewById(R.id.timer_rank_power_tv);
+            linearLayout= (LinearLayout) itemView.findViewById(R.id.rank_item_ll);
 
-
-class TimerRankAdapterViewHolder extends RecyclerView.ViewHolder{
-    ImageView rankIV;
-    TextView rankTV;
-    ImageView userIconIV;
-    TextView userNameTV;
-    TextView tomatoNTV;
-    TextView powerTV;
-    LinearLayout linearLayout;
-
-    public TimerRankAdapterViewHolder(View itemView) {
-        super(itemView);
-        rankIV= (ImageView) itemView.findViewById(R.id.timer_rank_iv);
-        rankTV= (TextView) itemView.findViewById(R.id.timer_rank_tv);
-        userIconIV= (ImageView) itemView.findViewById(R.id.timer_rank_icon_iv);
-        userNameTV= (TextView) itemView.findViewById(R.id.timer_rank_name_tv);
-        tomatoNTV= (TextView) itemView.findViewById(R.id.timer_rank_tomato_n_tv);
-        powerTV= (TextView) itemView.findViewById(R.id.timer_rank_power_tv);
-        linearLayout= (LinearLayout) itemView.findViewById(R.id.rank_item_ll);
-
+        }
     }
 }
+
+
+

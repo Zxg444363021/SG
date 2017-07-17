@@ -139,7 +139,7 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
     private void openCamera() {
         File file = new FileStorage().createPicFile();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
-            imageUri = FileProvider.getUriForFile(this, ".fileprovider", file);//通过FileProvider创建一个content类型的Uri
+            imageUri = FileProvider.getUriForFile(this, "com.globalformulae.shiguang.fileprovider", file);//通过FileProvider创建一个content类型的Uri
         } else {
             imageUri = Uri.fromFile(file);
         }
@@ -238,10 +238,12 @@ public class IconActivity extends AppCompatActivity implements View.OnClickListe
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
             case REQUEST_PICK_IMAGE://从相册选择
-                if (Build.VERSION.SDK_INT >= 19) {
-                    handleImageOnKitKat(data);
-                } else {
-                    handleImageBeforeKitKat(data);
+                if(data!=null){
+                    if (Build.VERSION.SDK_INT >= 19) {
+                        handleImageOnKitKat(data);
+                    } else{
+                        handleImageBeforeKitKat(data);
+                    }
                 }
                 break;
             case REQUEST_CAPTURE://拍照

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resource>
+    <service serverIp="http://121.42.140.71:8080/shiguangServer/"/>
+    <service juheData="http://op.juhe.cn/"/>
+    <service nbaEvent="onebox/basketball/nba"/>
+    <service nbaEventKey="15cf3c6dd41abb470c21f9161b93de54"/>
+</resource>
