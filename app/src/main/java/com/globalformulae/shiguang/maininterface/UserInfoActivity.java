@@ -132,6 +132,7 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
     }
     private void setActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.user_info_tb);
+        toolbar.setTitle("个人信息");
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);

@@ -4,13 +4,15 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
+import android.graphics.Paint;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,12 +31,11 @@ import com.globalformulae.shiguang.maininterface.adapter.TimerRankAdapter;
 import com.globalformulae.shiguang.model.AlternateRecord;
 import com.globalformulae.shiguang.model.SoilTimeBean;
 import com.globalformulae.shiguang.model.User;
-import com.globalformulae.shiguang.utils.OkHttpUtil;
+import com.globalformulae.shiguang.retrofit.RetrofitHelper;
+import com.globalformulae.shiguang.retrofit.UserActionService;
 import com.globalformulae.shiguang.utils.SPUtil;
 import com.globalformulae.shiguang.view.CircleImageView;
-import com.globalformulae.shiguang.view.RecycleViewDivider;
 
-import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -44,6 +45,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 
 public class TimerFragment extends Fragment implements TimerRankAdapter.onItemClickListener{
@@ -79,6 +85,10 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     private OnFragmentInteractionListener mListener;
     private SimpleRecordAdapter simpleRecordAdapter;//上面的5条记录
     private TimerRankAdapter timerRankAdapter;//下面的10条记录
+    private Retrofit retrofit;
+    private UserActionService userActionService;
+
+
     public TimerFragment() {
         // Required empty public constructor
     }
@@ -94,7 +104,8 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        EventBus.getDefault().register(this);
+        retrofit= RetrofitHelper.getInstance();
+        userActionService=retrofit.create(UserActionService.class);
     }
 
     @Override
@@ -108,11 +119,29 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.sun_anim);
         sunIV.setAnimation(animation);
         timerRankRV.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        timerRankRV.addItemDecoration(new RecycleViewDivider(
-                getContext(), LinearLayoutManager.VERTICAL, R.drawable.divider_01));
+        timerRankRV.addItemDecoration(new RecyclerView.ItemDecoration() {
+            @Override
+            public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
+                super.onDraw(c, parent, state);
+                Paint paint=new Paint();
+                paint.setColor(getResources().getColor(R.color.divider));
+                int childCount=state.getItemCount();
+                for (int i = 0; i < childCount-1; i++) {
+                    final View child = parent.getChildAt(i);
+                    final RecyclerView.LayoutParams params = (RecyclerView.LayoutParams) child
+                            .getLayoutParams();
+                    final int top = child.getBottom() + params.bottomMargin +
+                            Math.round(ViewCompat.getTranslationY(child));
+                    c.drawLine(dip2px(getActivity(),46),top,parent.getWidth(),top,paint);
+                }
+            }
+        });
         return view;
     }
-
+    public int dip2px(Context context, float dpValue) {
+        final float scale = context.getResources().getDisplayMetrics().density;
+        return (int) (dpValue * scale + 0.5f);
+    }
     @Override
     public void onResume() {
         super.onResume();
@@ -141,7 +170,25 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
      * 排行榜记录获取
      */
     private void getTimerRR(){
-        OkHttpUtil.getInstance().getRank();
+        userActionService.doGetRank()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<List<User>>() {
+                    @Override
+                    public void accept(@NonNull List<User> users) throws Exception {
+                        datalist2=users;
+                        timerRankAdapter=new TimerRankAdapter(getContext(),datalist2);
+                        timerRankAdapter.setOnItemClickListener(TimerFragment.this);
+                        timerRankRV.setAdapter(timerRankAdapter);
+                        timerRankRV.invalidate();
+                    }
+                })
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+
+                    }
+                }).subscribe();
     }
 
     @OnClick(R.id.water_btn)
@@ -189,10 +236,13 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     @Override
     public void onDetach() {
         super.onDetach();
-
         mListener = null;
     }
 
+    /**
+     * 排行榜点击事件，跳转至朋友页面
+     * @param friend
+     */
     @Override
     public void onItemClick(User friend) {
 
@@ -248,17 +298,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         abstract void onAnimationEnd();
     }
 
-    @Override
-    public void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-    }
 
-    @Override
-    public void onPause() {
-
-        super.onPause();
-    }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeSoil(SoilTimeBean soilTime){
@@ -289,16 +329,4 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         }
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void setRank(List<User> userList){
-        if(userList.size()!=0&&userList.get(0).getClass().getName().equals("com.globalformulae.shiguang.model.User")){
-            Log.e("name", userList.get(0).getClass().getName());
-            datalist2=userList;
-            timerRankAdapter=new TimerRankAdapter(getContext(),datalist2);
-            timerRankAdapter.setOnItemClickListener(this);
-            timerRankRV.setAdapter(timerRankAdapter);
-            timerRankRV.invalidate();
-        }
-
-    }
 }

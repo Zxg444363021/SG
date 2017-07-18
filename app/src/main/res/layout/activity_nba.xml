@@ -3,28 +3,44 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:fitsSystemWindows="true">
+    android:fitsSystemWindows="true"
+    android:orientation="vertical">
+
     <android.support.v7.widget.Toolbar
         android:id="@+id/tb_nba"
-        android:layout_height="wrap_content"
         android:layout_width="match_parent"
-        android:minHeight="?attr/actionBarSize"
+        android:layout_height="wrap_content"
         android:background="#4fc3f7"
-        app:titleTextColor="#ffffff"
-        android:visibility="gone"/>
-    <android.support.design.widget.TabLayout
-        android:id="@+id/tab_nba"
+        android:minHeight="?attr/actionBarSize"
+        android:visibility="gone"
+        app:titleTextColor="#ffffff"/>
+    <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:tabTextColor="#ffffff"
-        app:tabSelectedTextColor="#004d40"
-        app:tabIndicatorColor="#0277bd"
-        app:tabIndicatorHeight="3dp"
-        android:background="@color/green1"/>
+        android:background="@color/green1">
+        <android.support.design.widget.TabLayout
+            android:id="@+id/tab_nba"
+            android:layout_width="wrap_content"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/green1"
+            app:tabIndicatorColor="#0277bd"
+            app:tabIndicatorHeight="3dp"
+            app:tabSelectedTextColor="#004d40"
+            app:tabTextColor="#ffffff"
+            android:layout_gravity="center"/>
+        <ImageButton
+            android:id="@+id/back_btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="15dp"
+            android:background="#00ffffff"
+            android:src="@drawable/ic_arrow_back_black_24dp"
+            android:layout_gravity="center_vertical"/>
+    </FrameLayout>
+
     <android.support.v4.view.ViewPager
         android:id="@+id/vp_nba"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="match_parent" />
 
 </LinearLayout>

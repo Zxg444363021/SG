@@ -12,8 +12,8 @@
         android:id="@+id/user_info_tb"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
-        android:title="个人信息"
+        android:background="@color/green1"
+        app:title="个人信息"
         app:titleTextColor="#404040"></android.support.v7.widget.Toolbar>
 
     <LinearLayout

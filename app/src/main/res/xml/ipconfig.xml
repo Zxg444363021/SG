@@ -4,4 +4,5 @@
     <service juheData="http://op.juhe.cn/"/>
     <service nbaEvent="onebox/basketball/nba"/>
     <service nbaEventKey="15cf3c6dd41abb470c21f9161b93de54"/>
+    <service weatherIp="http://saweather.market.alicloudapi.com/"/>
 </resource>

@@ -4,7 +4,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/type1_ll"
     android:layout_width="match_parent"
-    android:layout_height="50dp"
+    android:layout_height="40dp"
     android:gravity="center_vertical"
     android:paddingLeft="15dp"
     android:paddingRight="15dp">

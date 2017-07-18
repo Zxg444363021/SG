@@ -52,8 +52,15 @@ public class ComplexRecordAdapter extends RecyclerView.Adapter<RecyclerView.View
         if(getItemViewType(position)==0){
             ((ComplexRecordViewHolder2)holder).dateTitleTV.setText(date2string(alternateRecord.getTime()));
         }else{
+            if(mDataList.get(position).getType()==3){
+                ((ComplexRecordViewHolder1)holder).actionTV.setText("来浇过水");
+            }else{
+                ((ComplexRecordViewHolder1)holder).actionTV.setText("收取"+mDataList.get(position).getPower()+"g");
+            }
+            ((ComplexRecordViewHolder1)holder).userTV.setText(mDataList.get(position).getUser2name());
             ((ComplexRecordViewHolder1)holder).timeTV.setText(date2string2(alternateRecord.getTime()));
         }
+
 
     }
 

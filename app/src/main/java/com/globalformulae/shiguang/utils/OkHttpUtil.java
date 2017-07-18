@@ -494,31 +494,7 @@ public class OkHttpUtil {
     }
 
 
-    public void getRank(){
-        Request request=new Request.Builder()
-                .url(BASEURL+"doGetRank")
-                .get()
-                .build();
-        Call call=okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("sss", "failure");
-            }
 
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                if(response.code()==200){
-                    String result=response.body().string();
-                    Log.e("sss", result);
-                    Gson gson=new Gson();
-                    List<User> rankList=gson.fromJson(result,new TypeToken<ArrayList<User>>() {}.getType());
-                    EventBus.getDefault().post(rankList);
-                }
-
-            }
-        });
-    }
 
 }
 

@@ -2,12 +2,14 @@ package com.globalformulae.shiguang.retrofit;
 
 import com.globalformulae.shiguang.model.AlternateRecord;
 import com.globalformulae.shiguang.model.Power;
+import com.globalformulae.shiguang.model.User;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -45,4 +47,7 @@ public interface UserActionService {
     @FormUrlEncoded
     @POST("doGetFriendInfo")
     Observable<Power> doGetFriendInfo(@Field("user1id") String user1id,@Field("user2id") String user2id);
+
+    @GET("doGetRank")
+    Observable<List<User>> doGetRank();
 }

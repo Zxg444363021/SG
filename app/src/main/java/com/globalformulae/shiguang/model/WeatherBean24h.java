@@ -1,5 +1,7 @@
 package com.globalformulae.shiguang.model;
 
+import java.util.List;
+
 /**
  * Created by ZXG on 2017/6/29.
  */
@@ -37,7 +39,7 @@ public class WeatherBean24h {
         private String ret_code;
         private String area;
         private String areaid;
-        private HourBody[] hourList;
+        private List<HourBody> hourList;
 
         public String getRet_code() {
             return ret_code;
@@ -63,26 +65,27 @@ public class WeatherBean24h {
             this.areaid = areaid;
         }
 
-        public HourBody[] getHourList() {
+        public List<HourBody> getHourList() {
             return hourList;
         }
 
-        public void setHourList(HourBody[] hourList) {
+        public void setHourList(List<HourBody> hourList) {
             this.hourList = hourList;
         }
+
         public class HourBody{
-            private String weather_code;
+            private int weather_code;
             private String time;
             private String wind_direction;
             private String wind_power;
             private String weather;
             private String temperature;
 
-            public String getWeather_code() {
+            public int getWeather_code() {
                 return weather_code;
             }
 
-            public void setWeather_code(String weather_code) {
+            public void setWeather_code(int weather_code) {
                 this.weather_code = weather_code;
             }
 

@@ -11,6 +11,7 @@
     <color name="C10">#A1A9B4</color>
     <color name="green1">#BCEAC5</color>
     <color name="green2">#e8fbf4</color>
+    <color name="green3">#BCEA90</color>
     <color name="divider1">#42bd41</color>
     <color name="white">#ffffff</color>
     <color name="black">#000000</color>
@@ -19,5 +20,6 @@
     <color name="qingTrans3">#8fe2d8</color>
     <color name="qingTrans2">#69d9c9</color>
     <color name="C7">#404040</color><!-- 继续答题背景颜色-->
+    <color name="divider">#ffcccccc</color>
 
 </resources>

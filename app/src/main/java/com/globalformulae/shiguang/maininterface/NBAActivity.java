@@ -9,34 +9,22 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.transition.Explode;
 import android.view.View;
 import android.view.Window;
+import android.widget.ImageButton;
 
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.maininterface.adapter.FragmentAdapter;
-import com.globalformulae.shiguang.model.NBAEvents;
-import com.globalformulae.shiguang.utils.OkHttpUtil;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-//使用了recycleView
 public class NBAActivity extends AppCompatActivity implements NBAEventsFragment.OnFragmentInteractionListener,TermRankingFragment.OnFragmentInteractionListener {
-    private static final String TAG = "NBAActivity";
-
-
-    private RecyclerView mRecyclerView;
-    private OkHttpUtil mOkHttpUtil;
-    private NBAEvents mResult;
-
-    private List<NBAEvents.EventsResult.DayResult.Compatition> list; //存储返回的json数据
-
 
     private TabLayout tabs;
+    private ImageButton backBTN;
     private List<Fragment> mFragments=new ArrayList<>();
     private List<String> mTitles=new ArrayList<String>(){};
     private ViewPager mViewPager;
@@ -58,6 +46,7 @@ public class NBAActivity extends AppCompatActivity implements NBAEventsFragment.
     public void initView(){
         tabs= (TabLayout) findViewById(R.id.tab_nba);
         mViewPager= (ViewPager) findViewById(R.id.vp_nba);
+        backBTN= (ImageButton) findViewById(R.id.back_btn);
         tabs.addTab(tabs.newTab().setText("赛事"));
         tabs.addTab(tabs.newTab().setText("排名"));
         mTitles.add("赛事");
@@ -69,9 +58,13 @@ public class NBAActivity extends AppCompatActivity implements NBAEventsFragment.
         mNbaFragmentAdapter=new FragmentAdapter(getSupportFragmentManager(),mFragments,mTitles);
         mViewPager.setAdapter(mNbaFragmentAdapter);
         tabs.setupWithViewPager(mViewPager);
-        //setActionBar();
+        backBTN.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
-
 
     /**
      * 判断是否有网络连接，可以复用
@@ -91,25 +84,12 @@ public class NBAActivity extends AppCompatActivity implements NBAEventsFragment.
         return false;
     }
 
-
     @Override
     public void onFragmentInteraction(Uri uri) {
     }
 
 
 
-    private void setActionBar() {
-        Toolbar toolbar = (Toolbar) findViewById(R.id.tb_nba);
-        toolbar.setTitle("NBA");
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
-    }
+
 
 }
