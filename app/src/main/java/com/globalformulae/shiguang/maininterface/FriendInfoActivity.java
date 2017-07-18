@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Paint;
+import android.graphics.Typeface;
 import android.graphics.drawable.AnimationDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
@@ -70,6 +71,8 @@ public class FriendInfoActivity extends AppCompatActivity {
     ImageView sunIV;
     @BindView(R.id.watering_plus_tv)
     TextView wateringPlusTV;
+    @BindView(R.id.new_record_tv)
+    TextView newRecordTV;
 
     public static final String DOSTEALTOMATO = "1";
     public static final String DOSTEALCUSTOME = "2";
@@ -81,6 +84,7 @@ public class FriendInfoActivity extends AppCompatActivity {
     private Retrofit retrofit;
     private UserActionService userActionService;
     private List<AlternateRecord> dataList;
+    private Typeface mtypeface;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +93,7 @@ public class FriendInfoActivity extends AppCompatActivity {
         ButterKnife.bind(this);
         retrofit = RetrofitHelper.getInstance();
         userActionService = retrofit.create(UserActionService.class);
-
+        mtypeface= Typeface.createFromAsset(getAssets(),"HYJiaShuJian.ttf");
         initView();
         getFriendInfo();
         getFriendRecord();
@@ -136,20 +140,21 @@ public class FriendInfoActivity extends AppCompatActivity {
                         final int bottom2 = child.getBottom();
                         final int top2 = bottom2 - dip2px(FriendInfoActivity.this, 10);
 
-                        c.drawLine(child.getLeft() + dip2px(FriendInfoActivity.this, 24),
+                        c.drawLine(child.getLeft() + dip2px(FriendInfoActivity.this, 25),
                                 top1,
-                                child.getLeft() + dip2px(FriendInfoActivity.this, 24),
+                                child.getLeft() + dip2px(FriendInfoActivity.this, 25),
                                 bottom1, paint);
 
-                        c.drawLine(child.getLeft() + dip2px(FriendInfoActivity.this, 24),
+                        c.drawLine(child.getLeft() + dip2px(FriendInfoActivity.this, 25),
                                 top2,
-                                child.getLeft() + dip2px(FriendInfoActivity.this, 24),
+                                child.getLeft() + dip2px(FriendInfoActivity.this, 25),
                                 bottom2, paint);
                     }
 
                 }
             }
         });
+        newRecordTV.setTypeface(mtypeface);
     }
 
     /**

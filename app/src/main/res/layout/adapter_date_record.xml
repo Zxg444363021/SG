@@ -5,7 +5,8 @@
     android:layout_height="50dp"
     android:gravity="center_vertical"
     android:orientation="vertical"
-    android:padding="10dp">
+    android:paddingLeft="5dp"
+    >
 
     <TextView
         android:id="@+id/date_title_tv"

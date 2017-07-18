@@ -5,11 +5,12 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.model.AlternateRecord;
-import com.globalformulae.shiguang.view.CircleImageView;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -54,8 +55,10 @@ public class ComplexRecordAdapter extends RecyclerView.Adapter<RecyclerView.View
         }else{
             if(mDataList.get(position).getType()==3){
                 ((ComplexRecordViewHolder1)holder).actionTV.setText("来浇过水");
+                Glide.with(mContext).load(R.mipmap.water_drop).into(((ComplexRecordViewHolder1)holder).iconIV);
             }else{
                 ((ComplexRecordViewHolder1)holder).actionTV.setText("收取"+mDataList.get(position).getPower()+"g");
+                Glide.with(mContext).load(R.mipmap.steal_icon).into(((ComplexRecordViewHolder1)holder).iconIV);
             }
             ((ComplexRecordViewHolder1)holder).userTV.setText(mDataList.get(position).getUser2name());
             ((ComplexRecordViewHolder1)holder).timeTV.setText(date2string2(alternateRecord.getTime()));
@@ -119,7 +122,7 @@ public class ComplexRecordAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     class ComplexRecordViewHolder1 extends RecyclerView.ViewHolder{
         @BindView(R.id.complex_record_icon_iv)
-        CircleImageView iconIV;
+        ImageView iconIV;
         @BindView(R.id.complex_record_user_tv)
         TextView userTV;
         @BindView(R.id.complex_record_action_tv)

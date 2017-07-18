@@ -1,6 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/type1_ll"
     android:layout_width="match_parent"
@@ -9,12 +7,11 @@
     android:paddingLeft="15dp"
     android:paddingRight="15dp">
 
-    <com.globalformulae.shiguang.view.CircleImageView
+    <ImageView
         android:id="@+id/complex_record_icon_iv"
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_gravity="center"
-        android:background="#0ab748"
         android:src="@mipmap/steal_icon"/>
 
     <TextView
@@ -24,7 +21,8 @@
         android:layout_marginLeft="10dp"
         android:text="zxg"
         android:textColor="#000000"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        />
 
     <TextView
         android:id="@+id/complex_record_action_tv"
