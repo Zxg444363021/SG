@@ -14,7 +14,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -34,11 +33,20 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 import org.greenrobot.greendao.query.QueryBuilder;
 
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.Observable;
+import io.reactivex.ObservableEmitter;
+import io.reactivex.ObservableOnSubscribe;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
 
 @SuppressLint("ValidFragment")
 public class ScheduleFragment extends Fragment implements ScheduleAdapter.onScheduleItemClickListener{
@@ -52,7 +60,7 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
     private ScheduleAdapter scheduleAdapter;
     private ScheduleDao scheduleDao;
 
-    private List<Schedule> mDatas;
+    private List<Schedule> mDatas=new ArrayList<>();
 
     private OnFragmentInteractionListener mListener;
     //显示事件的日期
@@ -69,9 +77,6 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
     public ScheduleFragment() {
         // Required empty public constructor
     }
-    public ScheduleFragment(MyDate date){
-        myDate=date;
-    }
     public static ScheduleFragment newInstance(String param1, String param2) {
         ScheduleFragment fragment = new ScheduleFragment();
         return fragment;
@@ -83,21 +88,43 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
         super.onCreate(savedInstanceState);
         DaoSession daoSession = MyApplication.getDaoMaster().newSession();
         scheduleDao=daoSession.getScheduleDao();
-        mYear=myDate.getYear();
-        mMonth=myDate.getMonth();
-        mDay=myDate.getDay();
-        mDayOfWeek=myDate.getDayOfWeek();
-        xinqi=myDate.getXinqi();
-        QueryBuilder<Schedule> qb = scheduleDao.queryBuilder();
-        qb.where(qb.and(ScheduleDao.Properties.Year.eq(mYear),ScheduleDao.Properties.Month.eq(mMonth),
-                        ScheduleDao.Properties.Day.eq(mDay)));
-        qb.orderDesc(ScheduleDao.Properties.Status);
-        qb.build();
-        mDatas=qb.list();
-
         EventBus.getDefault().register(this);
+    }
+
+    /**
+     * 获取今天的数据
+     * rxjava方式，在io线程中进行数据库操作
+     */
+    private void initDate(){
+        Calendar mCalendar=Calendar.getInstance();
+        mYear=mCalendar.get(Calendar.YEAR);
+        mMonth=mCalendar.get(Calendar.MONTH)+1;
+        mDay=mCalendar.get(Calendar.DAY_OF_MONTH);
+        mDayOfWeek=mCalendar.get(Calendar.DAY_OF_WEEK);
+        xinqi=getDayOfWeek(mDayOfWeek);
+
+        Observable.create(new ObservableOnSubscribe<List<Schedule>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Schedule>> e) throws Exception {
+                QueryBuilder<Schedule> qb = scheduleDao.queryBuilder();
+                qb.where(qb.and(ScheduleDao.Properties.Year.eq(mYear),ScheduleDao.Properties.Month.eq(mMonth),
+                        ScheduleDao.Properties.Day.eq(mDay)));
+                qb.orderDesc(ScheduleDao.Properties.Status);
+                qb.build();
+                e.onNext(qb.list());
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).doOnNext(new Consumer<List<Schedule>>() {
+            @Override
+            public void accept(@NonNull List<Schedule> schedules) throws Exception {
+                mDatas=schedules;
+                scheduleAdapter=new ScheduleAdapter(ScheduleFragment.this.getActivity(),mDatas,mYear,mMonth,mDay);
+                scheduleAdapter.setOnScheduleItemClickListener(ScheduleFragment.this);
+                mSchedlueRecyclerView.setAdapter(scheduleAdapter);
+            }
+        }).subscribe();
 
     }
+
 
     /**
      * 修改事件之后回调
@@ -133,15 +160,25 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
         mDay=date.getDay();
         mDayOfWeek=date.getDayOfWeek();
         xinqi=date.getXinqi();
-        Log.e("hui",mYear+" "+mMonth+" "+mDay);
-        QueryBuilder<Schedule> qb = scheduleDao.queryBuilder();
-        qb.where(qb.and(ScheduleDao.Properties.Year.eq(mYear),ScheduleDao.Properties.Month.eq(mMonth),
-                ScheduleDao.Properties.Day.eq(mDay)));
-        qb.orderDesc(ScheduleDao.Properties.Status);
-        qb.build();
-        mDatas=qb.list();
-        scheduleAdapter.setDatas(mDatas);
-        scheduleAdapter.notifyDataSetChanged();
+
+        Observable.create(new ObservableOnSubscribe<List<Schedule>>() {
+            @Override
+            public void subscribe(@NonNull ObservableEmitter<List<Schedule>> e) throws Exception {
+                QueryBuilder<Schedule> qb = scheduleDao.queryBuilder();
+                qb.where(qb.and(ScheduleDao.Properties.Year.eq(mYear),ScheduleDao.Properties.Month.eq(mMonth),
+                        ScheduleDao.Properties.Day.eq(mDay)));
+                qb.orderDesc(ScheduleDao.Properties.Status);
+                qb.build();
+                e.onNext(qb.list());
+            }
+        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Schedule>>() {
+            @Override
+            public void accept(@NonNull List<Schedule> schedules) throws Exception {
+                mDatas=schedules;
+                scheduleAdapter.setDatas(mDatas);
+                scheduleAdapter.notifyDataSetChanged();
+            }
+        });
     }
 
     @Override
@@ -149,17 +186,12 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_schedule, container, false);
         ButterKnife.bind(this,view);
-        scheduleAdapter=new ScheduleAdapter(this.getContext(),mDatas,mYear,mMonth,mDay);
-        scheduleAdapter.setOnScheduleItemClickListener(this);
-        mSchedlueRecyclerView.setAdapter(scheduleAdapter);
-        //mSchedlueRecyclerView.setItemAnimator(new DefaultItemAnimator());
+        initDate();
         //添加分割线
         mSchedlueRecyclerView.addItemDecoration(new RecyclerView.ItemDecoration() {
             @Override
             public void onDraw(Canvas c, RecyclerView parent, RecyclerView.State state) {
-                //super.onDraw(c, parent, state);
                 int width=parent.getWidth();
-                int height=parent.getHeight();
                 float d=20;
                 float l1=100;
                 float l2=width-100-20;
@@ -209,6 +241,9 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
         return view;
     }
 
+    /**
+     * 添加新事件
+     */
     @OnClick(R.id.fab_add_event)
     void addEventClick(){
         Intent intent=new Intent(getContext(), ScheduleInfoActivity.class);
@@ -249,6 +284,12 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
         mListener = null;
     }
 
+    /**
+     * 查看事件详情、修改事件
+     * @param view
+     * @param position
+     * @param schedule1
+     */
     @Override
     public void onItemClick(View view, int position,Schedule schedule1) {
         Intent intent=new Intent(getActivity(),ScheduleInfoActivity.class);
@@ -272,7 +313,6 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
 
     @Override
     public void onItemLongClick(View view, int position) {
-        //Toast.makeText(this.getContext(),"item被长击了",Toast.LENGTH_SHORT).show();
     }
 
     @Override
@@ -280,6 +320,14 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
         sort(mDatas,0,mDatas.size());
         Toast.makeText(this.getContext(),"回调了",Toast.LENGTH_SHORT).show();
     }
+
+
+    /**
+     * 对已有重要性顺序的数组进行时间排序
+     * @param list
+     * @param low
+     * @param high
+     */
     public  void sort(List<Schedule> list,int low,int high){
         if(list==null||list.size()==0||low<0||high>=list.size())
             return;
@@ -314,18 +362,39 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
         EventBus.getDefault().unregister(this);
     }
 
-
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
     public interface OnFragmentInteractionListener {
         void onFragmentInteraction(String str);
+    }
+
+
+    private String getDayOfWeek(int dayOfWeek){
+        String result;
+        switch (dayOfWeek) {
+            case 1:
+                result= "星期天";
+                break;
+            case 2:
+                result= "星期一";
+                break;
+            case 3:
+                result= "星期二";
+                break;
+            case 4:
+                result= "星期三";
+                break;
+            case 5:
+                result= "星期四";
+                break;
+            case 6:
+                result= "星期五";
+                break;
+            case 7:
+                result= "星期六";
+                break;
+            default:
+                result="";
+                break;
+        }
+        return result;
     }
 }

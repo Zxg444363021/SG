@@ -272,7 +272,7 @@
                     android:paddingRight="10dp" />
 
                 <Button
-                    android:id="@+id/more_record_button"
+                    android:id="@+id/more_record_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#ffffff"
@@ -312,6 +312,7 @@
                     android:paddingRight="2dp" />
 
                 <Button
+                    android:id="@+id/more_friend_btn"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:background="#ffffff"

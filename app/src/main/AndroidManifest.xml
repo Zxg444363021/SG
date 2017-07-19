@@ -74,8 +74,10 @@
         </activity>
         <activity android:name=".maininterface.MainFragments.WeatherActivity" />
         <activity android:name=".maininterface.FriendInfoActivity" />
-        <activity android:name=".maininterface.DurmActivity"
-            android:screenOrientation="landscape"></activity>
+        <activity
+            android:name=".maininterface.DurmActivity"
+            android:screenOrientation="landscape" />
+        <activity android:name=".maininterface.MyRecordActivity"></activity>
     </application>
 
 </manifest>

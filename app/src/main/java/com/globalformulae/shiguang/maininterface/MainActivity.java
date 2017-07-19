@@ -130,7 +130,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         MyDate date=new MyDate(mYear,mMonth+1,mDay,mDayOfWeek);
         setDateTV(mYear,mMonth,mDay,getDayOfWeek(mDayOfWeek));
 
-        scheduleFragment=new ScheduleFragment(date);
+        scheduleFragment=new ScheduleFragment();
         timerFragment=new TimerFragment();
         habitFragment=new HabitFragment();
         fragmentManager=getSupportFragmentManager();

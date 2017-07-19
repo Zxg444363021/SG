@@ -33,13 +33,13 @@ import com.globalformulae.shiguang.model.SoilTimeBean;
 import com.globalformulae.shiguang.model.User;
 import com.globalformulae.shiguang.retrofit.RetrofitHelper;
 import com.globalformulae.shiguang.retrofit.UserActionService;
-import com.globalformulae.shiguang.utils.SPUtil;
 import com.globalformulae.shiguang.view.CircleImageView;
 
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -50,6 +50,8 @@ import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
+
+import static com.globalformulae.shiguang.utils.SPUtil.getSP;
 
 
 public class TimerFragment extends Fragment implements TimerRankAdapter.onItemClickListener{
@@ -76,8 +78,10 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     LinearLayout normalPage;
     @BindView(R.id.error_page)
     LinearLayout errorPage;
-    @BindView(R.id.more_record_button)
+    @BindView(R.id.more_record_btn)
     Button moreRecordBTN;
+    @BindView(R.id.more_friend_btn)
+    Button moreFriendBTN;
 
 
     private List<AlternateRecord> datalist1=new ArrayList<>();
@@ -113,9 +117,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_timer, container, false);
         ButterKnife.bind(this,view);
-        simpleRecordAdapter=new SimpleRecordAdapter(getContext(),datalist1);
         timerRecordRV.setLayoutManager(new LinearLayoutManager(this.getContext()));
-        timerRecordRV.setAdapter(simpleRecordAdapter);
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.sun_anim);
         sunIV.setAnimation(animation);
         timerRankRV.setLayoutManager(new LinearLayoutManager(this.getContext()));
@@ -136,6 +138,8 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
                 }
             }
         });
+
+
         return view;
     }
     public int dip2px(Context context, float dpValue) {
@@ -150,26 +154,25 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     }
 
     public void initView(){
-        if(!SPUtil.getSP(getActivity(),"user").getBoolean("isOnline",false)){
+        if(!getSP(getActivity(),"user").getBoolean("isOnline",false)){
             errorPage.setVisibility(View.VISIBLE);
             normalPage.setVisibility(View.GONE);
             return;
         }
         errorPage.setVisibility(View.GONE);
         normalPage.setVisibility(View.VISIBLE);
-        SharedPreferences sp= SPUtil.getSP(getActivity(),"user");
+        SharedPreferences sp= getSP(getActivity(),"user");
         timerPowerTV.setText(String.valueOf(sp.getInt("power_n",0))+"g");
         timerTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
         Glide.with(getActivity()).load(sp.getString("icon",null)).placeholder(R.mipmap.unlogged_icon).into(timerIconIV);
-        if(datalist1.size()==0){
-            moreRecordBTN.setText("暂无动态");
-        }
+
     }
 
     /**
-     * 排行榜记录获取
+     * 获取排行榜和我的记录
      */
     private void getTimerRR(){
+        //获取排名
         userActionService.doGetRank()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -189,6 +192,38 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
 
                     }
                 }).subscribe();
+
+        //获取我的记录
+        userActionService.doGetRecord(String.valueOf(getSP(getActivity(), "user").getLong("userid", 0)))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<AlternateRecord>>() {
+                    @Override
+                    public void accept(@NonNull List<AlternateRecord> alternateRecords) throws Exception {
+                        datalist1=alternateRecords;
+                        Collections.reverse(datalist1);
+                        simpleRecordAdapter=new SimpleRecordAdapter(getActivity(),datalist1);
+                        timerRecordRV.setAdapter(simpleRecordAdapter);
+                        if(datalist1.size()==0){
+                            moreRecordBTN.setText("暂无动态");
+                        }else {
+                            if(datalist1.size()<=5&&datalist1.size()!=0){
+                                moreRecordBTN.setVisibility(View.GONE);
+                            }
+                            if(datalist2.size()<=10&&datalist2.size()>=0){
+                                moreFriendBTN.setVisibility(View.GONE);
+                            }else{
+                                moreRecordBTN.setText("查看更多动态");
+                            }
+                        }
+                        //timerRecordRV.invalidate();
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+
+                    }
+                });
     }
 
     @OnClick(R.id.water_btn)
@@ -246,7 +281,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     @Override
     public void onItemClick(User friend) {
 
-        if(friend.getUserid()==SPUtil.getSP(getActivity(),"user").getLong("userid",0))
+        if(friend.getUserid()== getSP(getActivity(),"user").getLong("userid",0))
             return;
 
         Intent intent=new Intent(getActivity(), FriendInfoActivity.class);
