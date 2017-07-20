@@ -8,8 +8,8 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
+import android.os.CountDownTimer;
+import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -62,6 +62,8 @@ import yalantis.com.sidemenu.interfaces.Resourceble;
 import yalantis.com.sidemenu.interfaces.ScreenShotable;
 import yalantis.com.sidemenu.model.SlideMenuItem;
 import yalantis.com.sidemenu.util.ViewAnimator;
+
+import static android.os.Environment.DIRECTORY_MUSIC;
 
 public class MainActivity extends AppCompatActivity implements ViewAnimator.ViewAnimatorListener,
         ScheduleFragment.OnFragmentInteractionListener,
@@ -172,6 +174,12 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             }
         });
 
+        Log.e("getFilesDir", getFilesDir().getAbsolutePath());
+        Log.e("getCacheDir", getCacheDir().getAbsolutePath());
+        Log.e("fileList", fileList().toString());
+        Log.d("dataDir", Environment.getExternalStorageDirectory().getAbsolutePath());
+        Log.w("getExternalFilesDir", getExternalFilesDir(DIRECTORY_MUSIC).getAbsolutePath());
+        Log.e("getExternalCacheDir", getExternalCacheDir().getAbsolutePath());
     }
 
 
@@ -181,7 +189,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         if(scheduleFragment != null)fragmentTransaction.hide(scheduleFragment);
         if(timerFragment != null)fragmentTransaction.hide(timerFragment);
         if(habitFragment != null)fragmentTransaction.hide(habitFragment);
-        //if(fg3 != null)fragmentTransaction.hide(fg3);
     }
 
 
@@ -454,62 +461,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         str.equals("timerFragment");
     }
 
-
-    private Handler handler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-            int time=((MyApplication)getApplication()).remainTime;
-            if(((MyApplication)getApplication()).isTiming()&&time>=0){
-                String hour = time / 3600 < 10 ? "0" + time / 3600 : "" + time / 3600;
-                int m=time%3600;
-                String min = m/ 60 < 10 ? "0" + m / 60 : "" + m / 60;
-                String sec = m % 60 < 10 ? "0" + m % 60 : "" + m % 60;
-                chronometer.setText(hour + ":" + min + ":" + sec);
-                if((timingTength-time)%1500==0){
-                    Log.e("time", String.valueOf(timingTength-time));
-                    EventBus.getDefault().post(new SoilTimeBean(0));
-                }else if((timingTength-time)%1500==300){
-                    EventBus.getDefault().post(new SoilTimeBean(300));
-                }else if((timingTength-time)%1500==600){
-                    EventBus.getDefault().post(new SoilTimeBean(600));
-                }else if((timingTength-time)%1500==900){
-                    EventBus.getDefault().post(new SoilTimeBean(900));
-                }else if((timingTength-time)%1500==1200){
-                    EventBus.getDefault().post(new SoilTimeBean(1200));
-                }else if((timingTength-time)%1500==1400){
-                    EventBus.getDefault().post(new SoilTimeBean(1400));
-                }else if(time==0){
-                    ((MyApplication)getApplication()).setIsTiming(false);
-                    thread.interrupt();
-                }
-                else{}
-                ((MyApplication)getApplication()).remainTime--;
-            }else{
-                thread.interrupt();
-            }
-
-
-        }
-    };
-    /**
-     * 计时线程
-     */
-    private Thread thread=new Thread(new Runnable() {
-        @Override
-        public void run() {
-            while(((MyApplication)MainActivity.this.getApplication()).isTiming()){
-                try {
-                    handler.sendEmptyMessage(0);
-                    Thread.currentThread().sleep(1000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    });
-
     /**
      * 时间选择好了开始计时
      * @param hour
@@ -522,7 +473,42 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         if(!((MyApplication)MainActivity.this.getApplication()).isTiming()){
             ((MyApplication)MainActivity.this.getApplication()).setIsTiming(true);
         }
-        thread.start();
+        new CountDownTimer((timingTength+1)*1000,1000){
 
+            @Override
+            public void onTick(long millisUntilFinished) {
+                int time=Long.valueOf(millisUntilFinished).intValue()/1000;
+                if(((MyApplication)getApplication()).isTiming()&&time>=0){
+                    String hour = time / 3600 < 10 ? "0" + time / 3600 : "" + time / 3600;
+                    int m=time%3600;
+                    String min = m/ 60 < 10 ? "0" + m / 60 : "" + m / 60;
+                    String sec = m % 60 < 10 ? "0" + m % 60 : "" + m % 60;
+                    chronometer.setText(hour + ":" + min + ":" + sec);
+                    if((timingTength-time)%1500==0){
+                        EventBus.getDefault().post(new SoilTimeBean(0));
+                    }else if((timingTength-time)%1500==60){
+                        EventBus.getDefault().post(new SoilTimeBean(300));
+                    }else if((timingTength-time)%1500==300){
+                        EventBus.getDefault().post(new SoilTimeBean(600));
+                    }else if((timingTength-time)%1500==600){
+                        EventBus.getDefault().post(new SoilTimeBean(900));
+                    }else if((timingTength-time)%1500==900){
+                        EventBus.getDefault().post(new SoilTimeBean(1200));
+                    }else if((timingTength-time)%1500==1400){
+                        EventBus.getDefault().post(new SoilTimeBean(1400));
+                    }else if(time==0){
+                        ((MyApplication)getApplication()).setIsTiming(false);
+                    }
+                    else{}
+                }else{
+
+                }
+            }
+
+            @Override
+            public void onFinish() {
+                ((MyApplication)getApplication()).setIsTiming(false);
+            }
+        }.start();
     }
 }

@@ -13,6 +13,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ import com.globalformulae.shiguang.retrofit.RetrofitHelper;
 import com.globalformulae.shiguang.retrofit.UserActionService;
 import com.globalformulae.shiguang.view.CircleImageView;
 
+import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
@@ -110,6 +112,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         super.onCreate(savedInstanceState);
         retrofit= RetrofitHelper.getInstance();
         userActionService=retrofit.create(UserActionService.class);
+
     }
 
     @Override
@@ -266,12 +269,14 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
         }
+        EventBus.getDefault().register(this);
     }
 
     @Override
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        EventBus.getDefault().register(this);
     }
 
     /**
@@ -337,6 +342,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
 
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeSoil(SoilTimeBean soilTime){
+        Log.e("changeSoil", "啊哈？");
         int time=soilTime.getTime()%1500;
         switch (time){
             case 0:
