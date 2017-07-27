@@ -4,8 +4,6 @@ import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Message;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
@@ -20,10 +18,10 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.bean.Schedule;
 import com.globalformulae.shiguang.greendao.DaoSession;
 import com.globalformulae.shiguang.greendao.ScheduleDao;
 import com.globalformulae.shiguang.maininterface.MainFragments.ScheduleFragment;
-import com.globalformulae.shiguang.model.Schedule;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -67,14 +65,6 @@ public class ScheduleInfoActivity extends AppCompatActivity {
     public void setMycallBack(MycallBack mycallBack) {
         this.mycallBack = mycallBack;
     }
-
-    Handler handler=new Handler(){
-        @Override
-        public void handleMessage(Message msg) {
-            super.handleMessage(msg);
-
-        }
-    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

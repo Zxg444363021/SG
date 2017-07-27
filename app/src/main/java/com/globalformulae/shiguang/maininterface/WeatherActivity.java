@@ -1,4 +1,4 @@
-package com.globalformulae.shiguang.maininterface.MainFragments;
+package com.globalformulae.shiguang.maininterface;
 
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
@@ -12,8 +12,8 @@ import android.widget.TextView;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.maininterface.adapter.Weather24HourAdapter;
 import com.globalformulae.shiguang.maininterface.adapter.Weather7DayAdapter;
-import com.globalformulae.shiguang.model.WeatherBean24h;
-import com.globalformulae.shiguang.model.WeatherBean7D;
+import com.globalformulae.shiguang.bean.WeatherBean24h;
+import com.globalformulae.shiguang.bean.WeatherBean7D;
 import com.globalformulae.shiguang.retrofit.WeatherService;
 import com.globalformulae.shiguang.utils.IPConfig;
 

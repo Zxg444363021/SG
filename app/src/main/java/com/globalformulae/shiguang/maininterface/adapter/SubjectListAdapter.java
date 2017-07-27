@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.Subject;
+import com.globalformulae.shiguang.bean.Subject;
 
 import java.util.List;
 

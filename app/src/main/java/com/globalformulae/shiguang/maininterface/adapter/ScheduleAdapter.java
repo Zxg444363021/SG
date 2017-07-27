@@ -1,4 +1,4 @@
-package com.globalformulae.shiguang.maininterface.MainFragments;
+package com.globalformulae.shiguang.maininterface.adapter;
 
 import android.content.Context;
 import android.os.Handler;
@@ -11,11 +11,11 @@ import android.widget.CompoundButton;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.globalformulae.shiguang.maininterface.MyApplication;
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.bean.Schedule;
 import com.globalformulae.shiguang.greendao.DaoSession;
 import com.globalformulae.shiguang.greendao.ScheduleDao;
-import com.globalformulae.shiguang.model.Schedule;
+import com.globalformulae.shiguang.maininterface.MyApplication;
 
 import org.greenrobot.greendao.query.QueryBuilder;
 
@@ -28,7 +28,7 @@ import butterknife.ButterKnife;
  * Created by ZXG on 2017/4/10.
  */
 
-public class ScheduleAdapter extends RecyclerView.Adapter<SchedlueViewHolder>{
+public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.SchedlueViewHolder>{
     private LayoutInflater mInflater;
     private Context mContext;
     private List<Schedule> mDatas;
@@ -287,26 +287,27 @@ public class ScheduleAdapter extends RecyclerView.Adapter<SchedlueViewHolder>{
         super.onDetachedFromRecyclerView(recyclerView);
         unregisterAdapterDataObserver(observer);
     }
-}
+    class SchedlueViewHolder extends RecyclerView.ViewHolder {
+        @BindView(R.id.event_item)
+        LinearLayout item;
+        @BindView(R.id.event_item_status)
+        CheckBox itemStatus;
+        @BindView(R.id.event_item_type)
+        CheckBox itemType;
+        @BindView(R.id.event_item_name)
+        TextView itemName;
+        @BindView(R.id.event_item_time)
+        TextView itemTime;
 
 
-
-
-class SchedlueViewHolder extends RecyclerView.ViewHolder {
-    @BindView(R.id.event_item)
-    LinearLayout item;
-    @BindView(R.id.event_item_status)
-    CheckBox itemStatus;
-    @BindView(R.id.event_item_type)
-    CheckBox itemType;
-    @BindView(R.id.event_item_name)
-    TextView itemName;
-    @BindView(R.id.event_item_time)
-    TextView itemTime;
-
-
-    public SchedlueViewHolder(View itemView) {
-        super(itemView);
-        ButterKnife.bind(this,itemView);
+        public SchedlueViewHolder(View itemView) {
+            super(itemView);
+            ButterKnife.bind(this,itemView);
+        }
     }
 }
+
+
+
+
+

@@ -1,6 +1,6 @@
 package com.globalformulae.shiguang.retrofit;
 
-import com.globalformulae.shiguang.model.NBAEvents;
+import com.globalformulae.shiguang.bean.NBAEvents;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;

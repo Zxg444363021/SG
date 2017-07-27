@@ -9,7 +9,6 @@ import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.os.Environment;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
@@ -24,26 +23,23 @@ import android.transition.ChangeTransform;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.animation.BounceInterpolator;
-import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.LinearLayout;
-import android.widget.TextClock;
 import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.bean.MyDate;
+import com.globalformulae.shiguang.bean.SoilTimeBean;
 import com.globalformulae.shiguang.maininterface.MainFragments.HabitFragment;
 import com.globalformulae.shiguang.maininterface.MainFragments.ScheduleFragment;
 import com.globalformulae.shiguang.maininterface.MainFragments.TimerFragment;
-import com.globalformulae.shiguang.maininterface.MainFragments.WeatherActivity;
-import com.globalformulae.shiguang.model.MyDate;
-import com.globalformulae.shiguang.model.SoilTimeBean;
+import com.globalformulae.shiguang.maininterface.nba.NBAActivity;
 import com.globalformulae.shiguang.utils.MenuManager;
 import com.globalformulae.shiguang.utils.SPUtil;
 import com.globalformulae.shiguang.view.CustomDialog;
@@ -63,8 +59,6 @@ import yalantis.com.sidemenu.interfaces.ScreenShotable;
 import yalantis.com.sidemenu.model.SlideMenuItem;
 import yalantis.com.sidemenu.util.ViewAnimator;
 
-import static android.os.Environment.DIRECTORY_MUSIC;
-
 public class MainActivity extends AppCompatActivity implements ViewAnimator.ViewAnimatorListener,
         ScheduleFragment.OnFragmentInteractionListener,
         TimerFragment.OnFragmentInteractionListener,
@@ -80,11 +74,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @BindView(R.id.frameLayout)
     FrameLayout frameLayout;
     @BindView(R.id.tv_date)
-    Button dateTV;
+    TextView dateTV;
     @BindView(R.id.chronometer)
     TextView chronometer;
-    @BindView(R.id.text_clock)
-    TextClock textClock;
 
     private ScheduleFragment scheduleFragment;
     private TimerFragment timerFragment;
@@ -129,7 +121,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         mMonth=mCalendar.get(Calendar.MONTH);
         mDay=mCalendar.get(Calendar.DAY_OF_MONTH);
         mDayOfWeek=mCalendar.get(Calendar.DAY_OF_WEEK);
-        MyDate date=new MyDate(mYear,mMonth+1,mDay,mDayOfWeek);
         setDateTV(mYear,mMonth,mDay,getDayOfWeek(mDayOfWeek));
 
         scheduleFragment=new ScheduleFragment();
@@ -150,7 +141,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 hideAllFragment(fTransaction);
                 switch (item.getItemId()){
                     case R.id.action_task:
-                        textClock.setVisibility(View.GONE);
                         chronometer.setVisibility(View.GONE);
                         dateTV.setVisibility(View.VISIBLE);
                         fTransaction.show(scheduleFragment);
@@ -163,10 +153,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                     case R.id.action_custom:
                         chronometer.setVisibility(View.GONE);
                         dateTV.setVisibility(View.GONE);
-                        textClock.setVisibility(View.GONE);
                         fTransaction.show(habitFragment);
-                        // Toast.makeText(MainActivity.this,"7",Toast.LENGTH_SHORT).show();
-
                         break;
                 }
                 fTransaction.commit();
@@ -174,12 +161,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             }
         });
 
-        Log.e("getFilesDir", getFilesDir().getAbsolutePath());
-        Log.e("getCacheDir", getCacheDir().getAbsolutePath());
-        Log.e("fileList", fileList().toString());
-        Log.d("dataDir", Environment.getExternalStorageDirectory().getAbsolutePath());
-        Log.w("getExternalFilesDir", getExternalFilesDir(DIRECTORY_MUSIC).getAbsolutePath());
-        Log.e("getExternalCacheDir", getExternalCacheDir().getAbsolutePath());
     }
 
 
@@ -275,13 +256,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         }
 
 
-    }
-
-    /**
-     * 时间显示按钮监听器
-     */
-    @OnClick(R.id.text_clock)
-    void choiceTime(){
     }
 
     @Override

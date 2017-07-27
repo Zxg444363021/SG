@@ -23,6 +23,7 @@ public class IPConfig {
             while (xrp.getEventType() != XmlResourceParser.END_DOCUMENT) {
                 if (xrp.getEventType() == XmlResourceParser.START_TAG) {
                     String tagname = xrp.getName();
+
                     if (tagname.equals("service")) {
                         hashMap.put(xrp.getAttributeName(0), xrp.getAttributeValue(0));
                     }

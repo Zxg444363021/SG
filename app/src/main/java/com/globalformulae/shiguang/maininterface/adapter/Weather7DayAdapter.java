@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.WeatherBean7D;
+import com.globalformulae.shiguang.bean.WeatherBean7D;
 
 import java.util.List;
 

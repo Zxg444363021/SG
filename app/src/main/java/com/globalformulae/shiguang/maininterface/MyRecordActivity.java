@@ -8,8 +8,8 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.bean.OnesRecord;
 import com.globalformulae.shiguang.maininterface.adapter.ComplexRecordAdapter;
-import com.globalformulae.shiguang.model.AlternateRecord;
 import com.globalformulae.shiguang.retrofit.RetrofitHelper;
 import com.globalformulae.shiguang.retrofit.UserActionService;
 
@@ -32,7 +32,7 @@ public class MyRecordActivity extends AppCompatActivity {
     RecyclerView myRecordRV;
     private Retrofit retrofit;
     private UserActionService userActionService;
-    private List<AlternateRecord> mDataList;
+    private List<OnesRecord> mDataList;
     private ComplexRecordAdapter complexRecordAdapter;
 
     @Override
@@ -49,10 +49,10 @@ public class MyRecordActivity extends AppCompatActivity {
         userActionService.doGetRecord(String.valueOf(getSP(MyRecordActivity.this, "user").getLong("userid", 0)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<AlternateRecord>>() {
+                .subscribe(new Consumer<List<OnesRecord>>() {
             @Override
-            public void accept(@NonNull List<AlternateRecord> alternateRecords) throws Exception {
-                mDataList=alternateRecords;
+            public void accept(@NonNull List<OnesRecord> onesRecords) throws Exception {
+                mDataList=onesRecords;
                 complexRecordAdapter=new ComplexRecordAdapter(MyRecordActivity.this,mDataList);
                 myRecordRV.setAdapter(complexRecordAdapter);
                 myRecordRV.setLayoutManager(new LinearLayoutManager(MyRecordActivity.this,LinearLayoutManager.VERTICAL,false));

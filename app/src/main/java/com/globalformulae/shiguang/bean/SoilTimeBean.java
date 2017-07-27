@@ -1,4 +1,4 @@
-package com.globalformulae.shiguang.model;
+package com.globalformulae.shiguang.bean;
 
 /**
  * Created by Administrator on 2017/6/30.

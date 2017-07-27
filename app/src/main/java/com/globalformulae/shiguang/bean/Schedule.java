@@ -1,4 +1,4 @@
-package com.globalformulae.shiguang.model;
+package com.globalformulae.shiguang.bean;
 
 import org.greenrobot.greendao.annotation.Entity;
 import org.greenrobot.greendao.annotation.Generated;

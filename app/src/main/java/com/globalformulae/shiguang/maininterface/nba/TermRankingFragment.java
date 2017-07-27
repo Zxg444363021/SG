@@ -1,4 +1,4 @@
-package com.globalformulae.shiguang.maininterface;
+package com.globalformulae.shiguang.maininterface.nba;
 
 import android.content.Context;
 import android.net.Uri;
@@ -9,7 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.NBAEvents;
+import com.globalformulae.shiguang.bean.NBAEvents;
 
 import org.xwalk.core.XWalkView;
 

@@ -25,8 +25,9 @@ import com.globalformulae.shiguang.greendao.DaoSession;
 import com.globalformulae.shiguang.greendao.ScheduleDao;
 import com.globalformulae.shiguang.maininterface.MyApplication;
 import com.globalformulae.shiguang.maininterface.ScheduleInfoActivity;
-import com.globalformulae.shiguang.model.MyDate;
-import com.globalformulae.shiguang.model.Schedule;
+import com.globalformulae.shiguang.bean.MyDate;
+import com.globalformulae.shiguang.bean.Schedule;
+import com.globalformulae.shiguang.maininterface.adapter.ScheduleAdapter;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

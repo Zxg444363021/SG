@@ -5,9 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-
-    <!-- To auto-complete the email text field in the login form with the user's emails -->
-    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.READ_PROFILE" />
     <uses-permission android:name="android.permission.READ_CONTACTS" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -31,8 +28,24 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+
+        <meta-data
+            android:name="UMENG_APPKEY"
+            android:value="58fd6c2004e2055464001f1a">
+        </meta-data>
+        <meta-data
+            android:name="UMENG_MESSAGE_SECRET"
+            android:value="938aa65c16badf6d8366875e206b2433">
+        </meta-data>
+
+        <meta-data
+            android:name="UMENG_CHANNEL"
+            android:value="Channel ID" >
+        </meta-data>
+
+
         <activity android:name=".maininterface.MainActivity" />
-        <activity android:name=".maininterface.NBAActivity" />
+        <activity android:name=".maininterface.nba.NBAActivity" />
         <activity
             android:name=".maininterface.SchoolLoginActivity"
             android:label="@string/title_activity_school_login" />
@@ -72,7 +85,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".maininterface.MainFragments.WeatherActivity" />
+        <activity android:name=".maininterface.WeatherActivity" />
         <activity android:name=".maininterface.FriendInfoActivity" />
         <activity
             android:name=".maininterface.DurmActivity"

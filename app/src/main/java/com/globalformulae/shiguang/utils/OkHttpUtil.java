@@ -4,11 +4,8 @@ import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
 
-import com.globalformulae.shiguang.model.NBAEvents;
-import com.globalformulae.shiguang.model.ResponseBean;
-import com.globalformulae.shiguang.model.User;
-import com.globalformulae.shiguang.model.WeatherBean24h;
-import com.globalformulae.shiguang.model.WeatherBean7D;
+import com.globalformulae.shiguang.bean.ResponseBean;
+import com.globalformulae.shiguang.bean.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
@@ -58,7 +55,7 @@ public class OkHttpUtil {
     private static final String SCHOOL_GENIMG="http://210.42.121.132/servlet/GenImg";
     private static final String SCHOOL_LOGINURL = "http://210.42.121.132/servlet/Login";
     public static final String BASEURL="http://121.42.140.71:8080/shiguangServer/";
-    //public static final String BASEURL="http://192.168.191.5:8080/shiguangServer/";
+    //public static final String BASEURL="http://10.4.101.115:8080/shiguangServer/";
     private static final String REGISTURL="regist";
     private static final String LOGINURL="login";
     public static final String GETFRIENDINFO="doGetFriendInfo";
@@ -69,7 +66,6 @@ public class OkHttpUtil {
     private static OkHttpClient okHttpClient;
     private OkHttpUtil(){}
     private StringBuilder mResult=new StringBuilder();
-    private NBAEvents nbaEvents;
 
 
     public static OkHttpUtil getInstance(){
@@ -95,30 +91,6 @@ public class OkHttpUtil {
     }
 
 
-
-
-    public NBAEvents NbaEvents(){
-                Request.Builder builder=new Request.Builder();  //发起请求
-                Request request=builder.get().url(NBAEVENTS_URL).build(); //构造者模式
-                Call call=okHttpClient.newCall(request);
-                Response response= null;
-                try {
-                    response = call.execute();
-                    Gson gson=new Gson();
-                    String json=response.body().string();
-                    nbaEvents=gson.fromJson(json, NBAEvents.class);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-        return nbaEvents;
-    }
-
-
-
-
-
-
-
     public StringBuilder getmResult() {
         return mResult;
     }
@@ -127,13 +99,8 @@ public class OkHttpUtil {
         this.mResult = mResult;
     }
 
-    public void setNbaEvents(NBAEvents nbaEvents) {
-        this.nbaEvents = nbaEvents;
-    }
 
-    public NBAEvents getNbaEvents() {
-        return nbaEvents;
-    }
+
 
     private static class MyHandler extends Handler {
         private WeakReference<NetServiceUser> mNetServiceUser;
@@ -404,6 +371,11 @@ public class OkHttpUtil {
 
     }
 
+    /**
+     * 登录
+     * @param phone
+     * @param password
+     */
     public void loginShiguang(String phone,String password){
         FormBody formBody=new FormBody.Builder()
                 .add("phone",phone)
@@ -417,7 +389,7 @@ public class OkHttpUtil {
         call.enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-
+                Log.e("result200:","ssssssssssss");
             }
 
             @Override
@@ -427,10 +399,15 @@ public class OkHttpUtil {
                     String result=response.body().string();
                     Log.e("result200:",result);
                     Gson gson=new Gson();
-
                     responseBean.setCode(ResponseBean.LOGIN_SUCC);
-                    User user=gson.fromJson(result,User.class);
-                    responseBean.setUser(user);
+                    try{
+                        User user=gson.fromJson(result,User.class);
+                        responseBean.setUser(user);
+                    }catch (Exception e){
+                        responseBean.setCode(ResponseBean.LOGIN_FAIL);
+                        responseBean.setMessage("203");//服务器那边错误
+                    }
+
                     Log.e("responseBean:",responseBean.toString() );
                 }else if(response.code()==201){
                     responseBean.setCode(ResponseBean.LOGIN_FAIL);
@@ -444,57 +421,12 @@ public class OkHttpUtil {
                     //服务器那边的错误
                     responseBean.setCode(ResponseBean.LOGIN_FAIL);
                     responseBean.setMessage("203");//
+                    Log.e("result203", response.body().string());
                     Log.e("responseBean:", "error");
                 }
                 EventBus.getDefault().post(responseBean);
             }
         });
     }
-
-    public void getWeather(Request request){
-        Call call=okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("hhh", "zheli?");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String result=response.body().string();
-                Gson gson=new Gson();
-                WeatherBean24h weatherBean24h=gson.fromJson(result, WeatherBean24h.class);
-                if(weatherBean24h!=null)
-                    EventBus.getDefault().post(weatherBean24h);
-                else
-                    Log.e("hhh", "onResponse: ");
-            }
-        });
-    }
-
-    public void getWeather7d(Request request){
-        Call call=okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                Log.e("hhh", "zheli?");
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                String result=response.body().string();
-                Gson gson=new Gson();
-                WeatherBean7D weatherBean7d=gson.fromJson(result, WeatherBean7D.class);
-                if(weatherBean7d!=null)
-                    EventBus.getDefault().post(weatherBean7d);
-                else
-                    Log.e("hhh", "onResponse: ");
-            }
-        });
-    }
-
-
-
-
 }
 

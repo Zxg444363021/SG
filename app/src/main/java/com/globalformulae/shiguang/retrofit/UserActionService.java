@@ -1,15 +1,15 @@
 package com.globalformulae.shiguang.retrofit;
 
-import com.globalformulae.shiguang.model.AlternateRecord;
-import com.globalformulae.shiguang.model.Power;
-import com.globalformulae.shiguang.model.User;
+import com.globalformulae.shiguang.bean.AlternateRecord;
+import com.globalformulae.shiguang.bean.OnesRecord;
+import com.globalformulae.shiguang.bean.ResponseBean;
+import com.globalformulae.shiguang.bean.User;
 
 import java.util.List;
 
 import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
-import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 /**
@@ -25,7 +25,7 @@ public interface UserActionService {
      */
     @FormUrlEncoded
     @POST("doGetRecord")
-    Observable<List<AlternateRecord>> doGetRecord(@Field("userid") String userid);
+    Observable<List<OnesRecord>> doGetRecord(@Field("userid") String userid);
 
     /**
      * 能量交互
@@ -36,18 +36,24 @@ public interface UserActionService {
      */
     @FormUrlEncoded
     @POST("doStealPower")
-    Observable<AlternateRecord> doStealPower(@Field("user1id") String user1id,@Field("user2id") String user2id,@Field("powertype") String powertype);
+    Observable<AlternateRecord> doStealPower(@Field("user1id") String user1id, @Field("user2id") String user2id, @Field("powertype") String powertype);
 
     /**
-     * 获取我是否可以偷朋友能量
-     * @param user1id
-     * @param user2id
+     * 获取排名
+     * @param userid
      * @return
      */
     @FormUrlEncoded
-    @POST("doGetFriendInfo")
-    Observable<Power> doGetFriendInfo(@Field("user1id") String user1id,@Field("user2id") String user2id);
+    @POST("doGetRank")
+    Observable<List<User>> doGetRank(@Field("userid")String userid);
 
-    @GET("doGetRank")
-    Observable<List<User>> doGetRank();
+    /**
+     * 登录
+     * @param phone
+     * @param password
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("login")
+    Observable<ResponseBean> doLogin(@Field("phone")String phone, @Field("password")String password);
 }

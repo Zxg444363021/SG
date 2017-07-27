@@ -20,13 +20,12 @@
                 android:layout_height="wrap_content"
                 android:background="?attr/colorPrimary"
                 android:minHeight="?attr/actionBarSize"
-                android:weightSum="1">
+               >
 
                 <FrameLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
-                    android:padding="5dp"
                     app:rippleColor="@color/state_item_pressed">
 
                     <TextClock
@@ -46,7 +45,6 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center"
-                        android:elevation="8dp"
                         android:padding="10dp"
                         android:text="00:00:00"
                         android:textColor="#404040"
@@ -54,16 +52,13 @@
                         android:textStyle="bold"
                         android:background="@drawable/date_time_bg"
                         android:visibility="gone"/>
-                    <Button
+                    <TextView
                         android:id="@+id/tv_date"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:layout_weight="0.31"
+                        android:layout_gravity="center"
                         android:background="@drawable/date_time_bg"
-                        android:elevation="8dp"
-                        android:paddingLeft="5dp"
-                        android:paddingRight="5dp"
+                        android:padding="10dp"
                         android:text="4月13日"
                         android:textColor="#404040"
                         android:textSize="20sp"

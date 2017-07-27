@@ -13,8 +13,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.ResponseBean;
-import com.globalformulae.shiguang.model.User;
+import com.globalformulae.shiguang.bean.ResponseBean;
+import com.globalformulae.shiguang.bean.User;
 import com.globalformulae.shiguang.utils.MD5Util;
 import com.globalformulae.shiguang.utils.OkHttpUtil;
 import com.globalformulae.shiguang.utils.TimeCountUtil;

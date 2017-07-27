@@ -10,7 +10,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.AlternateRecord;
+import com.globalformulae.shiguang.bean.OnesRecord;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -26,10 +26,10 @@ import butterknife.ButterKnife;
 public class ComplexRecordAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder>{
 
     private Context mContext;
-    private List<AlternateRecord> mDataList;
+    private List<OnesRecord> mDataList;
     private LayoutInflater mLayoutInflater;
 
-    public ComplexRecordAdapter(Context context, List<AlternateRecord> dataList){
+    public ComplexRecordAdapter(Context context, List<OnesRecord> dataList){
         this.mContext=context;
         this.mDataList=dataList;
         this.mLayoutInflater=LayoutInflater.from(context);
@@ -49,19 +49,19 @@ public class ComplexRecordAdapter extends RecyclerView.Adapter<RecyclerView.View
 
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
-        AlternateRecord alternateRecord=mDataList.get(position);
+        OnesRecord onesRecord=mDataList.get(position);
         if(getItemViewType(position)==0){
-            ((ComplexRecordViewHolder2)holder).dateTitleTV.setText(date2string(alternateRecord.getTime()));
+            ((ComplexRecordViewHolder2)holder).dateTitleTV.setText(date2string(onesRecord.getTime()));
         }else{
-            if(mDataList.get(position).getType()==3){
+            if(onesRecord.getType()==3){
                 ((ComplexRecordViewHolder1)holder).actionTV.setText("来浇过水");
                 Glide.with(mContext).load(R.mipmap.water_drop).into(((ComplexRecordViewHolder1)holder).iconIV);
             }else{
-                ((ComplexRecordViewHolder1)holder).actionTV.setText("收取"+mDataList.get(position).getPower()+"g");
+                ((ComplexRecordViewHolder1)holder).actionTV.setText("收取"+onesRecord.getPower()+"g");
                 Glide.with(mContext).load(R.mipmap.steal_icon).into(((ComplexRecordViewHolder1)holder).iconIV);
             }
-            ((ComplexRecordViewHolder1)holder).userTV.setText(mDataList.get(position).getUser2name());
-            ((ComplexRecordViewHolder1)holder).timeTV.setText(date2string2(alternateRecord.getTime()));
+            ((ComplexRecordViewHolder1)holder).userTV.setText(onesRecord.getName());
+            ((ComplexRecordViewHolder1)holder).timeTV.setText(date2string2(onesRecord.getTime()));
         }
 
 

@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.WeatherBean24h;
+import com.globalformulae.shiguang.bean.WeatherBean24h;
 
 import java.util.List;
 

@@ -8,7 +8,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.AlternateRecord;
+import com.globalformulae.shiguang.bean.OnesRecord;
 
 import java.sql.Timestamp;
 import java.util.Calendar;
@@ -21,10 +21,10 @@ import java.util.List;
 
 public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordAdapter.SimpleRecordViewHolder> {
     private Context mContext;
-    private List<AlternateRecord> mDatas;
+    private List<OnesRecord> mDatas;
     private LayoutInflater mInflater;
 
-    public SimpleRecordAdapter(Context context, List<AlternateRecord> datas) {
+    public SimpleRecordAdapter(Context context, List<OnesRecord> datas) {
         mContext=context;
         mDatas=datas;
         mInflater=LayoutInflater.from(mContext);
@@ -39,7 +39,7 @@ public class SimpleRecordAdapter extends RecyclerView.Adapter<SimpleRecordAdapte
 
     @Override
     public void onBindViewHolder(SimpleRecordViewHolder holder, int position) {
-        //holder.simpleRecordUserTV.setText(mDatas.get(position).getUser1name());
+        holder.simpleRecordUserTV.setText(mDatas.get(position).getName());
         if(mDatas.get(position).getType()==1||mDatas.get(position).getType()==2){
            holder.simpleRecordActionTV.setText("收取"+mDatas.get(position).getPower()+"g");
         }else{

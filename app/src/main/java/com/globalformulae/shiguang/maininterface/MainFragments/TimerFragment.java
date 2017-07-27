@@ -26,12 +26,12 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.bean.OnesRecord;
+import com.globalformulae.shiguang.bean.SoilTimeBean;
+import com.globalformulae.shiguang.bean.User;
 import com.globalformulae.shiguang.maininterface.FriendInfoActivity;
 import com.globalformulae.shiguang.maininterface.adapter.SimpleRecordAdapter;
 import com.globalformulae.shiguang.maininterface.adapter.TimerRankAdapter;
-import com.globalformulae.shiguang.model.AlternateRecord;
-import com.globalformulae.shiguang.model.SoilTimeBean;
-import com.globalformulae.shiguang.model.User;
 import com.globalformulae.shiguang.retrofit.RetrofitHelper;
 import com.globalformulae.shiguang.retrofit.UserActionService;
 import com.globalformulae.shiguang.view.CircleImageView;
@@ -41,7 +41,6 @@ import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -86,8 +85,8 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     Button moreFriendBTN;
 
 
-    private List<AlternateRecord> datalist1=new ArrayList<>();
-    private List<User> datalist2=new ArrayList<>();
+    private List<OnesRecord> myRecordList=new ArrayList<>();
+    private List<User> userRankList =new ArrayList<>();
     private OnFragmentInteractionListener mListener;
     private SimpleRecordAdapter simpleRecordAdapter;//上面的5条记录
     private TimerRankAdapter timerRankAdapter;//下面的10条记录
@@ -99,8 +98,6 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         // Required empty public constructor
     }
 
-
-    // TODO: Rename and change types and number of parameters
     public static TimerFragment newInstance(String param1, String param2) {
         TimerFragment fragment = new TimerFragment();
 
@@ -152,7 +149,6 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     @Override
     public void onResume() {
         super.onResume();
-        getTimerRR();
         initView();
     }
 
@@ -168,7 +164,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         timerPowerTV.setText(String.valueOf(sp.getInt("power_n",0))+"g");
         timerTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
         Glide.with(getActivity()).load(sp.getString("icon",null)).placeholder(R.mipmap.unlogged_icon).into(timerIconIV);
-
+        getTimerRR();
     }
 
     /**
@@ -176,14 +172,14 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
      */
     private void getTimerRR(){
         //获取排名
-        userActionService.doGetRank()
+        userActionService.doGetRank(String.valueOf(getSP(getActivity(), "user").getLong("userid", 0)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Consumer<List<User>>() {
                     @Override
                     public void accept(@NonNull List<User> users) throws Exception {
-                        datalist2=users;
-                        timerRankAdapter=new TimerRankAdapter(getContext(),datalist2);
+                        userRankList =users;
+                        timerRankAdapter=new TimerRankAdapter(getContext(), userRankList);
                         timerRankAdapter.setOnItemClickListener(TimerFragment.this);
                         timerRankRV.setAdapter(timerRankAdapter);
                         timerRankRV.invalidate();
@@ -200,20 +196,19 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         userActionService.doGetRecord(String.valueOf(getSP(getActivity(), "user").getLong("userid", 0)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<List<AlternateRecord>>() {
+                .subscribe(new Consumer<List<OnesRecord>>() {
                     @Override
-                    public void accept(@NonNull List<AlternateRecord> alternateRecords) throws Exception {
-                        datalist1=alternateRecords;
-                        Collections.reverse(datalist1);
-                        simpleRecordAdapter=new SimpleRecordAdapter(getActivity(),datalist1);
+                    public void accept(@NonNull List<OnesRecord> alternateRecords) throws Exception {
+                        myRecordList=alternateRecords;
+                        simpleRecordAdapter=new SimpleRecordAdapter(getActivity(),myRecordList);
                         timerRecordRV.setAdapter(simpleRecordAdapter);
-                        if(datalist1.size()==0){
+                        if(myRecordList.size()==0){
                             moreRecordBTN.setText("暂无动态");
                         }else {
-                            if(datalist1.size()<=5&&datalist1.size()!=0){
+                            if(myRecordList.size()<=5&&myRecordList.size()!=0){
                                 moreRecordBTN.setVisibility(View.GONE);
                             }
-                            if(datalist2.size()<=10&&datalist2.size()>=0){
+                            if(userRankList.size()<=10&& userRankList.size()>=0){
                                 moreFriendBTN.setVisibility(View.GONE);
                             }else{
                                 moreRecordBTN.setText("查看更多动态");
@@ -295,6 +290,10 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         intent.putExtra("name",friend.getName());
         intent.putExtra("power",friend.getPower());
         intent.putExtra("tomato_n",friend.getTomatoN());
+        intent.putExtra("power1Yesterday",friend.getPower1Yesterday());
+        intent.putExtra("power2Yesterday",friend.getPower2Yesterday());
+        intent.putExtra("power1CanSteal",friend.getPower1CanSteal());
+        intent.putExtra("power2CanSteal",friend.getPower2CanSteal());
         startActivity(intent);
     }
 

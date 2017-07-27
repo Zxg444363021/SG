@@ -1,7 +1,7 @@
 package com.globalformulae.shiguang.retrofit;
 
-import com.globalformulae.shiguang.model.WeatherBean24h;
-import com.globalformulae.shiguang.model.WeatherBean7D;
+import com.globalformulae.shiguang.bean.WeatherBean24h;
+import com.globalformulae.shiguang.bean.WeatherBean7D;
 
 import io.reactivex.Observable;
 import retrofit2.http.GET;

@@ -31,8 +31,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.ResponseBean;
-import com.globalformulae.shiguang.model.User;
+import com.globalformulae.shiguang.bean.ResponseBean;
+import com.globalformulae.shiguang.bean.User;
 import com.globalformulae.shiguang.utils.MD5Util;
 import com.globalformulae.shiguang.utils.OkHttpUtil;
 import com.globalformulae.shiguang.utils.SPUtil;
@@ -82,7 +82,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     ImageView logoIV;
 
 
+
     private Animation animation;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,6 +108,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
         EventBus.getDefault().register(this);
+
         setActionBar();
     }
 
@@ -241,6 +244,11 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             //showProgress(true);
             OkHttpUtil httpUtil = OkHttpUtil.getInstance();
             httpUtil.loginShiguang(mPhone, MD5Util.getMD5String(mPassword));
+
+
+
+
+
             showProgress(true);
             StyleableToast st2 = new StyleableToast
                     .Builder(LoginActivity.this, "登录中")

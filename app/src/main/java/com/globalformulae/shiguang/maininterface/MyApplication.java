@@ -24,6 +24,19 @@ public class MyApplication extends Application {
     public void onCreate() {
         super.onCreate();
         setUpDatabase();
+//        PushAgent mPushAgent = PushAgent.getInstance(this);
+//        //注册推送服务，每次调用register方法都会回调该接口
+//        mPushAgent.register(new IUmengRegisterCallback() {
+//            @Override
+//            public void onSuccess(String deviceToken) {
+//                Log.e("deviceToken", deviceToken);
+//            }
+//
+//            @Override
+//            public void onFailure(String s, String s1) {
+//                Log.e("deviceToken", s+"   "+s1);
+//            }
+//        });
     }
 
     private void setUpDatabase(){

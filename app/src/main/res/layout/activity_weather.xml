@@ -9,7 +9,7 @@
         android:layout_height="match_parent"
         android:background="@mipmap/weatherbg"
         android:orientation="vertical"
-        tools:context="com.globalformulae.shiguang.maininterface.MainFragments.WeatherActivity">
+        tools:context="com.globalformulae.shiguang.maininterface.WeatherActivity">
         <Button
             android:id="@+id/city_btn"
             android:layout_width="match_parent"

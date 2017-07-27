@@ -15,7 +15,7 @@ import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.greendao.DaoSession;
 import com.globalformulae.shiguang.greendao.SubjectDao;
 import com.globalformulae.shiguang.maininterface.adapter.SubjectListAdapter;
-import com.globalformulae.shiguang.model.Subject;
+import com.globalformulae.shiguang.bean.Subject;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;

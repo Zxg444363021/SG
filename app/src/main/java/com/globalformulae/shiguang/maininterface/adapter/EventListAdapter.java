@@ -14,7 +14,7 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.NBAEvents;
+import com.globalformulae.shiguang.bean.NBAEvents;
 
 import java.util.List;
 

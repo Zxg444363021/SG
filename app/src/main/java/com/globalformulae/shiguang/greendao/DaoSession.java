@@ -8,8 +8,8 @@ import org.greenrobot.greendao.database.Database;
 import org.greenrobot.greendao.identityscope.IdentityScopeType;
 import org.greenrobot.greendao.internal.DaoConfig;
 
-import com.globalformulae.shiguang.model.Schedule;
-import com.globalformulae.shiguang.model.Subject;
+import com.globalformulae.shiguang.bean.Schedule;
+import com.globalformulae.shiguang.bean.Subject;
 
 import com.globalformulae.shiguang.greendao.ScheduleDao;
 import com.globalformulae.shiguang.greendao.SubjectDao;

@@ -1,9 +1,4 @@
-package com.globalformulae.shiguang.model;
-
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-
-import com.globalformulae.shiguang.R;
+package com.globalformulae.shiguang.bean;
 
 /**
  * Created by ZXG on 2017/4/20.

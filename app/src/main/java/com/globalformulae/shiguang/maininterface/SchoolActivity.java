@@ -16,7 +16,7 @@ import com.globalformulae.shiguang.greendao.DaoMaster;
 import com.globalformulae.shiguang.greendao.DaoSession;
 import com.globalformulae.shiguang.greendao.SubjectDao;
 import com.globalformulae.shiguang.maininterface.adapter.FragmentAdapter;
-import com.globalformulae.shiguang.model.Subject;
+import com.globalformulae.shiguang.bean.Subject;
 import com.globalformulae.shiguang.utils.HtmlPageAnalyseUtil;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
 

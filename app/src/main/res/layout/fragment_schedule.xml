@@ -5,7 +5,6 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context="com.globalformulae.shiguang.maininterface.MainFragments.ScheduleFragment">
 
-    <!-- TODO: Update blank fragment layout -->
     <android.support.v7.widget.RecyclerView
         android:id="@+id/rv_schedlue"
         android:layout_width="match_parent"
@@ -15,14 +14,15 @@
         android:id="@+id/fab_add_event"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:src="@drawable/ic_add_black_24dp"
+        android:src="@drawable/ic_add_black_35dp"
 
         app:fabSize="normal"
-        android:elevation="50dp"
-        app:rippleColor="#3e2723"
+        app:backgroundTint="#a7ffeb"
+        app:elevation="10dp"
         app:layout_anchorGravity="bottom|end"
         app:layout_anchor="@+id/rv_schedlue"
         android:layout_margin="8dp"
-        android:translationZ="120dp" />
+        app:layout_behavior="com.globalformulae.shiguang.view.ScrollAwareFABBehavior"
+        />
 
 </android.support.design.widget.CoordinatorLayout>

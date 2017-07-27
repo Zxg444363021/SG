@@ -14,13 +14,13 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.model.User;
+import com.globalformulae.shiguang.bean.User;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 /**
- * Created by Administrator on 2017/6/4.
+ * Created by ZXG on 2017/6/4.
  */
 
 public class TimerRankAdapter extends RecyclerView.Adapter<TimerRankAdapter.TimerRankAdapterViewHolder>{

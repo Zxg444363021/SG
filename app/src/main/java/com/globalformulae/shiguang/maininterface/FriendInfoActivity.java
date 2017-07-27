@@ -20,9 +20,9 @@ import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.bean.AlternateRecord;
+import com.globalformulae.shiguang.bean.OnesRecord;
 import com.globalformulae.shiguang.maininterface.adapter.ComplexRecordAdapter;
-import com.globalformulae.shiguang.model.AlternateRecord;
-import com.globalformulae.shiguang.model.Power;
 import com.globalformulae.shiguang.retrofit.RetrofitHelper;
 import com.globalformulae.shiguang.retrofit.UserActionService;
 import com.globalformulae.shiguang.utils.SPUtil;
@@ -30,7 +30,6 @@ import com.globalformulae.shiguang.view.CircleImageView;
 
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 import java.util.List;
 
 import butterknife.BindView;
@@ -83,7 +82,7 @@ public class FriendInfoActivity extends AppCompatActivity {
     private ComplexRecordAdapter complexRecordAdapter;
     private Retrofit retrofit;
     private UserActionService userActionService;
-    private List<AlternateRecord> dataList;
+    private List<OnesRecord> friendRecordList;
     private Typeface mtypeface;
 
     @Override
@@ -95,7 +94,6 @@ public class FriendInfoActivity extends AppCompatActivity {
         userActionService = retrofit.create(UserActionService.class);
         mtypeface= Typeface.createFromAsset(getAssets(),"HYJiaShuJian.ttf");
         initView();
-        getFriendInfo();
         getFriendRecord();
     }
 
@@ -110,6 +108,14 @@ public class FriendInfoActivity extends AppCompatActivity {
         setActionBar(intent.getStringExtra("name"));
         Glide.with(this).load(intent.getStringExtra("icon")).placeholder(R.mipmap.unlogged_icon).into(friendiIconIV);
         friendTomatoNumTV.setText(String.valueOf(intent.getIntExtra("tomato_n", 0)));
+        if (intent.getIntExtra("power1CanSteal",0) == 1) {
+            gainTomatoBTN.setVisibility(View.VISIBLE);
+        }
+        if (intent.getIntExtra("power2CanSteal",0) == 1) {
+            gainCustomBTN.setVisibility(View.VISIBLE);
+        }
+
+
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.sun_anim);
         sunIV.setAnimation(animation);
         int n = SPUtil.getSP(this, "user").getInt("pot_num", 5);
@@ -157,33 +163,7 @@ public class FriendInfoActivity extends AppCompatActivity {
         newRecordTV.setTypeface(mtypeface);
     }
 
-    /**
-     * 获取可偷取能量信息
-     * retrofit+rxjava
-     */
-    public void getFriendInfo() {
-        userActionService.doGetFriendInfo(String.valueOf(getSP(FriendInfoActivity.this, "user").getLong("userid", 0)), String.valueOf(friendId))
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnNext(new Consumer<Power>() {
-                    @Override
-                    public void accept(@NonNull Power power) throws Exception {
-                        if (power.getCanPower1Steal() == 1) {
-                            gainTomatoBTN.setVisibility(View.VISIBLE);
-                        }
-                        if (power.getCanPower2Steal() == 1) {
-                            gainCustomBTN.setVisibility(View.VISIBLE);
-                        }
-                    }
-                })
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
 
-                    }
-                }).subscribe();
-
-    }
 
     public void setActionBar(String name) {
         toolbar.setTitle(name);
@@ -206,21 +186,21 @@ public class FriendInfoActivity extends AppCompatActivity {
         userActionService.doGetRecord(String.valueOf(friendId))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Observer<List<AlternateRecord>>() {
+                .subscribe(new Observer<List<OnesRecord>>() {
                     @Override
                     public void onSubscribe(@NonNull Disposable d) {
 
                     }
 
                     @Override
-                    public void onNext(@NonNull List<AlternateRecord> alternateRecords) {
-                        if (alternateRecords.size() != 0) {
-                            dataList = alternateRecords;
+                    public void onNext(@NonNull List<OnesRecord> onesRecord) {
+                        if (onesRecord.size() != 0) {
+                            friendRecordList = onesRecord;
                             processDataList();
-                            complexRecordAdapter = new ComplexRecordAdapter(FriendInfoActivity.this, dataList);
+                            complexRecordAdapter = new ComplexRecordAdapter(FriendInfoActivity.this, friendRecordList);
                             friendRecordRV.setAdapter(complexRecordAdapter);
                         } else {
-                            dataList = new ArrayList<AlternateRecord>();
+                            friendRecordList = new ArrayList<OnesRecord>();
                         }
                     }
 
@@ -239,23 +219,24 @@ public class FriendInfoActivity extends AppCompatActivity {
 
     /**
      * 对返回回来的记录进行加工
+     * 主要是加上今天明天后天这样的信息
      */
     private void processDataList() {
-        //先翻转
-        Collections.reverse(dataList);
+        //所有信息的第一条的日期
         Calendar theFirstDay = Calendar.getInstance();
-        theFirstDay.setTime(dataList.get(0).getTime());
+        theFirstDay.setTime(friendRecordList.get(0).getTime());
+        //获取一个0727一样的数字
         String date = String.valueOf(theFirstDay.get(Calendar.MONTH) + 1) + String.valueOf(theFirstDay.get(Calendar.DAY_OF_MONTH));
-        dataList.add(0, new AlternateRecord(4, dataList.get(0).getTime()));
+        //现在一开始填上
+        friendRecordList.add(0, new OnesRecord(4, friendRecordList.get(0).getTime()));
 
         //然后根据日期加上头部
-        for (int i = 1; i < dataList.size(); i++) {
-            Calendar theDay = Calendar.getInstance();
-            theFirstDay.setTime(dataList.get(i).getTime());
+        for (int i = 1; i < friendRecordList.size(); i++) {
+            theFirstDay.setTime(friendRecordList.get(i).getTime());
             String date1 = String.valueOf(theFirstDay.get(Calendar.MONTH) + 1) + String.valueOf(theFirstDay.get(Calendar.DAY_OF_MONTH));
             if (!date1.equals(date)) {
                 date = date1;
-                dataList.add(i, new AlternateRecord(4, dataList.get(i).getTime()));
+                friendRecordList.add(i, new OnesRecord(4, friendRecordList.get(i).getTime()));
                 i++;
             }
         }
@@ -299,7 +280,12 @@ public class FriendInfoActivity extends AppCompatActivity {
                 .subscribe(new Consumer<AlternateRecord>() {
                     @Override
                     public void accept(@NonNull AlternateRecord alternateRecord) throws Exception {
-                        addItemToList(alternateRecord);
+                        OnesRecord onesRecord=new OnesRecord();
+                        onesRecord.setName(getSP(FriendInfoActivity.this,"user").getString("name","zzz"));
+                        onesRecord.setPower(alternateRecord.getPower());
+                        onesRecord.setType(alternateRecord.getType());
+                        onesRecord.setTime(alternateRecord.getTime());
+                        addItemToList(onesRecord);
                     }
                 }, new Consumer<Throwable>() {
                     @Override
@@ -312,37 +298,37 @@ public class FriendInfoActivity extends AppCompatActivity {
 
     /**
      * 交换完成在本地直接添加数据到list
-     * @param alternateRecord
+     * @param onesRecord
      */
-    private void addItemToList(AlternateRecord alternateRecord){
+    private void addItemToList(OnesRecord onesRecord){
         Calendar today=Calendar.getInstance();
         today.set(Calendar.HOUR_OF_DAY,0);
         today.set(Calendar.MINUTE,0);
         Calendar theDay=Calendar.getInstance();
-        theDay.setTime(dataList.get(0).getTime());
+        theDay.setTime(friendRecordList.get(0).getTime());
         if(theDay.after(today)){//是今天
-            dataList.add(1, alternateRecord);
+            friendRecordList.add(1, onesRecord);
             complexRecordAdapter.notifyItemInserted(1);
         }else{
-            dataList.add(0,new AlternateRecord(4,alternateRecord.getTime()));
-            dataList.add(1, alternateRecord);
+            friendRecordList.add(0,new OnesRecord(4,onesRecord.getTime()));
+            friendRecordList.add(1, onesRecord);
             complexRecordAdapter.notifyItemRangeInserted(0,2);
             friendRecordRV.smoothScrollToPosition(0);
         }
 
-        if (alternateRecord.getType() == 1) {//偷番茄能量
+        if (onesRecord.getType() == 1) {//偷番茄能量
             gainTomatoBTN.setVisibility(View.GONE);
             wateringPlusTV.setVisibility(View.VISIBLE);
-            wateringPlusTV.setText("+" + alternateRecord.getPower());
+            wateringPlusTV.setText("+" + onesRecord.getPower());
             Animation animation = AnimationUtils.loadAnimation(FriendInfoActivity.this, R.anim.gain_plus);
             wateringPlusTV.setAnimation(animation);
-        } else if (alternateRecord.getType() == 2) {//偷习惯能量
+        } else if (onesRecord.getType() == 2) {//偷习惯能量
             gainCustomBTN.setVisibility(View.GONE);
             wateringPlusTV.setVisibility(View.VISIBLE);
-            wateringPlusTV.setText("+" + alternateRecord.getPower());
+            wateringPlusTV.setText("+" + onesRecord.getPower());
             Animation animation = AnimationUtils.loadAnimation(FriendInfoActivity.this, R.anim.gain_plus);
             wateringPlusTV.setAnimation(animation);
-        } else if (alternateRecord.getType() == 3) {//浇水
+        } else if (onesRecord.getType() == 3) {//浇水
             int n = SPUtil.getSP(FriendInfoActivity.this, "user").getInt("pot_num", 5);
             n--;
             SPUtil.getSPD(FriendInfoActivity.this, "user").putInt("pot_num", n).commit();

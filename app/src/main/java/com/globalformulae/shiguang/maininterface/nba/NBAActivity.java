@@ -1,4 +1,4 @@
-package com.globalformulae.shiguang.maininterface;
+package com.globalformulae.shiguang.maininterface.nba;
 
 import android.content.Context;
 import android.net.ConnectivityManager;
@@ -16,6 +16,7 @@ import android.widget.ImageButton;
 
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.maininterface.adapter.FragmentAdapter;
+import com.globalformulae.shiguang.model.NBAModel;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,6 +32,7 @@ public class NBAActivity extends AppCompatActivity implements NBAEventsFragment.
     private NBAEventsFragment mNBAEventFragment;
     private TermRankingFragment mTermRankingFragment;
     private FragmentAdapter mNbaFragmentAdapter;
+    private NBAContract.Presenter presenter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,6 +66,9 @@ public class NBAActivity extends AppCompatActivity implements NBAEventsFragment.
                 finish();
             }
         });
+
+        //根据fragment（view)和model创建了presenter，setPresneter的工作在其构造函数中完成
+        presenter=new NBAPresenter(mNBAEventFragment,new NBAModel());
     }
 
     /**

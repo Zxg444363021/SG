@@ -1,4 +1,4 @@
-package com.globalformulae.shiguang.model;
+package com.globalformulae.shiguang.bean;
 
 import java.util.List;
 
