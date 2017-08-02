@@ -13,7 +13,7 @@ import android.widget.TextView;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.utils.IPConfig;
 
-import java.lang.ref.SoftReference;
+import java.lang.ref.WeakReference;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -24,18 +24,19 @@ public class FirstActivity extends AppCompatActivity {
     ImageView weclomeIV;
     @BindView(R.id.welcome_tv)
     TextView welcomeTV;
-    private SoftReference<Typeface> mtypeface;
+    private WeakReference<Typeface> mtypeface;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_first);
         ButterKnife.bind(this);
         IPConfig.getIPConfig(this);
-        mtypeface=new SoftReference<Typeface>(Typeface.createFromAsset(getAssets(),"HYZhuZiTongNianTiW.ttf"));
+        mtypeface=new WeakReference<Typeface>(Typeface.createFromAsset(getAssets(),"HYZhuZiTongNianTiW.ttf"));
     }
 
     @Override
     protected void onResume() {
+        super.onResume();
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.welcome_anim);
         welcomeTV.setTypeface(mtypeface.get());
         weclomeIV.setAnimation(animation);
@@ -47,6 +48,7 @@ public class FirstActivity extends AppCompatActivity {
                 welcomeTV.setVisibility(View.VISIBLE);
             }
         },2000);
+
         weclomeIV.postDelayed(new Runnable() {
             @Override
             public void run() {
@@ -55,6 +57,6 @@ public class FirstActivity extends AppCompatActivity {
                 finish();
             }
         },4000);
-        super.onResume();
+
     }
 }

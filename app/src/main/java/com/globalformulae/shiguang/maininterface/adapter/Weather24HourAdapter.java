@@ -1,7 +1,6 @@
 package com.globalformulae.shiguang.maininterface.adapter;
 
 import android.content.Context;
-import android.graphics.BitmapFactory;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.bean.WeatherBean24h;
 
@@ -56,34 +56,34 @@ public class Weather24HourAdapter extends RecyclerView.Adapter<Weather24HourAdap
     public void setIcon(Weather24HourViewHolder holder,int dayT){
         switch (dayT){
             case 0:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w0));
+                Glide.with(mContext).load(R.mipmap.w0).into(holder.iconOfWeatherIV);
                 break;
             case 1:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w1));
+                Glide.with(mContext).load(R.mipmap.w1).into(holder.iconOfWeatherIV);
                 break;
             case 2:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w2));
+                Glide.with(mContext).load(R.mipmap.w2).into(holder.iconOfWeatherIV);
                 break;
             case 3:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w4));
+                Glide.with(mContext).load(R.mipmap.w4).into(holder.iconOfWeatherIV);
                 break;
             case 4:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w4));
+                Glide.with(mContext).load(R.mipmap.w4).into(holder.iconOfWeatherIV);
                 break;
             case 5:
 
                 break;
             case 6:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w6));
+                Glide.with(mContext).load(R.mipmap.w6).into(holder.iconOfWeatherIV);
                 break;
             case 7:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w7));
+                Glide.with(mContext).load(R.mipmap.w7).into(holder.iconOfWeatherIV);
                 break;
             case 8:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w301));
+                Glide.with(mContext).load(R.mipmap.w301).into(holder.iconOfWeatherIV);
                 break;
             case 9:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w9));
+                Glide.with(mContext).load(R.mipmap.w9).into(holder.iconOfWeatherIV);
                 break;
             case 10:
 
@@ -98,19 +98,19 @@ public class Weather24HourAdapter extends RecyclerView.Adapter<Weather24HourAdap
 
                 break;
             case 14:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w14));
+                Glide.with(mContext).load(R.mipmap.w14).into(holder.iconOfWeatherIV);
                 break;
             case 15:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w15));
+                Glide.with(mContext).load(R.mipmap.w15).into(holder.iconOfWeatherIV);
                 break;
             case 16:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w16));
+                Glide.with(mContext).load(R.mipmap.w16).into(holder.iconOfWeatherIV);
                 break;
             case 17:
 
                 break;
             case 18:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w18));
+                Glide.with(mContext).load(R.mipmap.w18).into(holder.iconOfWeatherIV);
                 break;
             case 19:
 
@@ -152,13 +152,13 @@ public class Weather24HourAdapter extends RecyclerView.Adapter<Weather24HourAdap
 
                 break;
             case 53:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w53));
+                Glide.with(mContext).load(R.mipmap.w53).into(holder.iconOfWeatherIV);
                 break;
             case 99:
 
                 break;
             case 301:
-                holder.iconOfWeatherIV.setImageBitmap(BitmapFactory.decodeResource(mContext.getResources(),R.mipmap.w301));
+                Glide.with(mContext).load(R.mipmap.w301).into(holder.iconOfWeatherIV);
                 break;
             case 302:
 

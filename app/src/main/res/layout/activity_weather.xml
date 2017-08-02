@@ -2,12 +2,15 @@
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    >
 
-    <LinearLayout xmlns:tools="http://schemas.android.com/tools"
+    <LinearLayout
+        android:id="@+id/bg_ll"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@mipmap/weatherbg"
+        android:background="#81d4fa"
         android:orientation="vertical"
         tools:context="com.globalformulae.shiguang.maininterface.WeatherActivity">
         <Button
@@ -40,14 +43,16 @@
                 android:layout_height="wrap_content"
                 android:text="--"
                 android:textAlignment="center"
-                android:textSize="60sp" />
+                android:textSize="60sp"
+                android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/weather_tv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:text="" />
+                android:text=""
+                android:textColor="@color/white"/>
             </LinearLayout>
 
             <TextView
@@ -56,14 +61,16 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:drawableLeft="@mipmap/aqi_good"
-                android:text="" />
+                android:text=""
+                android:textColor="@color/white"/>
             <TextView
                 android:id="@+id/wet_percent_TV"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text=""
-                android:drawableLeft="@mipmap/wet_percent"/>
+                android:drawableLeft="@mipmap/wet_percent"
+                android:textColor="@color/white"/>
 
             <TextView
                 android:id="@+id/wind_power_tv"
@@ -71,7 +78,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="5dp"
                 android:text=""
-                android:drawableLeft="@mipmap/wind_speed"/>
+                android:drawableLeft="@mipmap/wind_speed"
+                android:textColor="@color/white"/>
 
 
         </LinearLayout>
@@ -79,12 +87,12 @@
         <android.support.v7.widget.RecyclerView
             android:id="@+id/weather_24h_rv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="110dp"
             android:layout_marginTop="30dp"/>
         <android.support.v7.widget.RecyclerView
             android:id="@+id/weather_7d_rv"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="120dp"
             android:layout_marginTop="30dp"
             ></android.support.v7.widget.RecyclerView>
     </LinearLayout>

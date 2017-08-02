@@ -56,4 +56,14 @@ public interface UserActionService {
     @FormUrlEncoded
     @POST("login")
     Observable<ResponseBean> doLogin(@Field("phone")String phone, @Field("password")String password);
+
+
+    @FormUrlEncoded
+    @POST("doGainPower")
+    Observable<String> doGainPower(@Field("userid")String userid,@Field("powertype")String powertype);
+
+
+    @FormUrlEncoded
+    @POST
+    Observable<String> doAddPower(@Field("userid")String userid,@Field("tomatoTime")String tomatoTime,@Field("powertype")String powertype);
 }

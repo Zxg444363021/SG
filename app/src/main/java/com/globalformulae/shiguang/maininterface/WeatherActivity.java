@@ -1,23 +1,22 @@
 package com.globalformulae.shiguang.maininterface;
 
-import android.graphics.BitmapFactory;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
-import com.globalformulae.shiguang.maininterface.adapter.Weather24HourAdapter;
-import com.globalformulae.shiguang.maininterface.adapter.Weather7DayAdapter;
 import com.globalformulae.shiguang.bean.WeatherBean24h;
 import com.globalformulae.shiguang.bean.WeatherBean7D;
+import com.globalformulae.shiguang.maininterface.adapter.Weather24HourAdapter;
+import com.globalformulae.shiguang.maininterface.adapter.Weather7DayAdapter;
 import com.globalformulae.shiguang.retrofit.WeatherService;
 import com.globalformulae.shiguang.utils.IPConfig;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,6 +50,8 @@ public class WeatherActivity extends AppCompatActivity {
     TextView aqiTV;
     @BindView(R.id.wet_percent_TV)
     TextView wetPercentTV;
+    @BindView(R.id.bg_ll)
+    LinearLayout bgLL;
     private Retrofit retrofit;
     private WeatherService weatherService;
 
@@ -59,6 +60,15 @@ public class WeatherActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_weather);
         ButterKnife.bind(this);
+
+//        BitmapFactory.Options options=new BitmapFactory.Options();
+//        options.inPreferredConfig=Bitmap.Config.RGB_565;//先设为RGB_565模式
+//        options.inSampleSize=2; //二分之一抽样
+//        //原先图片加载为bitmap为35M，经过上边这两步处理之后变为4M
+//        Bitmap bitmap= BitmapFactory.decodeResource(getResources(),R.mipmap.weatherbg,options);
+//        Log.e("bitmapSize", String.valueOf(bitmap.getByteCount()));
+//        Drawable drawable=new BitmapDrawable(getResources(),bitmap);
+//        bgLL.setBackground(drawable);
         retrofit = new Retrofit.Builder()
                 .baseUrl(IPConfig.getUrl("weatherIp"))
                 .addConverterFactory(GsonConverterFactory.create())
@@ -135,61 +145,60 @@ public class WeatherActivity extends AppCompatActivity {
                 .subscribe();
     }
 
-    @Override
-    protected void onDestroy() {
-        EventBus.getDefault().unregister(this);
-        super.onDestroy();
-
-    }
-
     public void weatherToPicture(String weather) {
         switch (weather) {
             case "多云":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w1));
+                Glide.with(this).load(R.mipmap.w1).into(weatherIV);
                 break;
             case "晴天":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w0));
+                Glide.with(this).load(R.mipmap.w0).into(weatherIV);
                 break;
             case "阴":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w2));
+                Glide.with(this).load(R.mipmap.w2).into(weatherIV);
                 break;
             case "阵雨":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w4));
+                Glide.with(this).load(R.mipmap.w4).into(weatherIV);
                 break;
             case "雷阵雨":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w4));
+                Glide.with(this).load(R.mipmap.w4).into(weatherIV);
                 break;
             case "雨夹雪":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w6));
+                Glide.with(this).load(R.mipmap.w6).into(weatherIV);
                 break;
             case "小雨":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w7));
+                Glide.with(this).load(R.mipmap.w7).into(weatherIV);
                 break;
             case "中雨":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w301));
+                Glide.with(this).load(R.mipmap.w301).into(weatherIV);
                 break;
             case "大雨":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w9));
+                Glide.with(this).load(R.mipmap.w9).into(weatherIV);
                 break;
             case "小雪":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w14));
+                Glide.with(this).load(R.mipmap.w14).into(weatherIV);
                 break;
             case "中雪":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w15));
+                Glide.with(this).load(R.mipmap.w15).into(weatherIV);
                 break;
             case "大雪":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w16));
+                Glide.with(this).load(R.mipmap.w16).into(weatherIV);
                 break;
             case "雾":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w18));
+                Glide.with(this).load(R.mipmap.w18).into(weatherIV);
                 break;
             case "霾":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w53));
+                Glide.with(this).load(R.mipmap.w53).into(weatherIV);
                 break;
             case "雨":
-                weatherIV.setImageBitmap(BitmapFactory.decodeResource(getResources(), R.mipmap.w301));
+                Glide.with(this).load(R.mipmap.w301).into(weatherIV);
                 break;
 
         }
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        System.gc();
     }
 }

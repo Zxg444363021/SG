@@ -33,14 +33,11 @@ import android.widget.TextView;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.bean.ResponseBean;
 import com.globalformulae.shiguang.bean.User;
+import com.globalformulae.shiguang.retrofit.RetrofitHelper;
+import com.globalformulae.shiguang.retrofit.UserActionService;
 import com.globalformulae.shiguang.utils.MD5Util;
-import com.globalformulae.shiguang.utils.OkHttpUtil;
 import com.globalformulae.shiguang.utils.SPUtil;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,6 +45,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
@@ -84,6 +86,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
 
     private Animation animation;
+    private String mPassword;
+    private String mPhone;
+    private UserActionService userActionService;
+    private Retrofit retrofit;
 
 
     @Override
@@ -91,7 +97,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
         ButterKnife.bind(this);
-        // Set up the login form.
+        retrofit= RetrofitHelper.getInstance();
+        userActionService=retrofit.create(UserActionService.class);
         populateAutoComplete();
         animation = AnimationUtils.loadAnimation(this, R.anim.logo_anim);
 
@@ -107,7 +114,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 return false;
             }
         });
-        EventBus.getDefault().register(this);
 
         setActionBar();
     }
@@ -115,7 +121,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        EventBus.getDefault().unregister(this);
     }
 
     //登录按钮点击事件
@@ -140,61 +145,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
     }
 
-    @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLogin(final ResponseBean responseBean) {
-
-        switch (responseBean.getCode()) {
-            case ResponseBean.LOGIN_SUCC:   //登录成功
-                Log.e("LogingA", "what");
-                User user = responseBean.getUser();
-                SharedPreferences.Editor editor = SPUtil.getSPD(LoginActivity.this, "user");
-                editor.putBoolean("logged", true);
-                editor.putLong("userid", user.getUserid());
-                editor.putString("name", user.getName());
-                editor.putString("phone", user.getPhone());
-                editor.putString("icon", user.getIcon());
-                editor.putInt("tomato_n", user.getTomatoN());
-                editor.putInt("power_n", user.getPower());
-                editor.putBoolean("isOnline",true);
-                editor.apply();
-
-                logoIV.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
-                        startActivity(intent);
-                        finish();
-                        showProgress(false);
-                    }
-                }, 3000);
-                break;
-            case ResponseBean.LOGIN_FAIL:
-
-                logoIV.postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        showProgress(false);
-                        if (responseBean.getMessage().equals("201")) {//密码错误
-                            passwordET.setError("密码错误");
-                            passwordET.requestFocus();
-                        } else if (responseBean.getMessage().equals("202")) {//帐号不存在
-                            userIdTV.setError("帐号不存在");
-                            userIdTV.requestFocus();
-                        } else {//服务器错误
-                            StyleableToast st3 = new StyleableToast
-                                    .Builder(LoginActivity.this, "服务器错误，请重试")
-                                    .withMaxAlpha()
-                                    .withBackgroundColor(getResources().getColor(R.color.colorAccent))
-                                    .withTextColor(Color.WHITE)
-                                    .withBoldText()
-                                    .build();
-                            st3.show();
-                        }
-                    }
-                }, 3000);
-                break;
-        }
-    }
 
     /**
      * 自动补齐
@@ -212,8 +162,8 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         passwordET.setError(null);
 
         // 存储此时尝试登陆的帐号和密码
-        String mPhone = userIdTV.getText().toString();
-        String mPassword = passwordET.getText().toString();
+        mPhone = userIdTV.getText().toString();
+        mPassword = passwordET.getText().toString();
 
         boolean cancel = false;
         View focusView = null;
@@ -242,13 +192,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         } else {
             // 如果没啥问题就显示进度，然后登陆
             //showProgress(true);
-            OkHttpUtil httpUtil = OkHttpUtil.getInstance();
-            httpUtil.loginShiguang(mPhone, MD5Util.getMD5String(mPassword));
-
-
-
-
-
+            loginAndResponse(mPhone,mPassword);
             showProgress(true);
             StyleableToast st2 = new StyleableToast
                     .Builder(LoginActivity.this, "登录中")
@@ -260,6 +204,93 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                     .build();
             st2.show();
         }
+    }
+
+    /**
+     * 登录以及处理响应
+     * @param phone
+     * @param password
+     */
+    private void loginAndResponse(String phone,String password){
+        userActionService.doLogin(phone,MD5Util.getMD5String(password))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBean>() {
+                    @Override
+                    public void accept(@NonNull final ResponseBean responseBean) throws Exception {
+                        switch (responseBean.getCode()) {
+                            case ResponseBean.LOGIN_SUCC:   //登录成功
+                                Log.e("LogingA", "what");
+                                User user = responseBean.getUser();
+                                SharedPreferences.Editor editor = SPUtil.getSPD(LoginActivity.this, "user");
+                                editor.putBoolean("logged", true);
+                                editor.putLong("userid", user.getUserid());
+                                editor.putString("name", user.getName());
+                                editor.putString("phone", user.getPhone());
+                                editor.putString("icon", user.getIcon());
+                                editor.putInt("tomato_n", user.getTomatoN());
+                                editor.putInt("power_n", user.getPower());
+                                editor.putBoolean("isOnline",true);
+                                editor.putString("password", MD5Util.getMD5String(mPassword));
+                                editor.apply();
+
+                                logoIV.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        Intent intent = new Intent(LoginActivity.this, UserInfoActivity.class);
+                                        startActivity(intent);
+                                        finish();
+                                        showProgress(false);
+                                    }
+                                }, 3000);
+                                break;
+                            case ResponseBean.LOGIN_FAIL:
+
+                                logoIV.postDelayed(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        showProgress(false);
+                                        if (responseBean.getMessage().equals("201")) {//密码错误
+                                            passwordET.setError("密码错误");
+                                            passwordET.requestFocus();
+                                        } else if (responseBean.getMessage().equals("202")) {//帐号不存在
+                                            userIdTV.setError("帐号不存在");
+                                            userIdTV.requestFocus();
+                                        } else {//服务器错误
+                                            StyleableToast st3 = new StyleableToast
+                                                    .Builder(LoginActivity.this, "服务器错误，请重试")
+                                                    .withMaxAlpha()
+                                                    .withBackgroundColor(getResources().getColor(R.color.colorAccent))
+                                                    .withTextColor(Color.WHITE)
+                                                    .withBoldText()
+                                                    .build();
+                                            st3.show();
+                                        }
+                                    }
+                                }, 3000);
+                                break;
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        logoIV.postDelayed(new Runnable() {
+                            @Override
+                            public void run() {
+                                showProgress(false);
+                                StyleableToast st3 = new StyleableToast
+                                        .Builder(LoginActivity.this, "服务器错误，请重试")
+                                        .withMaxAlpha()
+                                        .withBackgroundColor(getResources().getColor(R.color.colorAccent))
+                                        .withTextColor(Color.WHITE)
+                                        .withBoldText()
+                                        .build();
+                                st3.show();
+
+                            }
+                        }, 3000);
+                    }
+                });
     }
 
     /**

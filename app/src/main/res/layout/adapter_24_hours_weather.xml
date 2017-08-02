@@ -9,7 +9,8 @@
         android:id="@+id/hour_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="14:00"/>
+        android:text="14:00"
+        android:textColor="@color/white"/>
     <ImageView
         android:id="@+id/hour_icon_iv"
         android:layout_width="50dp"
@@ -20,5 +21,6 @@
         android:id="@+id/hour_temperature_tv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"/>
+        android:layout_marginTop="5dp"
+        android:textColor="@color/white"/>
 </LinearLayout>

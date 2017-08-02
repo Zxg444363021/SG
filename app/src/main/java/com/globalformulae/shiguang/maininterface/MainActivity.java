@@ -2,11 +2,16 @@ package com.globalformulae.shiguang.maininterface;
 
 
 import android.app.DatePickerDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.graphics.Color;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
@@ -23,6 +28,7 @@ import android.transition.ChangeTransform;
 import android.transition.Explode;
 import android.transition.Fade;
 import android.transition.Slide;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -63,11 +69,11 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         ScheduleFragment.OnFragmentInteractionListener,
         TimerFragment.OnFragmentInteractionListener,
         TimePickerDialogF.onTimeChosenListener {
-    private DrawerLayout drawerLayout;
+
     private ActionBarDrawerToggle drawerToggle;
     private List<SlideMenuItem> list = new ArrayList<>();
     private ViewAnimator viewAnimator;
-    private LinearLayout linearLayout;
+
     private MenuManager menuManager;
     @BindView(R.id.bottomNavigation)
     BottomNavigationView bottomNavigationView;
@@ -77,6 +83,10 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     TextView dateTV;
     @BindView(R.id.chronometer)
     TextView chronometer;
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+    @BindView(R.id.left_drawer)
+    LinearLayout linearLayout;
 
     private ScheduleFragment scheduleFragment;
     private TimerFragment timerFragment;
@@ -89,6 +99,8 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private String xinqi;
     private int mDayOfWeek;
     private int timingTength;
+    private SensorManager mSensorManager;
+    private Sensor mSensor;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //transition动画的参数设置，必须在最开始运行
@@ -101,10 +113,20 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
 
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.bind(this);
+        initView();
+
+        //获取步进计数器
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+    }
+
+    /**
+     * 初始化视图
+     */
+    private void initView(){
         menuManager = MenuManager.getInstance();
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawerLayout.setScrimColor(Color.TRANSPARENT);
-        linearLayout = (LinearLayout) findViewById(R.id.left_drawer);
         linearLayout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -114,8 +136,6 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         setActionBar();
         createMenuList();
         viewAnimator = new ViewAnimator<>(this, list, menuManager, drawerLayout, this);
-        ButterKnife.bind(this);
-
         mCalendar=Calendar.getInstance();
         mYear=mCalendar.get(Calendar.YEAR);
         mMonth=mCalendar.get(Calendar.MONTH);
@@ -160,19 +180,38 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                 return true;
             }
         });
-
     }
 
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        //注册步进监听器
+        mSensorManager.registerListener(sensorEventListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
+    }
 
+    @Override
+    protected void onPause() {
+        super.onPause();
+        //注销步进监听器
+        mSensorManager.unregisterListener(sensorEventListener);
+    }
 
+    /**
+     * 隐藏所有的fragment
+     * @param fragmentTransaction
+     */
     private void hideAllFragment(FragmentTransaction fragmentTransaction){
         if(scheduleFragment != null)fragmentTransaction.hide(scheduleFragment);
         if(timerFragment != null)fragmentTransaction.hide(timerFragment);
         if(habitFragment != null)fragmentTransaction.hide(habitFragment);
     }
 
-
+    /**
+     * 获取今天是星期几
+     * @param dayOfWeek
+     * @return
+     */
     private String getDayOfWeek(int dayOfWeek){
         String result;
         switch (dayOfWeek) {
@@ -203,10 +242,22 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         }
         return result;
     }
+
+    /**
+     * 修改日期
+     * @param year
+     * @param month
+     * @param day
+     * @param dayOfWeek
+     */
     private void setDateTV(int year,int month,int day,String dayOfWeek){
         dateTV.setText((month+ 1) + " 月 " + day+ " 日 "
                 + dayOfWeek);
     }
+
+    /**
+     * 修改日期
+     */
     @OnClick(R.id.tv_date)
     void changeDate(){
         final Calendar calendar=Calendar.getInstance();
@@ -258,6 +309,14 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
 
     }
 
+
+    /**
+     * 左侧菜单点击切换activity
+     * @param slideMenuItem
+     * @param screenShotable
+     * @param position
+     * @return
+     */
     @Override
     public ScreenShotable onSwitch(Resourceble slideMenuItem, ScreenShotable screenShotable, int position) {
         Intent intent;
@@ -485,4 +544,20 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             }
         }.start();
     }
+
+
+    SensorEventListener sensorEventListener=new SensorEventListener() {
+        @Override
+        public void onSensorChanged(SensorEvent event) {
+            //这里获取到的数据是自上一次开机以来的总步数。
+            for(float f:event.values){
+                Log.e("**********step", String.valueOf(f));
+            }
+        }
+
+        @Override
+        public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+        }
+    };
 }

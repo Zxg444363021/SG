@@ -80,6 +80,7 @@ public class RegistActivity extends AppCompatActivity{
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_regist);
         ButterKnife.bind(this);
+        setActionBar();
         EventBus.getDefault().register(this);
     }
 

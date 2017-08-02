@@ -52,14 +52,18 @@ import io.reactivex.functions.Consumer;
 import io.reactivex.schedulers.Schedulers;
 import retrofit2.Retrofit;
 
+import static com.globalformulae.shiguang.R.id.iv_soil;
 import static com.globalformulae.shiguang.utils.SPUtil.getSP;
 
 
 public class TimerFragment extends Fragment implements TimerRankAdapter.onItemClickListener{
+    public static final String TYPE_TOMATO="1";
+    public static final String TYPE_CUSTOM="2";
+
 
     @BindView(R.id.iv_sun)
     ImageView sunIV;
-    @BindView(R.id.iv_soil)
+    @BindView(iv_soil)
     ImageView soilIV;
     @BindView(R.id.watering)
     ImageView wateringIV;
@@ -83,6 +87,12 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     Button moreRecordBTN;
     @BindView(R.id.more_friend_btn)
     Button moreFriendBTN;
+    @BindView(R.id.gain_tomato_btn)
+    Button gainTomatoBTN;
+    @BindView(R.id.gain_custom_btn)
+    Button gainCustomBTN;
+    @BindView(R.id.watering_plus_tv)
+    TextView powerPlusTV;
 
 
     private List<OnesRecord> myRecordList=new ArrayList<>();
@@ -92,6 +102,8 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     private TimerRankAdapter timerRankAdapter;//下面的10条记录
     private Retrofit retrofit;
     private UserActionService userActionService;
+    private SharedPreferences sp;
+    private SharedPreferences.Editor editor;
 
 
     public TimerFragment() {
@@ -109,7 +121,8 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
         super.onCreate(savedInstanceState);
         retrofit= RetrofitHelper.getInstance();
         userActionService=retrofit.create(UserActionService.class);
-
+        sp=getSP(getActivity(),"user");
+        editor=sp.edit();
     }
 
     @Override
@@ -117,6 +130,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
                              Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_timer, container, false);
         ButterKnife.bind(this,view);
+        Glide.with(this).load(R.drawable.grow1).into(soilIV);
         timerRecordRV.setLayoutManager(new LinearLayoutManager(this.getContext()));
         Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.sun_anim);
         sunIV.setAnimation(animation);
@@ -153,16 +167,13 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     }
 
     public void initView(){
-        if(!getSP(getActivity(),"user").getBoolean("isOnline",false)){
+        if(!sp.getBoolean("isOnline",false)){
             errorPage.setVisibility(View.VISIBLE);
             normalPage.setVisibility(View.GONE);
             return;
         }
         errorPage.setVisibility(View.GONE);
         normalPage.setVisibility(View.VISIBLE);
-        SharedPreferences sp= getSP(getActivity(),"user");
-        timerPowerTV.setText(String.valueOf(sp.getInt("power_n",0))+"g");
-        timerTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
         Glide.with(getActivity()).load(sp.getString("icon",null)).placeholder(R.mipmap.unlogged_icon).into(timerIconIV);
         getTimerRR();
     }
@@ -183,6 +194,22 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
                         timerRankAdapter.setOnItemClickListener(TimerFragment.this);
                         timerRankRV.setAdapter(timerRankAdapter);
                         timerRankRV.invalidate();
+                        for(int i=0;i<userRankList.size();i++){
+                            //更新我的信息
+                            if(userRankList.get(i).getUserid()==sp.getLong("userid",0)){
+                                editor.putInt("power_n",userRankList.get(i).getPower());
+                                editor.putInt("tomato_n",userRankList.get(i).getTomatoN());
+                                editor.commit();
+                                timerPowerTV.setText(String.valueOf(sp.getInt("power_n",0))+"g");
+                                timerTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
+                                if(userRankList.get(i).getPower1Yesterday()!=0){
+                                    gainTomatoBTN.setVisibility(View.VISIBLE);
+                                }
+                                if(userRankList.get(i).getPower2Yesterday()!=0){
+                                    gainCustomBTN.setVisibility(View.VISIBLE);
+                                }
+                            }
+                        }
                     }
                 })
                 .doOnError(new Consumer<Throwable>() {
@@ -246,7 +273,44 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
 
     }
 
+    @OnClick(R.id.gain_tomato_btn)
+    void gainTomatoPower(){
+        gainPower(TYPE_TOMATO);
+    }
 
+    @OnClick(R.id.gain_custom_btn)
+    void gainCustomBTN(){
+        gainPower(TYPE_CUSTOM);
+    }
+
+    /**
+     * 获取自己的能量
+     * @param powerType
+     */
+    private void gainPower(String powerType){
+        userActionService.doGainPower(String.valueOf(sp.getLong("userid",0)),powerType)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnNext(new Consumer<String>() {
+                    @Override
+                    public void accept(@NonNull String s) throws Exception {
+                        if(!s.isEmpty()){
+                            int gainpower=Integer.parseInt(s);
+                            int nowPower=sp.getInt("power_n",0);
+                            timerPowerTV.setText(String.valueOf(nowPower+gainpower)+"g");
+
+                            Animation animation = AnimationUtils.loadAnimation(getActivity(), R.anim.gain_plus);
+                            powerPlusTV.setAnimation(animation);
+                        }
+                    }
+                })
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+
+                    }
+                }).subscribe();
+    }
 
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(String str) {
@@ -299,7 +363,6 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
 
 
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
         void onFragmentInteraction(String str);
     }
     abstract class MyAnimationDrawable extends AnimationDrawable {
@@ -338,11 +401,15 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     }
 
 
-
+    /**
+     * 番茄计时时间，到设定时间修改土壤图片
+     * @param soilTime
+     */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeSoil(SoilTimeBean soilTime){
         Log.e("changeSoil", "啊哈？");
         int time=soilTime.getTime()%1500;
+        int tomatoNum=soilTime.getTime()/1500;
         switch (time){
             case 0:
                 AnimationDrawable animationDrawable=(AnimationDrawable)soilIV.getBackground();
@@ -363,9 +430,26 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
                 break;
             case 1400:
                 soilIV.setImageBitmap(BitmapFactory.decodeResource(getResources(),R.mipmap.grow9));
-
                 break;
+            default:
+                break;
+        }
+        if(tomatoNum>0){
+            userActionService.doAddPower(String.valueOf(sp.getLong("userid",0)),"25",TYPE_TOMATO)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .doOnNext(new Consumer<String>() {
+                        @Override
+                        public void accept(@NonNull String s) throws Exception {
 
+                        }
+                    })
+                    .doOnError(new Consumer<Throwable>() {
+                        @Override
+                        public void accept(@NonNull Throwable throwable) throws Exception {
+
+                        }
+                    }).subscribe();
         }
     }
 

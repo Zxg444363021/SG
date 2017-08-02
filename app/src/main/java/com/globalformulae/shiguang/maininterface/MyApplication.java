@@ -37,6 +37,8 @@ public class MyApplication extends Application {
 //                Log.e("deviceToken", s+"   "+s1);
 //            }
 //        });
+
+
     }
 
     private void setUpDatabase(){
