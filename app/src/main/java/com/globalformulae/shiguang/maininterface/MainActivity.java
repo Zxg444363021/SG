@@ -65,6 +65,8 @@ import yalantis.com.sidemenu.interfaces.ScreenShotable;
 import yalantis.com.sidemenu.model.SlideMenuItem;
 import yalantis.com.sidemenu.util.ViewAnimator;
 
+import static com.globalformulae.shiguang.utils.SPUtil.getSP;
+
 public class MainActivity extends AppCompatActivity implements ViewAnimator.ViewAnimatorListener,
         ScheduleFragment.OnFragmentInteractionListener,
         TimerFragment.OnFragmentInteractionListener,
@@ -101,6 +103,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private int timingTength;
     private SensorManager mSensorManager;
     private Sensor mSensor;
+    private boolean tag=false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //transition动画的参数设置，必须在最开始运行
@@ -115,11 +118,13 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
         initView();
+        tag=true;
 
-        //获取步进计数器
-        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+
     }
+
+
+
 
     /**
      * 初始化视图
@@ -186,6 +191,27 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     @Override
     protected void onResume() {
         super.onResume();
+//获取步进计数器
+        mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        if(mSensorManager!=null)
+            mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
+        mSensor.getFifoMaxEventCount();
+        if(tag){
+            SharedPreferences sharedPreferences=SPUtil.getSP(MainActivity.this,"user");
+            String date=sharedPreferences.getString("date","20170101");
+            String month=(mMonth+1)<10?"0"+(mMonth+1):Integer.toString(mMonth);
+            String day=mDay<10?"0"+mDay:Integer.toString(mDay);
+            String today=Integer.toString(mYear)+month+day;
+            if(!date.equals(today)){
+                SharedPreferences.Editor editor=SPUtil.getSPD(MainActivity.this,"user");
+                editor.putString("date",today);
+                editor.putBoolean("isDirty",true);
+                editor.apply();
+            }
+
+            tag=false;
+        }
+
         //注册步进监听器
         mSensorManager.registerListener(sensorEventListener, mSensor, SensorManager.SENSOR_DELAY_NORMAL);
     }
@@ -324,7 +350,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             case MenuManager.CLOSE:
                 break;
             case MenuManager.USERICON:
-                SharedPreferences sp= SPUtil.getSP(MainActivity.this,"user");
+                SharedPreferences sp= getSP(MainActivity.this,"user");
                 if(sp.getBoolean("logged",false)){
                     intent=new Intent(MainActivity.this,UserInfoActivity.class);
                 }else{
@@ -553,8 +579,24 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             for(float f:event.values){
                 Log.e("**********step", String.valueOf(f));
             }
-        }
 
+            SharedPreferences sharedPreferences=SPUtil.getSP(MainActivity.this,"user");
+            Boolean isDirty=sharedPreferences.getBoolean("isDirty",true);
+            SharedPreferences.Editor editor=sharedPreferences.edit();
+            if(!isDirty){
+               float startStep=sharedPreferences.getFloat("startStep",0);
+                if(event.values[0]<startStep)
+                    editor.putFloat("todayStep",event.values[0]);
+                else
+                    editor.putFloat("todayStep",event.values[0]-startStep);
+                editor.apply();
+            }else{
+                editor.putFloat("startStep",event.values[0]);
+                editor.putFloat("todayStep",0.0f);
+                editor.putBoolean("isDirty",false);
+                editor.apply();
+            }
+        }
         @Override
         public void onAccuracyChanged(Sensor sensor, int accuracy) {
 

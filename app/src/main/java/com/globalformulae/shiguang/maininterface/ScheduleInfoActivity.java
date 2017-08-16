@@ -71,6 +71,9 @@ public class ScheduleInfoActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_schedule_info);
         ButterKnife.bind(this);
+
+        
+
         Intent intent=getIntent();
         Bundle bundle=intent.getBundleExtra("info");
         if(bundle.getString("openType").equals("0")){//如果是新建事件

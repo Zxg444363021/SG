@@ -43,6 +43,8 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
     View userTFL;
     @BindView(R.id.user_exit)   //退出
     View userEFL;
+    @BindView(R.id.my_step_tv)
+    TextView myStepTV;
 
     private SharedPreferences sp;
     @Override
@@ -51,20 +53,20 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
         setContentView(R.layout.activity_user_info);
         ButterKnife.bind(this);
         sp=SPUtil.getSP(this,"user");
-        initView();
         setActionBar();
+        initView();
     }
     private void getMyInfo(){
 
     }
+
     private void initView(){
-
-
         Glide.with(this).load(sp.getString("icon", "")).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) .placeholder(R.mipmap.unlogged_icon).into(myIconIV);
         myNameTV.setText(sp.getString("name",""));
         myPhoneTV.setText(sp.getString("phone",""));
         myTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
         myPowerNTV.setText(String.valueOf(sp.getInt("power_n",0))+"g");
+        myStepTV.setText(Float.toString(sp.getFloat("todayStep",0))+"步");
     }
 
     @OnClick(R.id.my_icon_iv)

@@ -59,8 +59,8 @@ public class EventListAdapter extends  RecyclerView.Adapter<EventListAdapter.Com
     @Override
     public CompatitionViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view=mInflater.inflate(R.layout.adapter_compatition,parent,false);//获取item的layout，设置到父组件里，
-        CompatitionViewHolder viewHolder=new CompatitionViewHolder(view); //构造ViewHolder 把Item试图传进去
-        return viewHolder;
+        //构造ViewHolder 把Item试图传进去
+        return new CompatitionViewHolder(view);
     }
 
     /**viewHolder,和上面是分开的

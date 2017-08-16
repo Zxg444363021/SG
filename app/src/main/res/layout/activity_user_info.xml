@@ -129,6 +129,26 @@
                 android:text="15000g" />
         </FrameLayout>
         <FrameLayout
+            android:id="@+id/user_step_fl"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:text="今日步数"
+                android:textColor="#404040"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/my_step_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="15000步" />
+        </FrameLayout>
+        <FrameLayout
             android:id="@+id/user_exit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

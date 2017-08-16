@@ -5,12 +5,10 @@ import android.media.AudioManager;
 import android.media.SoundPool;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.util.SparseIntArray;
 import android.widget.ImageView;
 
 import com.globalformulae.shiguang.R;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,7 +43,7 @@ public class DurmActivity extends AppCompatActivity {
     ImageView durm1IV;
 
     private SoundPool sp;
-    private Map<Integer,Integer> map=new HashMap<Integer, Integer>();
+    private SparseIntArray map=new SparseIntArray();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,7 +51,6 @@ public class DurmActivity extends AppCompatActivity {
         setContentView(R.layout.activity_durm);
         ButterKnife.bind(this);
         initSoundPool();
-
     }
     public void initSoundPool(){
         SoundPool.Builder spb = new SoundPool.Builder();

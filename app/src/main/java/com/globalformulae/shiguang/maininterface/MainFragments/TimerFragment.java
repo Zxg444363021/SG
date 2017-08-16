@@ -100,10 +100,8 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     private OnFragmentInteractionListener mListener;
     private SimpleRecordAdapter simpleRecordAdapter;//上面的5条记录
     private TimerRankAdapter timerRankAdapter;//下面的10条记录
-    private Retrofit retrofit;
     private UserActionService userActionService;
     private SharedPreferences sp;
-    private SharedPreferences.Editor editor;
 
 
     public TimerFragment() {
@@ -119,10 +117,9 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        retrofit= RetrofitHelper.getInstance();
+        Retrofit retrofit= RetrofitHelper.getInstance();
         userActionService=retrofit.create(UserActionService.class);
         sp=getSP(getActivity(),"user");
-        editor=sp.edit();
     }
 
     @Override
@@ -152,7 +149,6 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
                 }
             }
         });
-
 
         return view;
     }
@@ -197,9 +193,10 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
                         for(int i=0;i<userRankList.size();i++){
                             //更新我的信息
                             if(userRankList.get(i).getUserid()==sp.getLong("userid",0)){
+                                SharedPreferences.Editor editor=sp.edit();
                                 editor.putInt("power_n",userRankList.get(i).getPower());
                                 editor.putInt("tomato_n",userRankList.get(i).getTomatoN());
-                                editor.commit();
+                                editor.apply();
                                 timerPowerTV.setText(String.valueOf(sp.getInt("power_n",0))+"g");
                                 timerTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
                                 if(userRankList.get(i).getPower1Yesterday()!=0){

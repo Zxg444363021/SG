@@ -2,7 +2,6 @@ package com.globalformulae.shiguang.maininterface;
 
 import android.content.SharedPreferences;
 import android.graphics.Color;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -15,18 +14,20 @@ import android.widget.EditText;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.bean.ResponseBean;
 import com.globalformulae.shiguang.bean.User;
+import com.globalformulae.shiguang.retrofit.RetrofitHelper;
+import com.globalformulae.shiguang.retrofit.UserActionService;
 import com.globalformulae.shiguang.utils.MD5Util;
-import com.globalformulae.shiguang.utils.OkHttpUtil;
 import com.globalformulae.shiguang.utils.TimeCountUtil;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
-
-import org.greenrobot.eventbus.EventBus;
-import org.greenrobot.eventbus.Subscribe;
-import org.greenrobot.eventbus.ThreadMode;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.annotations.NonNull;
+import io.reactivex.functions.Consumer;
+import io.reactivex.schedulers.Schedulers;
+import retrofit2.Retrofit;
 
 public class RegistActivity extends AppCompatActivity{
     private static final String TAG ="RegistActivity" ;
@@ -44,35 +45,10 @@ public class RegistActivity extends AppCompatActivity{
     EditText nameET;
     @BindView(R.id.regist_get_identify_code_btn)
     Button identifyCodeBTN;
-    private UserRegistTask userRegistTask=null;
 
     private String phoneFirst;
-
-    public class UserRegistTask extends AsyncTask<Void, Void, Boolean> {
-        private String phone;
-        private String identifyCode;
-        private String password;
-        private String name;
-
-        public UserRegistTask(String phone, String password, String identifyCode,String name) {
-            this.phone = phone;
-            this.password = password;
-            this.identifyCode=identifyCode;
-            this.name=name;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            OkHttpUtil httpUtil=OkHttpUtil.getInstance();
-            httpUtil.registShiguang(phone, MD5Util.getMD5String(password),identifyCode,name);
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean aBoolean) {
-            super.onPostExecute(aBoolean);
-        }
-    }
+    private UserActionService userActionService;
+    private Retrofit retrofit;
 
 
     @Override
@@ -81,16 +57,16 @@ public class RegistActivity extends AppCompatActivity{
         setContentView(R.layout.activity_regist);
         ButterKnife.bind(this);
         setActionBar();
-        EventBus.getDefault().register(this);
+        retrofit= RetrofitHelper.getInstance();
+        userActionService=retrofit.create(UserActionService.class);
+
     }
 
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        EventBus.getDefault().unregister(this);
-    }
-    @Subscribe(threadMode=ThreadMode.MAIN)
-    public void onMessage(ResponseBean responseBean){
+    /**
+     * 处理注册返回回来的信息
+     * @param responseBean
+     */
+    public void onHandleRegisterMessage(ResponseBean responseBean){
         Log.e(TAG, "onMessage: ");
         StyleableToast st;
         switch (responseBean.getCode()){
@@ -198,8 +174,21 @@ public class RegistActivity extends AppCompatActivity{
             nameET.setError("请输入用户名");
         }
         else{
-            userRegistTask=new UserRegistTask(phone,password,identifyCode,name);
-            userRegistTask.execute((Void) null);
+
+            userActionService.doRegister(phone,MD5Util.getMD5String(password),identifyCode,name)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<ResponseBean>() {
+                        @Override
+                        public void accept(@NonNull ResponseBean responseBean) throws Exception {
+                            onHandleRegisterMessage(responseBean);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(@NonNull Throwable throwable) throws Exception {
+
+                        }
+                    });
         }
 
 
@@ -215,8 +204,22 @@ public class RegistActivity extends AppCompatActivity{
             phoneET.setError("手机号码格式不正确");
         }
         else{
-            OkHttpUtil httpUtil=OkHttpUtil.getInstance();
-            httpUtil.getIdentifyCode(phoneFirst);
+            userActionService.doSendIdentifyCode(phoneFirst)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribe(new Consumer<ResponseBean>() {
+                        @Override
+                        public void accept(@NonNull ResponseBean responseBean) throws Exception {
+                            onHandleRegisterMessage(responseBean);
+                        }
+                    }, new Consumer<Throwable>() {
+                        @Override
+                        public void accept(@NonNull Throwable throwable) throws Exception {
+
+                        }
+                    });
+
+
             //  把按钮变成不可点击，并且显示倒计时（正在获取）
             TimeCountUtil timeCountUtil = new TimeCountUtil(RegistActivity.this, 60000, 1000,identifyCodeBTN);
             timeCountUtil.start();
@@ -242,13 +245,13 @@ public class RegistActivity extends AppCompatActivity{
 
     private void setActionBar() {
         Toolbar toolbar = (Toolbar) findViewById(R.id.regist_tb);
+        toolbar.setTitle("注册");
         setSupportActionBar(toolbar);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         toolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setResult(888);
                 finish();
             }
         });

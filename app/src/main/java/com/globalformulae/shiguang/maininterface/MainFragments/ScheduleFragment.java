@@ -21,12 +21,12 @@ import android.view.ViewGroup;
 import android.widget.Toast;
 
 import com.globalformulae.shiguang.R;
+import com.globalformulae.shiguang.bean.MyDate;
+import com.globalformulae.shiguang.bean.Schedule;
 import com.globalformulae.shiguang.greendao.DaoSession;
 import com.globalformulae.shiguang.greendao.ScheduleDao;
 import com.globalformulae.shiguang.maininterface.MyApplication;
 import com.globalformulae.shiguang.maininterface.ScheduleInfoActivity;
-import com.globalformulae.shiguang.bean.MyDate;
-import com.globalformulae.shiguang.bean.Schedule;
 import com.globalformulae.shiguang.maininterface.adapter.ScheduleAdapter;
 
 import org.greenrobot.eventbus.EventBus;
@@ -82,6 +82,7 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
         ScheduleFragment fragment = new ScheduleFragment();
         return fragment;
     }
+
 
 
     @Override
@@ -140,7 +141,7 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
         qb.build();
         mDatas=qb.list();
         //如果是新建事件
-        if(schedule.isIfNew()==true){
+        if(schedule.isIfNew()){
             scheduleAdapter.add(schedule);
         }
         //否则刚才是在修改事件，就执行修改方法。

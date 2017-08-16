@@ -210,22 +210,20 @@ public class SchoolLoginActivity extends AppCompatActivity implements LoaderCall
             //showProgress(true);
             mAuthTask = new UserLoginTask(studentId, password,xdvfb);
             mAuthTask.execute((Void) null);
+
+
+
+
         }
     }
 
     private boolean isStudentIdValid(String studentId) {
-        if(studentId.matches("[0-9]{13}")){
-            return true;
-        }else{
-            return false;
-        }
+        return studentId.matches("[0-9]{13}");
+
     }
 
     private boolean isPasswordValid(String password) {
-        if(password.matches("[0-9]*"))
-            return true;
-        else
-            return false;
+        return password.matches("[0-9]*");
     }
 
     /**

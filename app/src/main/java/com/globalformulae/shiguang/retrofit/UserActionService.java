@@ -10,6 +10,7 @@ import java.util.List;
 import io.reactivex.Observable;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.Headers;
 import retrofit2.http.POST;
 
 /**
@@ -56,6 +57,20 @@ public interface UserActionService {
     @FormUrlEncoded
     @POST("login")
     Observable<ResponseBean> doLogin(@Field("phone")String phone, @Field("password")String password);
+
+    /**
+     * 发送注册验证码
+     * @param phone
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("sendIdentifyCode")
+    Observable<ResponseBean> doSendIdentifyCode(@Field("phone")String phone);
+
+    @FormUrlEncoded
+    @POST("regist")
+    @Headers("Content-Type: application/x-www-form-urlencoded; charset=utf-8")
+    Observable<ResponseBean> doRegister(@Field("phone")String phone,@Field("password")String password,@Field("identifyCodeC")String identifyCode,@Field("name")String name);
 
 
     @FormUrlEncoded

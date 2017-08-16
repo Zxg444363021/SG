@@ -80,21 +80,30 @@ public class FriendInfoActivity extends AppCompatActivity {
     private Long friendId;
     private int friendPower;
     private ComplexRecordAdapter complexRecordAdapter;
-    private Retrofit retrofit;
     private UserActionService userActionService;
     private List<OnesRecord> friendRecordList;
     private Typeface mtypeface;
+    private boolean hasLoad=false;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_friend_info);
         ButterKnife.bind(this);
-        retrofit = RetrofitHelper.getInstance();
+        Retrofit retrofit = RetrofitHelper.getInstance();
         userActionService = retrofit.create(UserActionService.class);
         mtypeface= Typeface.createFromAsset(getAssets(),"HYJiaShuJian.ttf");
-        initView();
-        getFriendRecord();
+        hasLoad=true;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(hasLoad){
+            initView();
+            getFriendRecord();
+            hasLoad=false;
+        }
     }
 
     /**

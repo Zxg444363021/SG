@@ -5,11 +5,8 @@ import android.os.Message;
 import android.util.Log;
 
 import com.globalformulae.shiguang.bean.ResponseBean;
-import com.globalformulae.shiguang.bean.User;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -51,17 +48,12 @@ public class OkHttpUtil {
      * 200: 成功
      * 503：错误(数据库错误)
      */
-    private static final String NBAEVENTS_URL="http://op.juhe.cn/onebox/basketball/nba?key=15cf3c6dd41abb470c21f9161b93de54";
     private static final String SCHOOL_GENIMG="http://210.42.121.132/servlet/GenImg";
     private static final String SCHOOL_LOGINURL = "http://210.42.121.132/servlet/Login";
     public static final String BASEURL="http://121.42.140.71:8080/shiguangServer/";
     //public static final String BASEURL="http://10.4.101.115:8080/shiguangServer/";
     private static final String REGISTURL="regist";
-    private static final String LOGINURL="login";
-    public static final String GETFRIENDINFO="doGetFriendInfo";
-    public static final String STEALPOWER="doStealPower";
     private static final String IDENTIFYCODEURL="sendIdentifyCode";
-    public static final String GETRECORD="doGetRecord";
     private static OkHttpUtil okHttpUtil=new OkHttpUtil();
     private static OkHttpClient okHttpClient;
     private OkHttpUtil(){}
@@ -261,114 +253,6 @@ public class OkHttpUtil {
             e.printStackTrace();
         }
         return response;
-    }
-
-    /**
-     *
-     * 通知服务器发送验证码，并返回是否发送成功
-     * @param phone：手机号
-     * @return
-     */
-    public void getIdentifyCode(String phone){
-        FormBody.Builder builder=new FormBody.Builder();
-        FormBody formBody=builder
-                .add("phone",phone)
-                .build();
-        Request.Builder builder1=new Request.Builder();
-        Request request=builder1
-                .url(BASEURL+IDENTIFYCODEURL)
-                .post(formBody)
-                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-                .build();
-        Call call=okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-            @Override
-            public void onFailure(Call call, IOException e) {
-                ResponseBean responseBean=new ResponseBean();
-                responseBean.setCode(ResponseBean.GET_IDENTIFY_CODE_FAIL);
-                EventBus.getDefault().post(responseBean);
-            }
-
-            @Override
-            public void onResponse(Call call, Response response) throws IOException {
-                ResponseBean responseBean=new ResponseBean();
-                //数据库中已经有了帐号,或者是服务器那边发送失败了
-                String result=response.body().string().trim();
-                Log.e("ccc", result);
-                if(result.equals("-1")||result.equals("0")){
-                    responseBean.setCode(ResponseBean.GET_IDENTIFY_CODE_FAIL);
-                    EventBus.getDefault().post(responseBean);
-                }else{
-                    responseBean.setCode(ResponseBean.GET_IDENTIFY_CODE_SUCC);
-                    EventBus.getDefault().post(responseBean);
-                }
-
-            }
-        });
-    }
-
-    /**
-     * 注册帐号
-     * @param phone
-     * @param password
-     * @param identifyCodeC
-     * @param name
-     */
-    public void registShiguang(String phone,String password,String identifyCodeC,String name){
-        FormBody formBody=new FormBody.Builder()
-                .add("phone",phone)
-                .add("password",password)
-                .add("identifyCodeC",identifyCodeC)
-                .add("name",name)
-                .build();
-        Request.Builder builder=new Request.Builder();
-        Request request=builder
-                .addHeader("Content-Type", "application/x-www-form-urlencoded; charset=utf-8")
-                .url(BASEURL+REGISTURL)
-                .post(formBody)
-                .build();
-
-        Call call=okHttpClient.newCall(request);
-        call.enqueue(new Callback() {
-                @Override
-                public void onFailure(Call call, IOException e) {
-                    Log.e("responseBean:","failure" );
-                }
-
-                @Override
-                public void onResponse(Call call, Response response) throws IOException {
-                    ResponseBean responseBean=new ResponseBean();
-                    if(response.code()==200){
-                        String result=response.body().string();
-                        Log.e("result200:",result);
-                        Gson gson=new Gson();
-
-                        responseBean.setCode(ResponseBean.REGIST_SUCC);
-                        User user=gson.fromJson(result,User.class);
-                        responseBean.setUser(user);
-
-                        Log.e("responseBean:",responseBean.toString() );
-                    }else if(response.code()==201){
-                        responseBean.setCode(ResponseBean.REGIST_FAIL);
-                        responseBean.setMessage("201");//验证码错误
-                        Log.e("responseBean:","201" );
-                    }else if(response.code()==202){
-                        responseBean.setCode(ResponseBean.REGIST_FAIL);
-                        responseBean.setMessage("202");//手机号和接受短信的手机号不一致
-                        Log.e("responseBean:","202" );
-                    }else{
-                        //服务器那边的错误
-                        responseBean.setCode(ResponseBean.REGIST_FAIL);
-                        responseBean.setMessage("203");//
-                        Log.e("responseBean:","error" );
-                    }
-                    EventBus.getDefault().post(responseBean);
-                }
-            });
-
-
-
-
     }
 
 }

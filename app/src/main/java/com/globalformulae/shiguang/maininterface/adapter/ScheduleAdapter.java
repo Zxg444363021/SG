@@ -87,8 +87,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedl
     @Override
     public SchedlueViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view=mInflater.inflate(R.layout.adapter_schedule,parent,false);
-        SchedlueViewHolder viewHolder=new SchedlueViewHolder(view);
-        return viewHolder;
+        return new SchedlueViewHolder(view);
     }
 
     @Override
@@ -101,7 +100,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedl
             holder.itemTime.setText(schedule.getHour()+":"+schedule.getMinute());
         }
 
-        if(schedule.getType()==true){
+        if(schedule.getType()){
             holder.itemType.setChecked(true);
         }
         if(schedule.getStatus()==-1){
@@ -111,7 +110,6 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedl
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(schedule.getType()==isChecked){
-                    return;
                 }
                 else{
                     if(schedule.getStatus()==0&&isChecked){

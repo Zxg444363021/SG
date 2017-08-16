@@ -308,8 +308,6 @@
                     android:id="@+id/timer_rank_rv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:layout_alignParentStart="true"
                     android:nestedScrollingEnabled="false"
                     android:paddingLeft="2dp"
                     android:paddingRight="2dp" />

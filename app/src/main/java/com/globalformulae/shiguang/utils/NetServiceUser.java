@@ -6,9 +6,9 @@ package com.globalformulae.shiguang.utils;
  */
 public interface NetServiceUser {
 
-    public static final int CONNECT_FAIL = 0;  //连接网络失败
-    public static final int CONNECT_SUCC = 1;  //连接成功，并获得返回数据
-    public static final int CONNECT_ERROR = 2; //连接失败，获得错误信息
+    int CONNECT_FAIL = 0;  //连接网络失败
+    int CONNECT_SUCC = 1;  //连接成功，并获得返回数据
+    int CONNECT_ERROR = 2; //连接失败，获得错误信息
     /**
      * 描述:通信完成后会回调此方法，并将结果传入result
      * @author 彭阳坤

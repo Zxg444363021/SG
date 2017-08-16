@@ -157,8 +157,7 @@ public class MD5Util {
         return instance;
     }
 
-    private MD5Util(){};
-
+    private MD5Util(){}
     /*public static void main(String[] args){
         String str=MD5.getInstance().getMD5("");
         System.out.println(str);
