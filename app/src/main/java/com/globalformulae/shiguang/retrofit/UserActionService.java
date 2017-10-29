@@ -1,6 +1,5 @@
 package com.globalformulae.shiguang.retrofit;
 
-import com.globalformulae.shiguang.bean.AlternateRecord;
 import com.globalformulae.shiguang.bean.OnesRecord;
 import com.globalformulae.shiguang.bean.ResponseBean;
 import com.globalformulae.shiguang.bean.User;
@@ -37,7 +36,7 @@ public interface UserActionService {
      */
     @FormUrlEncoded
     @POST("doStealPower")
-    Observable<AlternateRecord> doStealPower(@Field("user1id") String user1id, @Field("user2id") String user2id, @Field("powertype") String powertype);
+    Observable<ResponseBean> doStealPower(@Field("user1id") String user1id, @Field("user2id") String user2id, @Field("powertype") String powertype);
 
     /**
      * 获取排名
@@ -67,18 +66,49 @@ public interface UserActionService {
     @POST("sendIdentifyCode")
     Observable<ResponseBean> doSendIdentifyCode(@Field("phone")String phone);
 
+    /**
+     * 注册
+     * @param phone
+     * @param password
+     * @param identifyCode
+     * @param name
+     * @return
+     */
     @FormUrlEncoded
     @POST("regist")
     @Headers("Content-Type: application/x-www-form-urlencoded; charset=utf-8")
     Observable<ResponseBean> doRegister(@Field("phone")String phone,@Field("password")String password,@Field("identifyCodeC")String identifyCode,@Field("name")String name);
 
-
+    /**
+     * 收取自己的能量
+     * @param userid
+     * @param powertype
+     * @return
+     */
     @FormUrlEncoded
     @POST("doGainPower")
     Observable<String> doGainPower(@Field("userid")String userid,@Field("powertype")String powertype);
 
-
+    /**
+     * 种番茄上传能量
+     * @param userid
+     * @param tomatoTime
+     * @param powertype
+     * @return
+     */
     @FormUrlEncoded
     @POST
     Observable<String> doAddPower(@Field("userid")String userid,@Field("tomatoTime")String tomatoTime,@Field("powertype")String powertype);
+
+    /**
+     * 查看我的某一位好友的几种能量是否能被偷
+     * @param user1id 我的id
+     * @param user2id 好友的id
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("doGetCanSteal")
+    Observable<ResponseBean> doGetCanBeSteal(@Field("user1id")String user1id,@Field("user2id")String user2id);
+
+
 }

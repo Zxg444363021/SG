@@ -34,7 +34,7 @@ public class ScheduleDao extends AbstractDao<Schedule, Long> {
         public final static Property Minute = new Property(7, int.class, "minute", false, "MINUTE");
         public final static Property DayOfWeek = new Property(8, int.class, "dayOfWeek", false, "DAY_OF_WEEK");
         public final static Property Status = new Property(9, int.class, "status", false, "STATUS");
-        public final static Property Type = new Property(10, boolean.class, "type", false, "TYPE");
+        public final static Property Type = new Property(10, int.class, "type", false, "TYPE");
     }
 
 
@@ -94,7 +94,7 @@ public class ScheduleDao extends AbstractDao<Schedule, Long> {
         stmt.bindLong(8, entity.getMinute());
         stmt.bindLong(9, entity.getDayOfWeek());
         stmt.bindLong(10, entity.getStatus());
-        stmt.bindLong(11, entity.getType() ? 1L: 0L);
+        stmt.bindLong(11, entity.getType());
     }
 
     @Override
@@ -122,7 +122,7 @@ public class ScheduleDao extends AbstractDao<Schedule, Long> {
         stmt.bindLong(8, entity.getMinute());
         stmt.bindLong(9, entity.getDayOfWeek());
         stmt.bindLong(10, entity.getStatus());
-        stmt.bindLong(11, entity.getType() ? 1L: 0L);
+        stmt.bindLong(11, entity.getType());
     }
 
     @Override
@@ -143,7 +143,7 @@ public class ScheduleDao extends AbstractDao<Schedule, Long> {
             cursor.getInt(offset + 7), // minute
             cursor.getInt(offset + 8), // dayOfWeek
             cursor.getInt(offset + 9), // status
-            cursor.getShort(offset + 10) != 0 // type
+            cursor.getInt(offset + 10) // type
         );
         return entity;
     }
@@ -160,7 +160,7 @@ public class ScheduleDao extends AbstractDao<Schedule, Long> {
         entity.setMinute(cursor.getInt(offset + 7));
         entity.setDayOfWeek(cursor.getInt(offset + 8));
         entity.setStatus(cursor.getInt(offset + 9));
-        entity.setType(cursor.getShort(offset + 10) != 0);
+        entity.setType(cursor.getInt(offset + 10));
      }
     
     @Override

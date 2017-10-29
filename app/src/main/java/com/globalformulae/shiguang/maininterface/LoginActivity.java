@@ -257,6 +257,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                                             userIdTV.setError("帐号不存在");
                                             userIdTV.requestFocus();
                                         } else {//服务器错误
+                                            Log.e("----------------login",responseBean.getMessage() );
                                             StyleableToast st3 = new StyleableToast
                                                     .Builder(LoginActivity.this, "服务器错误，请重试")
                                                     .withMaxAlpha()
@@ -274,10 +275,13 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
+                        throwable.printStackTrace();
                         logoIV.postDelayed(new Runnable() {
                             @Override
                             public void run() {
                                 showProgress(false);
+                                Log.e("----------------login：","what's wrong");
+
                                 StyleableToast st3 = new StyleableToast
                                         .Builder(LoginActivity.this, "服务器错误，请重试")
                                         .withMaxAlpha()

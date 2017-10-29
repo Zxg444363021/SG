@@ -11,22 +11,30 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.bean.AlternateRecord;
 import com.globalformulae.shiguang.bean.OnesRecord;
+import com.globalformulae.shiguang.bean.Power;
+import com.globalformulae.shiguang.bean.ResponseBean;
 import com.globalformulae.shiguang.maininterface.adapter.ComplexRecordAdapter;
 import com.globalformulae.shiguang.retrofit.RetrofitHelper;
 import com.globalformulae.shiguang.retrofit.UserActionService;
 import com.globalformulae.shiguang.utils.SPUtil;
 import com.globalformulae.shiguang.view.CircleImageView;
+import com.google.gson.Gson;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -58,6 +66,8 @@ public class FriendInfoActivity extends AppCompatActivity {
     Button gainCustomBTN;
     @BindView(R.id.gain_tomato_btn)
     Button gainTomatoBTN;
+    @BindView(R.id.gain_step_btn)
+    Button gainStepBTN;
     @BindView(R.id.friend_record_rv)
     RecyclerView friendRecordRV;
     @BindView(R.id.friend_info_tb)
@@ -76,7 +86,9 @@ public class FriendInfoActivity extends AppCompatActivity {
     public static final String DOSTEALTOMATO = "1";
     public static final String DOSTEALCUSTOME = "2";
     public static final String DOWATER = "3";
+    private static final String DOSTEALSTEP = "4";
 
+    private Long myId;
     private Long friendId;
     private int friendPower;
     private ComplexRecordAdapter complexRecordAdapter;
@@ -94,6 +106,7 @@ public class FriendInfoActivity extends AppCompatActivity {
         userActionService = retrofit.create(UserActionService.class);
         mtypeface= Typeface.createFromAsset(getAssets(),"HYJiaShuJian.ttf");
         hasLoad=true;
+        myId=SPUtil.getSP(this,"user").getLong("userid",0);
     }
 
     @Override
@@ -102,6 +115,7 @@ public class FriendInfoActivity extends AppCompatActivity {
         if(hasLoad){
             initView();
             getFriendRecord();
+            getCanBeSteal();
             hasLoad=false;
         }
     }
@@ -117,12 +131,7 @@ public class FriendInfoActivity extends AppCompatActivity {
         setActionBar(intent.getStringExtra("name"));
         Glide.with(this).load(intent.getStringExtra("icon")).placeholder(R.mipmap.unlogged_icon).into(friendiIconIV);
         friendTomatoNumTV.setText(String.valueOf(intent.getIntExtra("tomato_n", 0)));
-        if (intent.getIntExtra("power1CanSteal",0) == 1) {
-            gainTomatoBTN.setVisibility(View.VISIBLE);
-        }
-        if (intent.getIntExtra("power2CanSteal",0) == 1) {
-            gainCustomBTN.setVisibility(View.VISIBLE);
-        }
+
 
 
         Animation animation = AnimationUtils.loadAnimation(this, R.anim.sun_anim);
@@ -187,6 +196,10 @@ public class FriendInfoActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+
+
+
+
     /**
      * 获取朋友最近的被交互记录
      * retrofit+rxjava请求方式
@@ -225,6 +238,69 @@ public class FriendInfoActivity extends AppCompatActivity {
                 });
 
     }
+
+    /**
+     * 获取朋友有哪几种能量可以偷
+     */
+    public void getCanBeSteal(){
+        userActionService.doGetCanBeSteal(String.valueOf(myId),String.valueOf(friendId))
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<ResponseBean>() {
+                    @Override
+                    public void accept(@NonNull ResponseBean responseBean) throws Exception {
+                        if (responseBean.getCode().equals("31")){
+                            String json=responseBean.getData();
+                            //Log.e("getCanBeSteal",json);
+                            if (json!=null){
+                                try{
+                                    List<Power> plist=new ArrayList<Power>();
+                                    // 返回json的数组
+                                    JSONArray jsonArray = new JSONArray(json);
+                                    for (int i = 0; i < jsonArray.length(); i++) {
+                                        JSONObject jsonObject2 = jsonArray.getJSONObject(i);
+                                        Power power = new Power();
+                                        power.setId(jsonObject2.getLong("id"));
+                                        power.setUserid(jsonObject2.getLong("userid"));
+                                        power.setPower(jsonObject2.getInt("power"));
+                                        power.setPowerType(jsonObject2.getInt("powerType"));
+                                        power.setCanSteal(jsonObject2.getInt("canSteal"));
+                                        plist.add(power);
+                                        //Log.e("getCanBeSteal", power.toString());
+                                    }
+                                    for (Power p:plist){
+                                        //Log.e("getCanBeSteal", p.toString());
+                                        if (p.getPowerType() == 1&&p.getCanSteal()==1) {
+                                            gainTomatoBTN.setVisibility(View.VISIBLE);
+                                        }
+                                        if (p.getPowerType() == 2&&p.getCanSteal()==1) {
+                                            gainCustomBTN.setVisibility(View.VISIBLE);
+                                        }
+                                        if (p.getPowerType() == 4&&p.getCanSteal()==1) {
+                                            gainStepBTN.setVisibility(View.VISIBLE);
+                                        }
+                                    }
+
+                                }catch (Exception e){
+                                    e.printStackTrace();
+                                }
+
+                            }else{
+                                Log.e("getCanBeSteal","564531321321");
+                            }
+
+                        }else{
+                            Toast.makeText(FriendInfoActivity.this,responseBean.getMessage(),Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                }, new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        Log.e("getCanBeSteal", "fail");
+                    }
+                });
+    }
+
 
     /**
      * 对返回回来的记录进行加工
@@ -268,6 +344,12 @@ public class FriendInfoActivity extends AppCompatActivity {
         doSometingToPower(DOSTEALTOMATO);
     }
 
+    @OnClick(R.id.gain_step_btn)
+    void stealStepPower(){
+        doSometingToPower(DOSTEALSTEP);
+    }
+
+
     /**
      * 浇水
      */
@@ -286,20 +368,26 @@ public class FriendInfoActivity extends AppCompatActivity {
                 , String.valueOf(friendId), type)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Consumer<AlternateRecord>() {
+                .subscribe(new Consumer<ResponseBean>() {
                     @Override
-                    public void accept(@NonNull AlternateRecord alternateRecord) throws Exception {
-                        OnesRecord onesRecord=new OnesRecord();
-                        onesRecord.setName(getSP(FriendInfoActivity.this,"user").getString("name","zzz"));
-                        onesRecord.setPower(alternateRecord.getPower());
-                        onesRecord.setType(alternateRecord.getType());
-                        onesRecord.setTime(alternateRecord.getTime());
-                        addItemToList(onesRecord);
+                    public void accept(@NonNull ResponseBean responseBean) throws Exception {
+                        if (responseBean.getCode().equals("51")||responseBean.getCode().equals("61")){
+                            OnesRecord onesRecord=new OnesRecord();
+                            onesRecord.setName(getSP(FriendInfoActivity.this,"user").getString("name","zzz"));
+                            AlternateRecord alternateRecord=new Gson().fromJson(responseBean.getData(),AlternateRecord.class);
+                            onesRecord.setPower(alternateRecord.getPower());
+                            onesRecord.setType(alternateRecord.getType());
+                            onesRecord.setTime(alternateRecord.getTime());
+                            addItemToList(onesRecord);
+                        }else {
+                            //Log.e("doSometingToPower", "fail111");
+                        }
+
                     }
                 }, new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
-
+                        Log.e("doSometingToPower", "fail");
                     }
                 });
 

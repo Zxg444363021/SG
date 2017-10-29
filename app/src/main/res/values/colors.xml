@@ -21,5 +21,6 @@
     <color name="qingTrans2">#69d9c9</color>
     <color name="C7">#404040</color><!-- 继续答题背景颜色-->
     <color name="divider">#ffcccccc</color>
+    <color name="schedulebg">#E9C2A6</color>
 
 </resources>

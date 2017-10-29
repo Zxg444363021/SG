@@ -3,8 +3,10 @@ package com.globalformulae.shiguang.maininterface.adapter;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,6 +44,10 @@ public class TimerRankAdapter extends RecyclerView.Adapter<TimerRankAdapter.Time
         this.mContext = mContext;
         this.mDatas = mDatas;
         this.layoutInflater=LayoutInflater.from(mContext);
+    }
+
+    public void setmDatas(List<User> mDatas) {
+        this.mDatas = mDatas;
     }
 
     @Override
@@ -91,6 +97,10 @@ public class TimerRankAdapter extends RecyclerView.Adapter<TimerRankAdapter.Time
             }
         });
 
+        if (u.getCanBeStolen()==1){
+            Log.e("canSteal","zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
+            holder.userNameTV.setTextColor(Color.BLUE);
+        }
     }
 
     @Override

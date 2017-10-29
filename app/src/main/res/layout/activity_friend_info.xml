@@ -221,7 +221,8 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone"/>
+            android:visibility="gone"
+            />
 
         <Button
             android:id="@+id/gain_custom_btn"
@@ -238,6 +239,23 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintVertical_bias="0.667"
+            android:visibility="gone"
+            />
+        <Button
+            android:id="@+id/gain_step_btn"
+            android:layout_width="100dp"
+            android:layout_height="40dp"
+            android:layout_marginBottom="8dp"
+            android:layout_marginLeft="8dp"
+            android:layout_marginTop="8dp"
+            android:background="@drawable/shape_capsule_bg"
+            android:drawableLeft="@drawable/step"
+            android:padding="5dp"
+            android:text="可收获"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.816"
             android:visibility="gone"/>
 
     </android.support.constraint.ConstraintLayout>

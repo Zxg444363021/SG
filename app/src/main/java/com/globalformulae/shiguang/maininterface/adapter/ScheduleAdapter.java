@@ -100,7 +100,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedl
             holder.itemTime.setText(schedule.getHour()+":"+schedule.getMinute());
         }
 
-        if(schedule.getType()){
+        if(schedule.getType()==1){
             holder.itemType.setChecked(true);
         }
         if(schedule.getStatus()==-1){
@@ -109,7 +109,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedl
         holder.itemType.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(schedule.getType()==isChecked){
+                if(schedule.getType()==1){
                 }
                 else{
                     if(schedule.getStatus()==0&&isChecked){
@@ -117,7 +117,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedl
                     }else if(schedule.getStatus()==1&&!isChecked){
                         schedule.setStatus(0);
                     }
-                    schedule.setType(isChecked);
+                    schedule.setType(1);
 
 
                     scheduleDao.update(schedule);
@@ -149,7 +149,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedl
                     if(isChecked){
                         schedule.setStatus(-1);
                     }else{
-                        if(schedule.getType()){
+                        if(schedule.getType()==1){
                             schedule.setStatus(1);
                         }else{
                             schedule.setStatus(0);
@@ -229,7 +229,7 @@ public class ScheduleAdapter extends RecyclerView.Adapter<ScheduleAdapter.Schedl
 
 
     public  void add(Schedule schedule){
-        //刷新数据
+        //刷新数据e
         QueryBuilder<Schedule> qb = scheduleDao.queryBuilder();
         qb.where(qb.and(ScheduleDao.Properties.Year.eq(schedule.getYear()),ScheduleDao.Properties.Month.eq(schedule.getMonth()),
                 ScheduleDao.Properties.Day.eq(schedule.getDay())));

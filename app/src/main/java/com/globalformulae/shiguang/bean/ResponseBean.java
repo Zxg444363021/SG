@@ -14,8 +14,9 @@ public class ResponseBean {
             LOGIN_FAIL="20";
 
 
-    String code, message, data;
-    User user;
+    private String code, message;
+    private User user;
+    private String data;
 
     public User getUser() {
         return user;

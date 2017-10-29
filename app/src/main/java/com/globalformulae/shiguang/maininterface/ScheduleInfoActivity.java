@@ -5,7 +5,6 @@ import android.app.TimePickerDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -16,14 +15,11 @@ import android.widget.EditText;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.bean.Schedule;
-import com.globalformulae.shiguang.greendao.DaoSession;
-import com.globalformulae.shiguang.greendao.ScheduleDao;
 import com.globalformulae.shiguang.maininterface.MainFragments.ScheduleFragment;
-
-import org.greenrobot.eventbus.EventBus;
 
 import java.util.Calendar;
 
@@ -97,7 +93,7 @@ public class ScheduleInfoActivity extends AppCompatActivity {
             mSchedule.setDayOfWeek(bundle.getInt("dayOfWeek"));
             mSchedule.setHour(bundle.getInt("hour"));
             mSchedule.setMinute(bundle.getInt("minute"));
-            mSchedule.setType(bundle.getBoolean("type"));
+            //mSchedule.setType(bundle.getBoolean("type"));
 
             mYear=mSchedule.getYear();
             mMonth=mSchedule.getMonth();
@@ -162,7 +158,7 @@ public class ScheduleInfoActivity extends AppCompatActivity {
         if(type==1){    //如果是修改事件
             scheduleName.setText(schedule.getName());
             scheduleDes.setText(schedule.getDescription());
-            aSwitch.setChecked(schedule.getType());
+            //aSwitch.setChecked(schedule.getType());
             scheduleDate.setText(schedule.getData());
             scheduleTime.setText(schedule.getTime());
         }else{      //如果是新建事件
@@ -259,70 +255,7 @@ public class ScheduleInfoActivity extends AppCompatActivity {
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(openType==0){//如果是新建的，那么需要插入操作
-                    DaoSession daoSession = MyApplication.getDaoMaster().newSession();
-                    ScheduleDao scheduleDao=daoSession.getScheduleDao();
-                    String name=scheduleName.getText().toString();
-                    String des=scheduleDes.getText().toString();
-                    if(name.isEmpty()){
-                        final Snackbar snackbar=Snackbar.make(floatingActionButton,"任务名称不能为空",Snackbar.LENGTH_SHORT);
-                        snackbar.show();
-                    }else{
-                        Schedule schedule=new Schedule();
-                        schedule.setId(null);
-                        schedule.setName(name);
-                        schedule.setDescription(des);
-                        schedule.setYear(mYear);
-                        schedule.setMonth(mMonth);
-                        schedule.setDay(mDay);
-                        schedule.setDayOfWeek(mDayOfWeek);
-                        schedule.setType(mType);
-                        schedule.setHour(mHour);
-                        schedule.setMinute(mMinute);
-                        if(mType){
-                            schedule.setStatus(1);
-                        }else{
-                            schedule.setStatus(0);
-                        }
-                        Long id=scheduleDao.insert(schedule);   //插入
-                        schedule.setId(id);
-                        schedule.setIfNew(true);
-                        EventBus.getDefault().post(schedule);   //回调
-                        ScheduleInfoActivity.this.finish();
-                    }
-
-                }else{//如果是修改事件
-                    DaoSession daoSession = MyApplication.getDaoMaster().newSession();
-                    ScheduleDao scheduleDao=daoSession.getScheduleDao();
-                    String name=scheduleName.getText().toString();
-                    String des=scheduleDes.getText().toString();
-                    if(name.isEmpty()){
-                        final Snackbar snackbar=Snackbar.make(floatingActionButton,"任务名称不能为空",Snackbar.LENGTH_SHORT);
-                        snackbar.show();
-                    }else{
-                        Schedule schedule1=new Schedule();
-                        schedule1.setId(mSchedule.getId());
-                        schedule1.setName(name);
-                        schedule1.setDescription(des);
-                        schedule1.setYear(mYear);
-                        schedule1.setMonth(mMonth);
-                        schedule1.setDay(mDay);
-                        schedule1.setDayOfWeek(mDayOfWeek);
-                        schedule1.setType(mType);
-                        schedule1.setHour(mHour);
-                        schedule1.setMinute(mMinute);
-                        if(mType){
-                            schedule1.setStatus(1);
-                        }else{
-                            schedule1.setStatus(0);
-                        }
-                        scheduleDao.update(schedule1);  //更新事件
-                        EventBus.getDefault().post(schedule1);
-                        ScheduleInfoActivity.this.finish();
-
-                    }
-                }
-
+                Toast.makeText(ScheduleInfoActivity.this,"asdasd",30);
             }
         });
 

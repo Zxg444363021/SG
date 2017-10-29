@@ -111,13 +111,13 @@ public class OkHttpUtil {
             switch (msg.arg1) {
                 case REQUEST_SUCC:
                     ResponseBean responseData = (ResponseBean) msg.obj;
-                    if (responseData.getCode().equals("200")) {
-                        netServiceUser.connectedcallBack(
-                                NetServiceUser.CONNECT_SUCC, msg.arg2, responseData.getData(), responseData.getMessage());
-                    } else {
-                        netServiceUser.connectedcallBack(
-                                NetServiceUser.CONNECT_ERROR, msg.arg2, responseData.getData(), responseData.getMessage());
-                    }
+//                    if (responseData.getCode().equals("200")) {
+//                        netServiceUser.connectedcallBack(
+//                                NetServiceUser.CONNECT_SUCC, msg.arg2, responseData.getData(), responseData.getMessage());
+//                    } else {
+//                        netServiceUser.connectedcallBack(
+//                                NetServiceUser.CONNECT_ERROR, msg.arg2, responseData.getData(), responseData.getMessage());
+//                    }
                     break;
                 case REQUEST_FAIL:
                     netServiceUser.connectedcallBack(
@@ -189,6 +189,7 @@ public class OkHttpUtil {
             }
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+
                 final String result = response.body().string();
                 Message message = Message.obtain();
                 message.arg2 = type;

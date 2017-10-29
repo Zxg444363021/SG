@@ -7,7 +7,7 @@ import org.greenrobot.greendao.annotation.Property;
 import org.greenrobot.greendao.annotation.Transient;
 
 /**
- * Created by Administrator on 2017/4/10.
+ * Created by ZXG on 2017/4/10.
  */
 @Entity(
         generateGettersSetters = true
@@ -35,6 +35,15 @@ public class Schedule {
     @Property
     private int minute;
 
+    @Property
+    private int dayOfWeek;
+    @Property
+    private int status=EVENT_WAIT;
+    @Property
+    private int type;
+
+    
+
     public int getDayOfWeek() {
         return dayOfWeek;
     }
@@ -43,23 +52,21 @@ public class Schedule {
         this.dayOfWeek = dayOfWeek;
     }
 
-    public boolean isType() {
-        return type;
-    }
 
-    @Property
-    private int dayOfWeek;
-    @Property
-    private int status=EVENT_WAIT;
-    @Property
-    private boolean type;
+
+
 
     @Transient
     private boolean ifNew=false;    //这个属性不映射到数据库
-    @Generated(hash = 741430102)
+    
+
+    @Generated(hash = 729319394)
+    public Schedule() {
+    }
+
+    @Generated(hash = 1587951530)
     public Schedule(Long id, String name, String description, int year, int month,
-            int day, int hour, int minute, int dayOfWeek, int status,
-            boolean type) {
+            int day, int hour, int minute, int dayOfWeek, int status, int type) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -73,15 +80,11 @@ public class Schedule {
         this.type = type;
     }
 
-    @Generated(hash = 729319394)
-    public Schedule() {
-    }
-
-    public boolean getType() {
+    public int getType() {
         return type;
     }
 
-    public void setType(boolean type) {
+    public void setType(int type) {
         this.type = type;
     }
 

@@ -18,6 +18,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -50,6 +51,7 @@ import com.globalformulae.shiguang.utils.MenuManager;
 import com.globalformulae.shiguang.utils.SPUtil;
 import com.globalformulae.shiguang.view.CustomDialog;
 import com.globalformulae.shiguang.view.TimePickerDialogF;
+import com.muddzdev.styleabletoastlibrary.StyleableToast;
 
 import org.greenrobot.eventbus.EventBus;
 
@@ -103,7 +105,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
     private int timingTength;
     private SensorManager mSensorManager;
     private Sensor mSensor;
-    private boolean tag=false;
+    private boolean tag=false;//是创建还是回来
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         //transition动画的参数设置，必须在最开始运行
@@ -195,7 +197,7 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         mSensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if(mSensorManager!=null)
             mSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_STEP_COUNTER);
-        mSensor.getFifoMaxEventCount();
+//        mSensor.getFifoMaxEventCount();
         if(tag){
             SharedPreferences sharedPreferences=SPUtil.getSP(MainActivity.this,"user");
             String date=sharedPreferences.getString("date","20170101");
@@ -520,6 +522,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         str.equals("timerFragment");
     }
 
+
+    private CountDownTimer countDownTimer;
+
     /**
      * 时间选择好了开始计时
      * @param hour
@@ -532,7 +537,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
         if(!((MyApplication)MainActivity.this.getApplication()).isTiming()){
             ((MyApplication)MainActivity.this.getApplication()).setIsTiming(true);
         }
-        new CountDownTimer((timingTength+1)*1000,1000){
+        if (countDownTimer!=null)
+            countDownTimer.cancel();
+        countDownTimer=new CountDownTimer((timingTength+1)*1000,1000){
 
             @Override
             public void onTick(long millisUntilFinished) {
@@ -555,8 +562,18 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
                         EventBus.getDefault().post(new SoilTimeBean(1200));
                     }else if((timingTength-time)%1500==1400){
                         EventBus.getDefault().post(new SoilTimeBean(1400));
-                    }else if(time==0){
+                    }else if(time==0||time==1){
+                        chronometer.setText("00:00:00");
                         ((MyApplication)getApplication()).setIsTiming(false);
+                        StyleableToast st2 = new StyleableToast
+                                .Builder(MainActivity.this, "本次计时成功，上传ing")
+                                .withMaxAlpha()
+                                .withBackgroundColor(ContextCompat.getColor(MainActivity.this, R.color.colorAccent))
+                                .withTextColor(Color.WHITE)
+                                .withBoldText()
+                                .withIcon(R.drawable.ic_autorenew_black_24dp,true)
+                                .build();
+                        st2.show();
                     }
                     else{}
                 }else{
@@ -568,7 +585,9 @@ public class MainActivity extends AppCompatActivity implements ViewAnimator.View
             public void onFinish() {
                 ((MyApplication)getApplication()).setIsTiming(false);
             }
-        }.start();
+        };
+        countDownTimer.start();
+
     }
 
 

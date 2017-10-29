@@ -2,7 +2,6 @@ package com.globalformulae.shiguang.maininterface.MainFragments;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
@@ -26,8 +25,8 @@ import com.globalformulae.shiguang.bean.Schedule;
 import com.globalformulae.shiguang.greendao.DaoSession;
 import com.globalformulae.shiguang.greendao.ScheduleDao;
 import com.globalformulae.shiguang.maininterface.MyApplication;
-import com.globalformulae.shiguang.maininterface.ScheduleInfoActivity;
 import com.globalformulae.shiguang.maininterface.adapter.ScheduleAdapter;
+import com.globalformulae.shiguang.view.ScheduleDialogFragment;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -152,7 +151,7 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
     }
 
     /**
-     * 修改日期
+     * 修改日期,刷新显示
      */
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void changeDate(MyDate date){
@@ -173,7 +172,9 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
                 qb.build();
                 e.onNext(qb.list());
             }
-        }).subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread()).subscribe(new Consumer<List<Schedule>>() {
+        }).subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribe(new Consumer<List<Schedule>>() {
             @Override
             public void accept(@NonNull List<Schedule> schedules) throws Exception {
                 mDatas=schedules;
@@ -248,16 +249,8 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
      */
     @OnClick(R.id.fab_add_event)
     void addEventClick(){
-        Intent intent=new Intent(getContext(), ScheduleInfoActivity.class);
-        Bundle bundle=new Bundle();
-        bundle.putString("openType","0");   //表明是在新建事件
-        bundle.putInt("year",mYear);
-        bundle.putInt("month",mMonth);
-        bundle.putInt("day",mDay);
-        bundle.putInt("dayOfWeek",mDayOfWeek);
-        bundle.putString("xinqi",xinqi);
-        intent.putExtra("info",bundle);
-        startActivity(intent);
+
+        new ScheduleDialogFragment(mYear,mMonth,mDay,mDayOfWeek,xinqi,0).show(getFragmentManager(), "SchedlueInfoDialog");
     }
 
 
@@ -294,23 +287,8 @@ public class ScheduleFragment extends Fragment implements ScheduleAdapter.onSche
      */
     @Override
     public void onItemClick(View view, int position,Schedule schedule1) {
-        Intent intent=new Intent(getActivity(),ScheduleInfoActivity.class);
         Schedule schedule=schedule1;
-        Bundle bundle=new Bundle();
-        bundle.putString("openType","1");
-        bundle.putString("name",schedule.getName());
-        bundle.putString("desc",schedule.getDescription());
-        bundle.putBoolean("type",schedule.getType());
-        bundle.putInt("year",schedule.getYear());
-        bundle.putInt("month",schedule.getMonth());
-        bundle.putInt("day",schedule.getDay());
-        bundle.putInt("dayOfWeek",schedule.getDayOfWeek());
-        bundle.putInt("hour",schedule.getHour());
-        bundle.putInt("minute",schedule.getMinute());
-        bundle.putInt("status",schedule.getStatus());
-        bundle.putLong("id",schedule.getId());
-        intent.putExtra("info",bundle);
-        startActivity(intent);
+        new ScheduleDialogFragment(schedule,1).show(getFragmentManager(), "SchedlueInfoDialog");
     }
 
     @Override

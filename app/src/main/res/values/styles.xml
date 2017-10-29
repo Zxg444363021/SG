@@ -16,7 +16,11 @@
         <!--checkbox选中的颜色-->
         <!--<item name="android:colorControlActivated">#00ff00</item>-->
 
+
     </style>
+
+
+
     <style name="StyledToast">
             <item name="android:textColor">@color/red</item>
             <item name="android:colorBackground">@color/gray</item>

@@ -7,15 +7,18 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.signature.StringSignature;
 import com.globalformulae.shiguang.R;
 import com.globalformulae.shiguang.utils.NetServiceUser;
 import com.globalformulae.shiguang.utils.OkHttpUtil;
 import com.globalformulae.shiguang.utils.SPUtil;
+
+import java.util.Comparator;
+import java.util.TreeMap;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -45,6 +48,8 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
     View userEFL;
     @BindView(R.id.my_step_tv)
     TextView myStepTV;
+    @BindView(R.id.modify_schedule)
+    FrameLayout modifyScheduleFL;
 
     private SharedPreferences sp;
     @Override
@@ -55,13 +60,21 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
         sp=SPUtil.getSP(this,"user");
         setActionBar();
         initView();
+
     }
     private void getMyInfo(){
+        TreeMap<Integer,Integer> treeMap=new TreeMap<>(new Comparator<Integer>() {
+            @Override
+            public int compare(Integer o1, Integer o2) {
+                return 0;
+            }
+        });
 
     }
 
     private void initView(){
-        Glide.with(this).load(sp.getString("icon", "")).signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) .placeholder(R.mipmap.unlogged_icon).into(myIconIV);
+        Glide.with(this).load(sp.getString("icon", "")).placeholder(R.mipmap.unlogged_icon).into(myIconIV);
+        //.signature(new StringSignature(String.valueOf(System.currentTimeMillis()))) 用来保持头像始终重新加载
         myNameTV.setText(sp.getString("name",""));
         myPhoneTV.setText(sp.getString("phone",""));
         myTomatoNTV.setText(String.valueOf(sp.getInt("tomato_n",0)));
@@ -96,8 +109,9 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
      */
     @OnClick(R.id.user_t_fl)
     void click3(){
-
     }
+
+
 
     /**
      * 退出
@@ -110,6 +124,14 @@ public class UserInfoActivity extends AppCompatActivity implements NetServiceUse
         ((MyApplication)getApplication()).isOnLine=false;
         finish();
     }
+
+    @OnClick(R.id.modify_schedule)
+    void click5(){
+
+    }
+
+
+
     @Override
     public void connectedcallBack(int code, int type, String result, String message) {
 

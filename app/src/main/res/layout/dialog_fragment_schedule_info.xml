@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:minWidth="350dp">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="40dp"
+        android:background="@color/schedulebg">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="任务详情"
+            android:layout_gravity="center"
+            android:textSize="20sp"/>
+        <ImageButton
+            android:id="@+id/ib_edit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_mode_edit_black_24dp"
+            android:background="#00ffffff"
+            android:layout_gravity="center_vertical|left"
+            android:layout_marginLeft="10dp"/>
+        <ImageButton
+            android:id="@+id/ib_save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_content_paste_black_24dp"
+            android:background="#00ffffff"
+            android:layout_gravity="center_vertical|right"
+            android:layout_marginRight="10dp"
+            android:visibility="gone"/>
+    </FrameLayout>
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="30px">
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/et_schedule_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="任务名称"
+                android:imeActionLabel="任务名称"
+                android:imeOptions="actionUnspecified"
+                android:inputType="text"
+
+                android:maxLines="1" />
+
+        </android.support.design.widget.TextInputLayout>
+
+        <android.support.design.widget.TextInputLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20px">
+
+            <EditText
+                android:id="@+id/et_schedule_des"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="描述"
+                android:imeActionLabel="描述"
+                android:imeOptions="actionUnspecified"
+                android:inputType="textMultiLine"
+                android:lines="5"
+                android:textColorHighlight="?attr/colorAccent" />
+        </android.support.design.widget.TextInputLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30px">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="设为重要事物"
+                android:textColor="#404040" />
+
+            <Switch
+                android:id="@+id/switch_ifImp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end" />
+        </FrameLayout>
+
+        <FrameLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30px">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="start"
+                android:text="时间选择" />
+
+            <TextView
+                android:id="@+id/tv_schedule_info_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="2017年4月10日 星期一"></TextView>
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/tv_schedule_info_time"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="60px"
+            android:text="21:06" />
+
+        <TextView
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+</LinearLayout>

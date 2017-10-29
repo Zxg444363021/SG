@@ -23,6 +23,10 @@ public class User {
     private int power2Stolen;
     private int power1CanSteal;
     private int power2CanSteal;
+    private String uuid;
+    private String token;
+    private int canBeStolen;
+    private int canSteal;
 
     public void setUserid(long userid) {
         this.userid = userid;
@@ -158,5 +162,37 @@ public class User {
 
     public void setWxname(String wxname) {
         this.wxname = wxname;
+    }
+
+    public String getUuid() {
+        return uuid;
+    }
+
+    public void setUuid(String uuid) {
+        this.uuid = uuid;
+    }
+
+    public String getToken() {
+        return token;
+    }
+
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public int getCanBeStolen() {
+        return canBeStolen;
+    }
+
+    public void setCanBeStolen(int canBeStolen) {
+        this.canBeStolen = canBeStolen;
+    }
+
+    public int getCanSteal() {
+        return canSteal;
+    }
+
+    public void setCanSteal(int canSteal) {
+        this.canSteal = canSteal;
     }
 }

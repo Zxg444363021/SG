@@ -105,12 +105,11 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
 
 
     public TimerFragment() {
-        // Required empty public constructor
+
     }
 
     public static TimerFragment newInstance(String param1, String param2) {
         TimerFragment fragment = new TimerFragment();
-
         return fragment;
     }
 
@@ -179,14 +178,19 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
      */
     private void getTimerRR(){
         //获取排名
-        userActionService.doGetRank(String.valueOf(getSP(getActivity(), "user").getLong("userid", 0)))
+        userActionService.doGetRank(String.valueOf(sp.getLong("userid", 0)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .doOnNext(new Consumer<List<User>>() {
                     @Override
                     public void accept(@NonNull List<User> users) throws Exception {
                         userRankList =users;
-                        timerRankAdapter=new TimerRankAdapter(getContext(), userRankList);
+                        if (timerRankAdapter==null){
+                            timerRankAdapter=new TimerRankAdapter(getActivity(),userRankList);
+                        }else{
+                            timerRankAdapter.setmDatas(userRankList);
+                        }
+
                         timerRankAdapter.setOnItemClickListener(TimerFragment.this);
                         timerRankRV.setAdapter(timerRankAdapter);
                         timerRankRV.invalidate();
@@ -217,7 +221,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
                 }).subscribe();
 
         //获取我的记录
-        userActionService.doGetRecord(String.valueOf(getSP(getActivity(), "user").getLong("userid", 0)))
+        userActionService.doGetRecord(String.valueOf(sp.getLong("userid", 0)))
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribe(new Consumer<List<OnesRecord>>() {
@@ -332,7 +336,7 @@ public class TimerFragment extends Fragment implements TimerRankAdapter.onItemCl
     public void onDetach() {
         super.onDetach();
         mListener = null;
-        EventBus.getDefault().register(this);
+        EventBus.getDefault().unregister(this);
     }
 
     /**

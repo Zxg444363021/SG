@@ -15,7 +15,7 @@
     android:weightSum="1"
     android:id="@+id/event_item"
     android:onClick="edit_event"
-    android:background="#E9C2A6"
+    android:background="@color/schedulebg"
     >
         <RelativeLayout
             android:orientation="vertical"

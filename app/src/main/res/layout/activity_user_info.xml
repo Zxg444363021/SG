@@ -149,6 +149,28 @@
                 android:text="15000步" />
         </FrameLayout>
         <FrameLayout
+            android:id="@+id/modify_schedule"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:visibility="gone">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical|start"
+                android:text="立即同步"
+                android:textColor="#404040"
+                android:textSize="16sp" />
+
+            <TextView
+                android:id="@+id/last_modify_time_tv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end|center_vertical"
+                android:text="上次同步时间：" />
+        </FrameLayout>
+
+        <FrameLayout
             android:id="@+id/user_exit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
